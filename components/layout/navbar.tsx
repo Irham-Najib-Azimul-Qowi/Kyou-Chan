@@ -18,7 +18,8 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const handle = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(handle);
   }, []);
 
   const isLinkActive = (href: string) => {
@@ -177,7 +178,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--jade)] text-[var(--bg-void)] font-bold text-xs uppercase tracking-wider transition-all hover:bg-[#5ae6b5] hover:scale-[1.02]"
                 >
-                  Let's work together →
+                  Let&apos;s work together →
                 </Link>
               </div>
             </motion.div>

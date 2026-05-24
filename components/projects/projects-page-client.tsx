@@ -49,37 +49,59 @@ function formatYear(dateStr?: string) {
   return new Date(dateStr).getFullYear().toString();
 }
 
+interface ProjectPageParticle {
+  id: number
+  size: number
+  left: number
+  top: number
+  opacity: number
+  yAnim: number
+  xAnim: number
+  duration: number
+}
+
 function ParticleNodes({ color, count = 8 }: { color: string; count?: number }) {
+  const [particles] = useState<ProjectPageParticle[]>(() => {
+    if (typeof window === 'undefined') return []
+    return Array.from({ length: count }).map((_, i) => ({
+      id: i,
+      size: Math.random() * 4 + 2,
+      left: Math.random() * 90 + 5,
+      top: Math.random() * 90 + 5,
+      opacity: Math.random() * 0.3 + 0.1,
+      yAnim: Math.random() * -40 - 20,
+      xAnim: Math.random() * 30 - 15,
+      duration: 5 + Math.random() * 5,
+    }))
+  })
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {[...Array(count)].map((_, i) => {
-        const size = Math.random() * 4 + 2;
-        return (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: size,
-              height: size,
-              background: `var(--${color})`,
-              left: `${Math.random() * 90 + 5}%`,
-              top: `${Math.random() * 90 + 5}%`,
-              opacity: Math.random() * 0.3 + 0.1,
-              boxShadow: `0 0 8px var(--${color})`
-            }}
-            animate={{
-              y: [0, Math.random() * -40 - 20, 0],
-              x: [0, Math.random() * 30 - 15, 0],
-              opacity: [0.15, 0.45, 0.15]
-            }}
-            transition={{
-              duration: 5 + Math.random() * 5,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        );
-      })}
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            background: `var(--${color})`,
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            opacity: p.opacity,
+            boxShadow: `0 0 8px var(--${color})`
+          }}
+          animate={{
+            y: [0, p.yAnim, 0],
+            x: [0, p.xAnim, 0],
+            opacity: [0.15, 0.45, 0.15]
+          }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
     </div>
   );
 }

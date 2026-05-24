@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 interface Particle {
   id: number
@@ -14,11 +14,10 @@ interface Particle {
 }
 
 export function FloatingParticles() {
-  const [particles, setParticles] = useState<Particle[]>([])
-
-  useEffect(() => {
-    // Reduce particle count to 12 for maximum mobile & desktop performance
-    const items: Particle[] = Array.from({ length: 12 }).map((_, i) => ({
+  // Use lazy state initializer to generate random particles once on mount on client side
+  const [particles] = useState<Particle[]>(() => {
+    if (typeof window === 'undefined') return []
+    return Array.from({ length: 12 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100, // percentage width
       y: Math.random() * 80 + 20, // percentage height
@@ -28,8 +27,7 @@ export function FloatingParticles() {
       duration: Math.random() * 6 + 6, // 6s to 12s
       drift: Math.random() * 40 - 20, // -20px to 20px drift
     }))
-    setParticles(items)
-  }, [])
+  })
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
