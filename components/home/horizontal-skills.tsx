@@ -396,27 +396,6 @@ function SkillsSectionMobile() {
 
 export function HorizontalSkills() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [translateX, setTranslateX] = useState(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (scrollRef.current) {
-        const totalWidth = scrollRef.current.scrollWidth;
-        const visibleWidth = window.innerWidth;
-        const overflow = totalWidth - visibleWidth + 128;
-        setTranslateX(Math.max(0, overflow));
-      }
-    };
-
-    const timer = setTimeout(handleResize, 200);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   // Track scroll dalam container yang di-pin
   const { scrollYProgress } = useScroll({
@@ -431,8 +410,15 @@ export function HorizontalSkills() {
     restDelta: 0.001
   });
 
-  // Translate cards ke kiri berdasarkan scroll secara dinamis
-  const x = useTransform(smoothProgress, (latest) => -latest * translateX);
+  // Translate cards ke kiri secara dinamis berdasarkan lebar viewport riil
+  const x = useTransform(smoothProgress, (latest) => {
+    if (typeof window === "undefined") return 0;
+    const totalWidth = 1616; // 4 cards of 380px + 3 gaps of 32px
+    const visibleWidth = window.innerWidth;
+    const overflow = totalWidth - (visibleWidth - 128); // 128px padding (px-16)
+    const maxScroll = Math.max(0, overflow);
+    return -latest * maxScroll;
+  });
 
   // Scroll hint opacity transform
   const hintOpacity = useTransform(smoothProgress, [0, 0.1], [1, 0]);
@@ -502,7 +488,6 @@ export function HorizontalSkills() {
           {/* Cards container — bergerak horizontal */}
           <div className="relative flex items-center px-16 w-full z-10">
             <motion.div
-              ref={scrollRef}
               style={{ x }}
               className="flex gap-8"
             >
