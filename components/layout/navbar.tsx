@@ -22,6 +22,10 @@ export function Navbar() {
     return () => cancelAnimationFrame(handle);
   }, []);
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   const isLinkActive = (href: string) => {
     if (!mounted) return false;
     if (href === "/") return pathname === "/";
