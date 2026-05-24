@@ -3,6 +3,8 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CustomCursor } from "@/components/ui/custom-cursor";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { ScrollProvider } from "@/components/providers/ScrollProvider";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -77,11 +79,26 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body className="min-h-screen overflow-x-clip bg-[var(--bg-deep)] text-[var(--text-primary)] relative">
-        <ScrollProgress />
-        <CustomCursor />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ScrollProvider>
+          <Toaster 
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: '#161618',
+                color: '#EEEEF0',
+                border: '1px solid rgba(255,255,255,0.06)',
+                fontFamily: 'monospace',
+                fontSize: '13px',
+                borderRadius: '12px',
+              }
+            }}
+          />
+          <ScrollProgress />
+          <CustomCursor />
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ScrollProvider>
       </body>
     </html>
   );

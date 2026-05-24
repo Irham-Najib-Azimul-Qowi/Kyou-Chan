@@ -1,39 +1,42 @@
-"use client";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+'use client'
+
+import React, { useEffect, useState } from 'react'
 
 interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  color: string;
-  delay: number;
-  duration: number;
+  id: number
+  x: number
+  y: number
+  size: number
+  color: string
+  delay: number
+  duration: number
+  drift: number
 }
 
 export function FloatingParticles() {
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([])
 
   useEffect(() => {
-    const items: Particle[] = Array.from({ length: 20 }).map((_, i) => ({
+    // Reduce particle count to 12 for maximum mobile & desktop performance
+    const items: Particle[] = Array.from({ length: 12 }).map((_, i) => ({
       id: i,
-      x: Math.random() * 100, // percentage
-      y: Math.random() * 100, // percentage
+      x: Math.random() * 100, // percentage width
+      y: Math.random() * 80 + 20, // percentage height
       size: Math.random() * 2 + 1.5, // 1.5px to 3.5px
-      color: Math.random() > 0.5 ? "var(--jade)" : "var(--gold)",
-      delay: Math.random() * 5,
+      color: Math.random() > 0.5 ? 'var(--jade)' : 'var(--gold)',
+      delay: Math.random() * -8, // negative delay so particles start instantly
       duration: Math.random() * 6 + 6, // 6s to 12s
-    }));
-    setParticles(items);
-  }, []);
+      drift: Math.random() * 40 - 20, // -20px to 20px drift
+    }))
+    setParticles(items)
+  }, [])
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       {particles.map((p) => (
-        <motion.div
+        <div
           key={p.id}
-          className="absolute rounded-full"
+          className="absolute rounded-full animate-float-up"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
@@ -41,20 +44,13 @@ export function FloatingParticles() {
             height: p.size,
             backgroundColor: p.color,
             boxShadow: `0 0 6px ${p.color}`,
-          }}
-          animate={{
-            y: [0, -150],
-            x: [0, Math.random() * 30 - 15],
-            opacity: [0, 0.7, 0.7, 0],
-          }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            delay: p.delay,
-            ease: "easeInOut",
+            animationDelay: `${p.delay}s`,
+            // Set custom properties for float-up keyframes
+            ['--duration' as any]: `${p.duration}s`,
+            ['--drift' as any]: `${p.drift}px`,
           }}
         />
       ))}
     </div>
-  );
+  )
 }

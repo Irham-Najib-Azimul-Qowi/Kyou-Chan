@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useTransform } from "framer-motion";
+import { useScrollContext } from "@/components/providers/ScrollProvider";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ExternalLink, CheckSquare, Calendar } from "lucide-react";
 import type { Project } from "@/lib/data";
@@ -111,7 +112,7 @@ function Lightbox({ images, currentIndex, onClose, onPrev, onNext }: {
 }
 
 export function ProjectDetailClient({ project, nextProject }: ProjectDetailClientProps) {
-  const { scrollY } = useScroll();
+  const { scrollY } = useScrollContext();
   const y = useTransform(scrollY, [0, 500], [0, 150]); // parallax shift
   const opacity = useTransform(scrollY, [0, 400], [1, 0]); // fade hero on scroll
 

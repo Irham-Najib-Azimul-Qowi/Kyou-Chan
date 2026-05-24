@@ -1,11 +1,14 @@
 import { Hero } from "@/components/home/hero";
 import { MarqueeStrip } from "@/components/home/marquee-strip";
-import { About } from "@/components/home/about";
-import { HorizontalSkills } from "@/components/home/horizontal-skills";
 import { SectionDivider } from "@/components/ui/section-divider";
-import { ProjectGrid } from "@/components/projects/project-grid";
 import { seedProjects } from "@/lib/data";
 import { getProjects } from "@/lib/projects";
+import dynamic from "next/dynamic";
+
+// Below the fold: lazy load for bundle size optimization
+const About = dynamic(() => import("@/components/home/about").then(m => m.About), { ssr: true });
+const HorizontalSkills = dynamic(() => import("@/components/home/horizontal-skills").then(m => m.HorizontalSkills), { ssr: true });
+const ProjectGrid = dynamic(() => import("@/components/projects/project-grid").then(m => m.ProjectGrid), { ssr: true });
 
 export default async function Home() {
   const projects = await getProjects(true);

@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
+import { useScrollContext } from "@/components/providers/ScrollProvider";
 import { FloatingParticles } from "@/components/decorative/floating-particles";
 import { NeuralNetwork } from "@/components/decorative/neural-network";
 
 export function Hero() {
-  const { scrollY } = useScroll();
+  const { scrollY } = useScrollContext();
 
   // Scroll-linked transformations for Parallax Kanji Watermark
   const kanjiY = useTransform(scrollY, [0, 500], [0, -80]);
