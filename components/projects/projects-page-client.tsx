@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -61,19 +61,29 @@ interface ProjectPageParticle {
 }
 
 function ParticleNodes({ color, count = 8 }: { color: string; count?: number }) {
-  const [particles] = useState<ProjectPageParticle[]>(() => {
-    if (typeof window === 'undefined') return []
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      size: Math.random() * 4 + 2,
-      left: Math.random() * 90 + 5,
-      top: Math.random() * 90 + 5,
-      opacity: Math.random() * 0.3 + 0.1,
-      yAnim: Math.random() * -40 - 20,
-      xAnim: Math.random() * 30 - 15,
-      duration: 5 + Math.random() * 5,
-    }))
-  })
+  const [mounted, setMounted] = useState(false)
+  const [particles, setParticles] = useState<ProjectPageParticle[]>([])
+
+  useEffect(() => {
+    const handle = requestAnimationFrame(() => {
+      setParticles(
+        Array.from({ length: count }).map((_, i) => ({
+          id: i,
+          size: Math.random() * 4 + 2,
+          left: Math.random() * 90 + 5,
+          top: Math.random() * 90 + 5,
+          opacity: Math.random() * 0.3 + 0.1,
+          yAnim: Math.random() * -40 - 20,
+          xAnim: Math.random() * 30 - 15,
+          duration: 5 + Math.random() * 5,
+        }))
+      )
+      setMounted(true)
+    })
+    return () => cancelAnimationFrame(handle)
+  }, [count])
+
+  if (!mounted) return null
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">

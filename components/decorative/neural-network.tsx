@@ -11,20 +11,35 @@ export function NeuralNetwork() {
     [{ x: 420, y: 120 }, { x: 420, y: 200 }],
   ]
   
-  // Generate all connections
-  const connections: { id: string; x1: number; y1: number; x2: number; y2: number; delay: number }[] = []
+  // Generate all connections grouped by stages to ensure even flow to the output layer
+  const stage0: { id: string; x1: number; y1: number; x2: number; y2: number; delay: number }[] = []
+  const stage1: { id: string; x1: number; y1: number; x2: number; y2: number; delay: number }[] = []
+  const stage2: { id: string; x1: number; y1: number; x2: number; y2: number; delay: number }[] = []
+
   for (let l = 0; l < layers.length - 1; l++) {
     layers[l].forEach((node, i) => {
       layers[l + 1].forEach((nextNode, j) => {
-        connections.push({
+        const conn = {
           id: `conn-${l}-${i}-${j}`,
           x1: node.x, y1: node.y,
           x2: nextNode.x, y2: nextNode.y,
           delay: (i + j) * 0.3,
-        })
+        }
+        if (l === 0) stage0.push(conn)
+        else if (l === 1) stage1.push(conn)
+        else if (l === 2) stage2.push(conn)
       })
     })
   }
+
+  const connections = [...stage0, ...stage1, ...stage2]
+
+  // Select evenly distributed connections across all stages to keep GPU load low but visual appeal high
+  const activeSignals = [
+    ...stage0.filter((_, idx) => idx % 2 === 0), // 6 signals flowing INPUT -> HIDDEN 1
+    ...stage1.filter((_, idx) => idx % 3 === 0), // 6 signals flowing HIDDEN 1 -> HIDDEN 2
+    ...stage2.filter((_, idx) => idx % 2 === 0), // 4 signals flowing HIDDEN 2 -> OUTPUT
+  ]
   
   return (
     <div className="relative w-full h-[280px] rounded-xl overflow-hidden border"
@@ -62,11 +77,11 @@ export function NeuralNetwork() {
           />
         ))}
         
-        {/* Animated signals */}
-        {connections.slice(0, 10).map((conn, i) => (
+        {/* Animated signals that flow through all layers to output */}
+        {activeSignals.map((conn, i) => (
           <circle key={`signal-${conn.id}`} r="2" fill="var(--jade)">
             <animateMotion
-              dur={`${2.5 + i * 0.4}s`}
+              dur={`${2.0 + i * 0.3}s`}
               repeatCount="indefinite"
               begin={`${conn.delay}s`}
             >

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 interface Particle {
   id: number
@@ -14,20 +14,30 @@ interface Particle {
 }
 
 export function FloatingParticles() {
-  // Use lazy state initializer to generate random particles once on mount on client side
-  const [particles] = useState<Particle[]>(() => {
-    if (typeof window === 'undefined') return []
-    return Array.from({ length: 12 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100, // percentage width
-      y: Math.random() * 80 + 20, // percentage height
-      size: Math.random() * 2 + 1.5, // 1.5px to 3.5px
-      color: Math.random() > 0.5 ? 'var(--jade)' : 'var(--gold)',
-      delay: Math.random() * -8, // negative delay so particles start instantly
-      duration: Math.random() * 6 + 6, // 6s to 12s
-      drift: Math.random() * 40 - 20, // -20px to 20px drift
-    }))
-  })
+  const [mounted, setMounted] = useState(false)
+  const [particles, setParticles] = useState<Particle[]>([])
+
+  useEffect(() => {
+    // Generate particles on the client side after mounting to guarantee perfect hydration matching
+    const handle = requestAnimationFrame(() => {
+      setParticles(
+        Array.from({ length: 12 }).map((_, i) => ({
+          id: i,
+          x: Math.random() * 100, // percentage width
+          y: Math.random() * 80 + 20, // percentage height
+          size: Math.random() * 2 + 1.5, // 1.5px to 3.5px
+          color: Math.random() > 0.5 ? 'var(--jade)' : 'var(--gold)',
+          delay: Math.random() * -8, // negative delay so particles start instantly
+          duration: Math.random() * 6 + 6, // 6s to 12s
+          drift: Math.random() * 40 - 20, // -20px to 20px drift
+        }))
+      )
+      setMounted(true)
+    })
+    return () => cancelAnimationFrame(handle)
+  }, [])
+
+  if (!mounted) return null
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">

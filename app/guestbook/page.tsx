@@ -85,7 +85,20 @@ export default function GuestbookPage() {
       setName('')
       setMessage('')
       
-      toast.success('Message sent! Awaiting approval.', {
+      // Append new message directly to state so it appears instantly
+      const newMsg: GuestbookMessage = {
+        id: data.id ?? Math.random().toString(),
+        sender_name: name.trim(),
+        message: message.trim(),
+        created_at: new Date().toISOString(),
+        is_approved: true,
+        ip_address: '',
+      }
+      setMessages((prev) => [...prev, newMsg])
+      setTotalCount((prev) => prev + 1)
+      setPendingMsg(null)
+      
+      toast.success('Message posted successfully!', {
         style: {
           background: '#161618',
           color: '#EEEEF0',
@@ -196,7 +209,7 @@ export default function GuestbookPage() {
             transition={{ delay: 0.16 }}
             className="text-sm text-[var(--text-secondary)] max-w-md font-light"
           >
-            Your message will appear after approval. 
+            Your message will appear instantly. 
             Say anything — feedback, a hello, or just let me know you were here.
           </motion.p>
         </div>
@@ -394,7 +407,7 @@ export default function GuestbookPage() {
                         </span>
                         <span className="text-[10px] font-mono px-1.5 rounded border text-[var(--text-muted)]"
                               style={{ borderColor: 'var(--b1)', borderStyle: 'dashed' }}>
-                          awaiting approval
+                          sending...
                         </span>
                       </div>
                       <div className="px-4 py-2.5 rounded-tl-sm rounded-tr-2xl

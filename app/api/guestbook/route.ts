@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       .insert({
         sender_name: cleanName,
         message: cleanMessage,
-        is_approved: false,
+        is_approved: true, // auto approve so messages are posted instantly
         ip_address: ip,
       })
       .select()
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
         subject: `📨 New guestbook message from ${cleanName}`,
         html: `
           <div style="font-family: monospace; padding: 20px; background: #0D0D0B; color: #EEEEF0;">
-            <h2 style="color: #3DD68C;">New Guestbook Message</h2>
+            <h2 style="color: #3DD68C;">New Guestbook Message (Auto-Approved)</h2>
             <p><strong>From:</strong> ${cleanName}</p>
             <p><strong>Message:</strong></p>
             <blockquote style="border-left: 3px solid #3DD68C; padding-left: 12px; color: #9696A0;">
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
             <hr style="border-color: #252528;" />
             <a href="https://najinkyou.dev/admin/guestbook" 
                style="color: #3DD68C;">
-              Approve or reject in admin dashboard →
+               Manage in admin dashboard →
             </a>
           </div>
         `
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({
       success: true,
-      message: 'Message sent! Awaiting approval.',
+      message: 'Message posted successfully!',
       id: data.id
     })
     
