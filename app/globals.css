@@ -249,13 +249,8 @@ body::before {
 /* === MOBILE RESPONSIVENESS — MOBILE FIRST TOTAL === */
 
 /* Prevent horizontal overflow GLOBAL */
-html {
-  overflow-x: visible;
-}
-body {
-  overflow-x: clip !important;
-  max-width: 100vw !important;
-  width: 100vw;
+html, body {
+  overflow-x: visible !important;
 }
 
 /* Touch-friendly tap targets */

@@ -76,7 +76,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen overflow-x-hidden bg-[var(--bg-deep)] text-[var(--text-primary)] relative">
+      <body className="min-h-screen overflow-x-clip bg-[var(--bg-deep)] text-[var(--text-primary)] relative">
         <ScrollProgress />
         <CustomCursor />
         <Navbar />
