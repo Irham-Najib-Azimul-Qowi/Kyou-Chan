@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { BrainCircuit, Cpu, Globe, Smartphone } from "lucide-react";
 
@@ -101,112 +101,7 @@ function ProgressIndicatorItem({ i, smoothProgress, length }: { i: number; smoot
   );
 }
 
-function SkillCardMobile({ category, index }: { category: SkillCategory; index: number }) {
-  return (
-    <div
-      className={`
-        relative w-full h-[480px]
-        rounded-2xl overflow-hidden
-        border border-[var(--b1)]
-        bg-gradient-to-br ${category.bgGradient}
-        transition-all duration-300
-      `}
-      style={{
-        boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
-      }}
-    >
-      <div
-        className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
-        style={{ background: `var(--${category.color})` }}
-      />
-
-      <div className="relative p-6 sm:p-8">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 border"
-          style={{
-            background: `var(--${category.color}-dim)`,
-            borderColor: "rgba(255,255,255,0.08)",
-            color: `var(--${category.color})`
-          }}
-        >
-          {category.icon}
-        </div>
-
-        <div
-          className="absolute top-6 right-6 sm:top-8 sm:right-8 text-[9px] font-mono font-bold px-3 py-1 rounded-full border"
-          style={{
-            background: `var(--${category.color}-dim)`,
-            borderColor: "rgba(255,255,255,0.06)",
-            color: `var(--${category.color})`
-          }}
-        >
-          {category.exp}
-        </div>
-
-        <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-1)] leading-tight mt-2 min-h-[56px] flex items-center">
-          {category.label}
-        </h3>
-      </div>
-
-      <div className="mx-6 sm:mx-8 h-[1px] bg-[var(--b1)]" />
-
-      <div className="p-6 sm:p-8 space-y-4">
-        {category.skills.map((skill, i) => (
-          <div key={skill.name} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {skill.devicon ? (
-                <div className="relative w-5 h-5 flex items-center justify-center">
-                  <img
-                    src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${skill.devicon}/${skill.devicon}-original.svg`}
-                    alt={skill.name}
-                    className="w-5 h-5 object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      const fallback = e.currentTarget.parentElement?.querySelector(".emoji-fallback");
-                      if (fallback) fallback.classList.remove("hidden");
-                    }}
-                  />
-                  <span className="emoji-fallback hidden text-base leading-none">{skill.icon}</span>
-                </div>
-              ) : (
-                <span className="text-base leading-none">{skill.icon}</span>
-              )}
-              <span className="text-sm text-[var(--text-2)] font-medium">{skill.name}</span>
-            </div>
-
-            <span
-              className="text-[9px] font-mono font-bold tracking-widest px-2.5 py-0.5 rounded-full border"
-              style={{
-                color: skill.level === "ADVANCED" ? `var(--${category.color})` : "var(--text-3)",
-                borderColor: skill.level === "ADVANCED" ? `var(--${category.color}-glow)` : "var(--b1)",
-                background: skill.level === "ADVANCED" ? `var(--${category.color}-dim)` : "transparent"
-              }}
-            >
-              {skill.level}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <div className="absolute bottom-6 left-6 right-6 sm:left-8 sm:right-8">
-        <div className="h-[1px] bg-[var(--b1)] mb-3" />
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] font-mono text-[var(--text-3)]">
-            {String(index + 1).padStart(2, "0")} / {String(SKILL_CATEGORIES.length).padStart(2, "0")}
-          </span>
-          <span
-            className="text-[10px] font-mono hover:underline"
-            style={{ color: `var(--${category.color})` }}
-          >
-            {category.id.toUpperCase()} ↗
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SkillCardDesktop({ category, index, progress }: { category: SkillCategory; index: number; progress: any }) {
+function SkillCard({ category, index, progress }: { category: SkillCategory; index: number; progress: any }) {
   const cardScale = useTransform(
     progress,
     [
@@ -231,7 +126,7 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
     <motion.div
       style={{ scale: cardScale, opacity: cardOpacity }}
       className={`
-        relative flex-shrink-0 w-[300px] md:w-[380px] h-[520px]
+        relative flex-shrink-0 w-[280px] sm:w-[320px] lg:w-[380px] h-[460px] sm:h-[480px] lg:h-[520px]
         rounded-2xl overflow-hidden
         border border-[var(--b1)]
         bg-gradient-to-br ${category.bgGradient}
@@ -245,9 +140,9 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
         style={{ background: `var(--${category.color})` }}
       />
 
-      <div className="relative p-8">
+      <div className="relative p-6 lg:p-8">
         <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 border"
+          className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center mb-4 border"
           style={{
             background: `var(--${category.color}-dim)`,
             borderColor: "rgba(255,255,255,0.08)",
@@ -258,7 +153,7 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
         </div>
 
         <div
-          className="absolute top-8 right-8 text-[9px] font-mono font-bold px-3 py-1 rounded-full border"
+          className="absolute top-6 lg:top-8 right-6 lg:right-8 text-[9px] font-mono font-bold px-3 py-1 rounded-full border"
           style={{
             background: `var(--${category.color}-dim)`,
             borderColor: "rgba(255,255,255,0.06)",
@@ -268,14 +163,14 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
           {category.exp}
         </div>
 
-        <h3 className="text-2xl font-bold text-[var(--text-1)] leading-tight mt-2 min-h-[64px] flex items-center">
+        <h3 className="text-xl lg:text-2xl font-bold text-[var(--text-1)] leading-tight mt-2 min-h-[56px] lg:min-h-[64px] flex items-center">
           {category.label}
         </h3>
       </div>
 
-      <div className="mx-8 h-[1px] bg-[var(--b1)]" />
+      <div className="mx-6 lg:mx-8 h-[1px] bg-[var(--b1)]" />
 
-      <div className="p-8 space-y-4">
+      <div className="p-6 lg:p-8 space-y-3 lg:space-y-4">
         {category.skills.map((skill, i) => (
           <motion.div
             key={skill.name}
@@ -303,7 +198,7 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
               ) : (
                 <span className="text-base leading-none">{skill.icon}</span>
               )}
-              <span className="text-sm text-[var(--text-2)] font-medium">{skill.name}</span>
+              <span className="text-xs lg:text-sm text-[var(--text-2)] font-medium">{skill.name}</span>
             </div>
 
             <span
@@ -320,7 +215,7 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
         ))}
       </div>
 
-      <div className="absolute bottom-6 left-8 right-8">
+      <div className="absolute bottom-6 left-6 lg:left-8 right-6 lg:right-8">
         <div className="h-[1px] bg-[var(--b1)] mb-3" />
         <div className="flex justify-between items-center">
           <span className="text-[10px] font-mono text-[var(--text-3)]">
@@ -338,69 +233,13 @@ function SkillCardDesktop({ category, index, progress }: { category: SkillCatego
   );
 }
 
-function SkillsSectionMobile() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  const handleScroll = () => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const scrollLeft = container.scrollLeft;
-    const width = container.offsetWidth;
-    const newIndex = Math.round(scrollLeft / (width * 0.85));
-    setActiveIndex(Math.min(Math.max(newIndex, 0), SKILL_CATEGORIES.length - 1));
-  };
-
-  const scrollTo = (index: number) => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const width = container.offsetWidth;
-    container.scrollTo({
-      left: index * width * 0.85,
-      behavior: "smooth"
-    });
-    setActiveIndex(index);
-  };
-
-  return (
-    <div className="w-full">
-      <div 
-        ref={scrollContainerRef}
-        onScroll={handleScroll}
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-5 py-4 scrollbar-none"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {SKILL_CATEGORIES.map((category, i) => (
-          <div key={category.id} className="flex-shrink-0 w-[82vw] max-w-[320px] snap-center">
-            <SkillCardMobile category={category} index={i} />
-          </div>
-        ))}
-      </div>
-      
-      {/* Dot indicators */}
-      <div className="flex justify-center gap-2.5 mt-6 select-none">
-        {SKILL_CATEGORIES.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => scrollTo(i)}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-              activeIndex === i ? "w-4 bg-[var(--jade)]" : "bg-[var(--text-3)]"
-            }`}
-            aria-label={`Go to skill group ${i + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function HorizontalSkills() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Track scroll dalam container yang di-pin
+  // Track scroll dalam container yang di-pin secara penuh (dari start viewport ke end viewport)
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end end"]
   });
 
   // Spring physics untuk smooth movement
@@ -413,10 +252,19 @@ export function HorizontalSkills() {
   // Translate cards ke kiri secara dinamis berdasarkan lebar viewport riil
   const x = useTransform(smoothProgress, (latest) => {
     if (typeof window === "undefined") return 0;
-    const totalWidth = 1616; // 4 cards of 380px + 3 gaps of 32px
+    
+    // Deteksi jika perangkat berukuran mobile (< 1024px)
+    const isMobile = window.innerWidth < 1024;
+    
+    const cardWidth = isMobile ? (window.innerWidth < 640 ? 280 : 320) : 380;
+    const gap = isMobile ? (window.innerWidth < 640 ? 16 : 24) : 32;
+    const padding = isMobile ? (window.innerWidth < 640 ? 32 : 48) : 128; // Padding px-4 (16px*2), px-6 (24px*2), px-16 (64px*2)
+    
+    const totalWidth = 4 * cardWidth + 3 * gap;
     const visibleWidth = window.innerWidth;
-    const overflow = totalWidth - (visibleWidth - 128); // 128px padding (px-16)
+    const overflow = totalWidth - (visibleWidth - padding);
     const maxScroll = Math.max(0, overflow);
+    
     return -latest * maxScroll;
   });
 
@@ -439,12 +287,12 @@ export function HorizontalSkills() {
         }}
       />
 
-      {/* DESKTOP PINNED SCROLL */}
-      <div ref={containerRef} style={{ height: "350vh" }} className="hidden lg:block relative w-full">
+      {/* PINNED STICKY SCROLLER (Works on Desktop & Mobile) */}
+      <div ref={containerRef} style={{ height: "350vh" }} className="relative w-full">
         <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
           
           {/* Header section */}
-          <div className="mx-auto max-w-6xl w-full px-16 mb-12 relative z-10">
+          <div className="mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-16 mb-8 lg:mb-12 relative z-10">
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -459,7 +307,7 @@ export function HorizontalSkills() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
               style={{ fontFamily: '"Cormorant Garamond", serif' }}
-              className="text-5xl font-light text-[var(--text-1)] mt-2"
+              className="text-4xl lg:text-5xl font-light text-[var(--text-1)] mt-2"
             >
               Skills & tools
             </motion.h2>
@@ -478,7 +326,7 @@ export function HorizontalSkills() {
             
             {/* Scroll hint */}
             <motion.p
-              className="text-xs font-mono text-[var(--text-3)] mt-4"
+              className="text-xs font-mono text-[var(--text-3)] mt-4 animate-pulse"
               style={{ opacity: hintOpacity }}
             >
               ↓ scroll to explore capabilities
@@ -486,13 +334,13 @@ export function HorizontalSkills() {
           </div>
           
           {/* Cards container — bergerak horizontal */}
-          <div className="relative flex items-center px-16 w-full z-10">
+          <div className="relative flex items-center px-4 sm:px-6 lg:px-16 w-full z-10">
             <motion.div
               style={{ x }}
-              className="flex gap-8"
+              className="flex gap-4 sm:gap-6 lg:gap-8"
             >
               {SKILL_CATEGORIES.map((category, i) => (
-                <SkillCardDesktop 
+                <SkillCard 
                   key={category.id} 
                   category={category} 
                   index={i} 
@@ -504,29 +352,6 @@ export function HorizontalSkills() {
           
         </div>
       </div>
-
-      {/* MOBILE SWIPEABLE CAROUSEL */}
-      <div className="lg:hidden relative w-full py-16 px-5 sm:px-8 z-10">
-        {/* Header section */}
-        <div className="mb-10 text-left">
-          <p className="text-[10px] font-mono text-[var(--jade)] tracking-widest uppercase font-bold">
-            Capabilities
-          </p>
-          <h2
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
-            className="text-4xl font-light text-[var(--text-1)] mt-2"
-          >
-            Skills & tools
-          </h2>
-          <p className="text-xs font-mono text-[var(--text-3)] mt-2">
-            ← swipe left/right to view categories →
-          </p>
-        </div>
-
-        {/* Swipeable container */}
-        <SkillsSectionMobile />
-      </div>
-
     </section>
   );
 }
