@@ -1,0 +1,1 @@
+Najin Kyou works with Python, RAG, LangChain, Gemini, Pinecone, FastAPI, Supabase, Laravel, Next.js, React, Gin, Kotlin XML, Jetpack Compose, TensorFlow Lite, MediaPipe, and data pipelines.

@@ -1,0 +1,4 @@
+StuntSense is an AI-powered Android app for toddler stunting screening using computer vision, Kotlin, Jetpack Compose, MobileNetV3, MediaPipe, TFLite, and Firebase.
+RAG System is a Retrieval-Augmented Generation pipeline using Python, LangChain, Gemini, Pinecone, and FastAPI.
+Ticket Ordering System is a web-based ticket ordering platform for a real client using Laravel, Next.js, MySQL, and Midtrans.
+Stricter is a productivity RPG Android app with app-blocking, focus sessions, Room, WorkManager, and Jetpack Compose.

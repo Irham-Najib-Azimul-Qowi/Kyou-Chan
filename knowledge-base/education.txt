@@ -1,0 +1,1 @@
+Irham studies Software Engineering at Politeknik Negeri Madiun. His journey started with programming fundamentals and web basics, then grew into AI applications, RAG pipelines, mobile ML, and client projects.
