@@ -136,7 +136,7 @@ function AboutLeftColumn() {
         </div>
         <Link 
           href="/guestbook"
-          className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--jade)] border border-[var(--jade-glow)] px-3.5 py-1.5 rounded-full hover:bg-[var(--jade)]/10 transition-colors select-none"
+          className="inline-flex items-center justify-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[var(--jade)] border border-[var(--jade-glow)] px-3.5 py-1.5 rounded-full hover:bg-[var(--jade)]/10 transition-colors select-none whitespace-nowrap"
         >
           Say hello →
         </Link>

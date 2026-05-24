@@ -1,518 +1,503 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send, AlertCircle, MessageSquare } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+'use client'
 
-type GuestbookMessage = {
-  id: string;
-  sender_name: string;
-  message: string;
-  is_approved?: boolean;
-  created_at: string;
-};
-
-type PendingMessage = {
-  name: string;
-  message: string;
-};
-
-// Date formatter
-const formatDateIndo = (dateStr?: string) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  const day = d.getDate();
-  const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-  const month = months[d.getMonth()];
-  const year = d.getFullYear();
-  return `${day} ${month} ${year}`;
-};
-
-// Check if two date strings represent different calendar days
-const isDifferentDay = (d1Str?: string, d2Str?: string) => {
-  if (!d1Str || !d2Str) return true;
-  const d1 = new Date(d1Str);
-  const d2 = new Date(d2Str);
-  return d1.toDateString() !== d2.toDateString();
-};
-
-const hashStringToIndex = (str: string, max: number) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash) % max;
-};
-
-const formatRelativeTime = (dateStr?: string) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHr = Math.floor(diffMin / 60);
-  
-  if (diffSec < 60) return "just now";
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffHr < 24) return `${diffHr}h ago`;
-  
-  const day = date.getDate();
-  const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-  return `${day} ${months[date.getMonth()]}`;
-};
+import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Send, Loader2 } from 'lucide-react'
+import { GuestbookMessage } from '@/lib/supabase/types'
+import toast from 'react-hot-toast'
 
 export default function GuestbookPage() {
-  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [pendingMessage, setPendingMessage] = useState<PendingMessage | null>(null);
-  const [error, setError] = useState("");
-  const [isShake, setIsShake] = useState(false);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  // Fetch approved messages on load
-  const fetchMessages = async () => {
-    try {
-      const res = await fetch("/api/guestbook");
-      if (!res.ok) throw new Error("Failed to load messages");
-      const data = await res.json();
-      
-      // Reverse messages to chronological order and limit to latest 50
-      const sorted = Array.isArray(data) 
-        ? [...data].reverse().slice(-50) 
-        : [];
-      
-      setMessages(sorted);
-    } catch (err) {
-      toast.error("Failed to load signals.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const [messages, setMessages] = useState<GuestbookMessage[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [name, setName] = useState('')
+  const [message, setMessage] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [pendingMsg, setPendingMsg] = useState<{name: string; message: string} | null>(null)
+  const [error, setError] = useState('')
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  
+  // Fetch messages
   useEffect(() => {
-    fetchMessages();
-  }, []);
-
-  // Auto scroll to bottom
-  const scrollToBottom = (behavior: "smooth" | "auto" = "smooth") => {
-    bottomRef.current?.scrollIntoView({ behavior });
-  };
-
+    async function fetchMessages() {
+      try {
+        const res = await fetch('/api/guestbook')
+        const data = await res.json()
+        setMessages(data.messages ?? [])
+        setTotalCount(data.total ?? 0)
+      } catch (err) {
+        toast.error('Failed to load messages')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchMessages()
+  }, [])
+  
+  // Auto scroll ke bawah saat messages load
   useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => scrollToBottom("auto"), 100);
-      return () => clearTimeout(timer);
+    if (!loading && messages.length > 0) {
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 300)
     }
-  }, [loading, messages.length, pendingMessage]);
-
-  const handleSend = async () => {
-    setError("");
-    setIsShake(false);
-
-    if (!name.trim()) {
-      setError("Sender name is required.");
-      setIsShake(true);
-      return;
-    }
+  }, [loading, messages.length])
+  
+  // Submit
+  async function handleSend() {
+    setError('')
+    
     if (name.trim().length < 2) {
-      setError("Name must be at least 2 characters.");
-      setIsShake(true);
-      return;
-    }
-    if (!message.trim()) {
-      setError("Message content is required.");
-      setIsShake(true);
-      return;
+      setError('Name must be at least 2 characters')
+      return
     }
     if (message.trim().length < 5) {
-      setError("Message must be at least 5 characters.");
-      setIsShake(true);
-      return;
+      setError('Message must be at least 5 characters')
+      return
     }
-
-    setIsSubmitting(true);
-    const tempPending = { name: name.trim(), message: message.trim() };
-    setPendingMessage(tempPending);
     
-    const savedMsg = message;
-    setMessage("");
-
+    setSubmitting(true)
+    
+    // Optimistic: tampilkan pesan pending
+    setPendingMsg({ name: name.trim(), message: message.trim() })
+    
+    // Scroll ke bawah
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+    
     try {
-      const res = await fetch("/api/guestbook", {
-        method: "POST",
-        body: JSON.stringify({ sender_name: tempPending.name, message: tempPending.message }),
-        headers: { "Content-Type": "application/json" }
-      });
-
-      if (res.ok) {
-        toast.success("✓ Signal sent! Awaiting approval.", {
-          duration: 4000,
-          style: {
-            background: "var(--surface)",
-            color: "var(--jade)",
-            border: "1px solid var(--jade-glow)"
-          }
-        });
-      } else {
-        throw new Error("Transmission failed");
-      }
-    } catch (err) {
-      setError("Transmission error. Please try again.");
-      setIsShake(true);
-      setMessage(savedMsg);
-      setPendingMessage(null);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <main className="min-h-screen bg-[var(--bg-deep)] text-[var(--text-primary)]">
-      <Toaster position="top-center" />
+      const res = await fetch('/api/guestbook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_name: name.trim(),
+          message: message.trim(),
+        }),
+      })
       
-      {/* 3.1 Background guestbook page */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 50% at 20% 80%, rgba(61,214,140,0.04) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 80% 20%, rgba(129,140,248,0.04) 0%, transparent 60%),
-            var(--bg-deep)
-          `
-        }}
-      />
-
-      {/* 3.2 Page Header — Full Width, Atmospheric */}
-      <section className="relative pt-32 pb-14 px-8 md:px-16 overflow-hidden border-b border-[var(--b1)] z-10">
+      const data = await res.json()
+      
+      if (!res.ok) {
+        throw new Error(data.error ?? 'Failed to send')
+      }
+      
+      // Clear form
+      setName('')
+      setMessage('')
+      
+      toast.success('Message sent! Awaiting approval.', {
+        style: {
+          background: '#161618',
+          color: '#EEEEF0',
+          border: '1px solid rgba(61,214,140,0.3)',
+          borderLeft: '3px solid #3DD68C',
+          borderRadius: '12px',
+          fontFamily: 'monospace',
+          fontSize: '13px',
+        },
+        icon: '✓',
+        duration: 4000,
+      })
+      
+    } catch (err: any) {
+      setPendingMsg(null)
+      setError(err.message ?? 'Failed to send message')
+      toast.error(err.message ?? 'Failed to send message')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  
+  // Hash nama ke warna accent
+  function getAccentColor(name: string): 'jade' | 'indigo' | 'gold' {
+    const colors = ['jade', 'indigo', 'gold'] as const
+    let hash = 0
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return colors[Math.abs(hash) % 3]
+  }
+  
+  const CSS_COLORS = {
+    jade:   { text: '#3DD68C', border: 'rgba(61,214,140,0.2)',  bg: 'rgba(61,214,140,0.08)'  },
+    indigo: { text: '#818CF8', border: 'rgba(129,140,248,0.2)', bg: 'rgba(129,140,248,0.08)' },
+    gold:   { text: '#F59E0B', border: 'rgba(245,158,11,0.2)',  bg: 'rgba(245,158,11,0.08)'  },
+  }
+  
+  // Group messages by date
+  function groupByDate(msgs: GuestbookMessage[]) {
+    const groups: { date: string; messages: GuestbookMessage[] }[] = []
+    let currentDate = ''
+    
+    msgs.forEach(msg => {
+      const date = new Date(msg.created_at).toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      })
+      if (date !== currentDate) {
+        currentDate = date
+        groups.push({ date, messages: [msg] })
+      } else {
+        groups[groups.length - 1].messages.push(msg)
+      }
+    })
+    
+    return groups
+  }
+  
+  const grouped = groupByDate(messages)
+  
+  return (
+    <main className="min-h-screen" style={{ background: 'var(--deep)' }}>
+      
+      {/* Page Header */}
+      <section className="relative pt-36 pb-12 px-5 sm:px-8 lg:px-16 overflow-hidden">
+        {/* Background blobs */}
+        <div className="absolute top-20 left-0 w-96 h-96 rounded-full blur-3xl opacity-[0.04]"
+             style={{ background: 'var(--jade)' }} />
+        <div className="absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl opacity-[0.03]"
+             style={{ background: 'var(--indigo)' }} />
         
-        {/* Background wave pattern SVG moving slowly */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.svg
-            className="absolute bottom-0 left-0 right-0 opacity-[0.035]"
-            viewBox="0 0 1440 200"
-            animate={{ x: [0, -120, 0] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          >
-            <path 
-              d="M0,100 C240,0 480,200 720,100 C960,0 1200,200 1440,100 L1440,200 L0,200 Z"
-              fill="var(--jade)" 
-            />
-          </motion.svg>
+        {/* Kanji watermark */}
+        <div className="absolute right-8 top-16 text-[10rem] font-serif font-black
+                        opacity-[0.025] text-jade select-none pointer-events-none
+                        leading-none hidden lg:block">
+          言
         </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto flex justify-between items-end">
-          <div className="space-y-4">
-            {/* Kanji watermark */}
-            <div className="absolute top-0 right-8 text-[11rem] font-serif opacity-[0.035] text-[var(--jade)] select-none pointer-events-none leading-none">
-              言
-            </div>
-            
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="inline-flex items-center gap-2 text-[10px] font-mono border border-[var(--jade-glow)] px-3.5 py-1.5 rounded-full text-[var(--jade)] bg-[var(--jade-dim)]"
-            >
-              <motion.span
-                className="w-1.5 h-1.5 rounded-full bg-[var(--jade)]"
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              />
-              LIVE TRANSMISSIONS · {messages.length + (pendingMessage ? 1 : 0)} SIGNALS RECEIVED
-            </motion.div>
-            
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{ fontFamily: '"Cormorant Garamond", serif' }}
-              className="text-5xl md:text-6xl font-light text-[var(--text-1)] leading-tight"
-            >
-              Leave a mark.<br />
-              <span className="italic text-[var(--text-2)] font-light">Say hello.</span>
-            </motion.h1>
-            
-            <p className="text-xs md:text-sm text-[var(--text-2)] max-w-md font-light">
-              Your message will appear here after approval. Say anything — feedback, a hello, or just let me know you were here.
-            </p>
-          </div>
+        
+        <div className="relative z-10 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="inline-flex items-center gap-2 text-xs font-mono text-[var(--jade)]
+                       border border-[var(--jade-glow)] px-3 py-1.5 rounded-full mb-6"
+          >
+            <motion.span
+              className="w-1.5 h-1.5 rounded-full bg-[var(--jade)]"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+            LIVE TRANSMISSIONS · {totalCount} SIGNALS RECEIVED
+          </motion.div>
+          
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="text-5xl sm:text-6xl font-light text-[var(--text-primary)] mb-4"
+            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+          >
+            Leave a mark.<br />
+            <span className="italic text-[var(--text-secondary)]">Say hello.</span>
+          </motion.h1>
+          
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.16 }}
+            className="text-sm text-[var(--text-secondary)] max-w-md font-light"
+          >
+            Your message will appear after approval. 
+            Say anything — feedback, a hello, or just let me know you were here.
+          </motion.p>
         </div>
       </section>
-
-      {/* 3.3 Main Chat Container — Full Height visual */}
-      <section className="px-6 md:px-16 py-12 relative z-10 max-w-6xl mx-auto">
-        
-        {/* Outer glow container */}
-        <div className="relative">
-          <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-[var(--jade)]/5 via-transparent to-[var(--indigo)]/5 blur-2xl pointer-events-none" />
+      
+      {/* Chat Container */}
+      <section className="px-5 sm:px-8 lg:px-16 pb-20">
+        <div className="max-w-4xl mx-auto">
           
-          <div 
-            className="relative rounded-2xl overflow-hidden border border-[var(--b1)] bg-[var(--surface)]/90 backdrop-blur-sm flex flex-col"
-            style={{ height: "calc(100vh - 220px)" }}
-          >
+          {/* Outer glow */}
+          <div className="relative">
+            <div className="absolute -inset-px rounded-2xl blur-xl opacity-50 pointer-events-none"
+                 style={{ background: 'linear-gradient(to bottom right, rgba(61,214,140,0.1), transparent, rgba(129,140,248,0.1))' }} />
             
-            {/* Header bar */}
-            <div className="flex items-center justify-between px-6 py-4 bg-[var(--bg-raised)] border-b border-[var(--b1)] flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[var(--jade-dim)] border border-[var(--jade-glow)] flex items-center justify-center text-[var(--jade)] text-xs font-serif shadow-[0_0_8px_rgba(61,214,140,0.15)]">
-                  言
-                </div>
-                <div>
-                  <p className="text-xs md:text-sm font-semibold text-[var(--text-1)]">Console Guestbook</p>
-                  <p className="text-[10px] font-mono text-[var(--text-3)]">
-                    {messages.length} approved messages · showing last 50
-                  </p>
-                </div>
-              </div>
+            <div className="relative rounded-2xl overflow-hidden border"
+                 style={{
+                   borderColor: 'var(--b1)',
+                   background: 'var(--surface)',
+                   height: 'calc(100vh - 180px)',
+                   minHeight: '500px',
+                   display: 'flex',
+                   flexDirection: 'column'
+                 }}>
               
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 border border-[var(--jade-glow)] bg-[var(--jade-dim)] px-3 py-1.5 rounded-full">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 sm:px-6 py-4 flex-shrink-0"
+                   style={{ background: 'var(--raised)', borderBottom: '1px solid var(--b1)' }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center
+                                  text-[var(--jade)] text-sm font-serif border"
+                       style={{ background: 'var(--jade-dim)', borderColor: 'var(--jade-glow)' }}>
+                    言
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">Guestbook</p>
+                    <p className="text-[11px] font-mono text-[var(--text-muted)]">
+                      {messages.length} messages · showing last 50
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border"
+                     style={{ background: 'var(--jade-dim)', borderColor: 'var(--jade-glow)' }}>
                   <motion.span
-                    className="w-1.5 h-1.5 rounded-full bg-[var(--jade)]"
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ background: 'var(--jade)' }}
                     animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
-                  <span className="text-[9px] font-mono text-[var(--jade)] uppercase tracking-wider font-semibold">LIVE ACTIVITY</span>
+                  <span className="text-[10px] font-mono text-[var(--jade)]">LIVE</span>
                 </div>
               </div>
-            </div>
-            
-            {/* Messages scroll area */}
-            <div
-              ref={scrollRef}
-              className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[var(--jade)]/10 bg-[#070709]"
-            >
-              {loading ? (
-                /* Shimmer loading layout */
-                <div className="space-y-6">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="flex gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 shrink-0 skeleton-shimmer" />
-                      <div className="space-y-2 flex-1 max-w-[60%]">
-                        <div className="h-3 w-24 bg-white/5 rounded skeleton-shimmer" />
-                        <div className="h-10 bg-white/5 rounded-xl skeleton-shimmer" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : messages.length === 0 && !pendingMessage ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center h-full gap-6 text-[var(--text-3)]"
-                >
-                  <motion.div
-                    animate={{ opacity: [0.03, 0.08, 0.03] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                    className="text-[6rem] font-serif text-[var(--jade)] select-none"
-                  >
-                    言
-                  </motion.div>
-                  <div className="text-center space-y-1">
-                    <p className="text-[var(--text-2)] font-medium">No signals transmitted yet.</p>
-                    <p className="text-xs">Be the first to establish connection.</p>
-                  </div>
-                  {/* Radar ripple effects */}
-                  <div className="relative w-14 h-14 mt-2">
-                    {[0, 1, 2].map((i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute inset-0 rounded-full border border-[var(--jade)]/30 pointer-events-none"
-                        animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
-                        transition={{ duration: 2, delay: i * 0.6, repeat: Infinity }}
-                      />
-                    ))}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-3.5 h-3.5 rounded-full bg-[var(--jade)] shadow-[0_0_8px_var(--jade)]" />
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <div className="space-y-4">
-                  {messages.map((msg, index) => {
-                    const prevMsg = index > 0 ? messages[index - 1] : undefined;
-                    const showSeparator = isDifferentDay(msg.created_at, prevMsg?.created_at);
-                    
-                    const accentColors = ["jade", "indigo", "gold"];
-                    const color = accentColors[hashStringToIndex(msg.sender_name, 3)];
-                    
-                    const initials = msg.sender_name
-                      .split(" ")
-                      .map(n => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .substring(0, 2);
-
-                    const isOwner = 
-                      msg.sender_name.toLowerCase() === "najin kyou" || 
-                      msg.sender_name.toLowerCase() === "irham najib" || 
-                      msg.sender_name.toLowerCase() === "admin";
-
-                    return (
-                      <div key={msg.id} className="space-y-4">
-                        {showSeparator && (
-                          <div 
-                            style={{ fontFamily: '"JetBrains Mono", monospace' }}
-                            className="text-[9px] text-[var(--text-3)] flex items-center justify-center gap-4 py-2 select-none uppercase tracking-wider font-semibold"
-                          >
-                            <span className="h-[1px] bg-[var(--b1)] flex-grow animate-pulse" />
-                            <span>{formatDateIndo(msg.created_at)}</span>
-                            <span className="h-[1px] bg-[var(--b1)] flex-grow animate-pulse" />
-                          </div>
-                        )}
-
-                        <motion.div
-                          initial={{ opacity: 0, y: 16, scale: 0.98 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          transition={{ delay: Math.min(index * 0.02, 0.25), type: "spring", stiffness: 220 }}
-                          className={`flex gap-3 py-1.5 ${isOwner ? "flex-row-reverse" : "justify-start"}`}
-                        >
-                          {/* Colored letter avatar */}
-                          <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold shadow-md mt-0.5 select-none"
-                            style={{
-                              background: `var(--${color}-dim)`,
-                              border: `1px solid var(--${color}-glow)`,
-                              color: `var(--${color})`
-                            }}
-                          >
-                            {initials}
-                          </div>
-
-                          <div className={`max-w-[75%] space-y-1 ${isOwner ? "text-right" : "text-left"}`}>
-                            {/* Header details */}
-                            <div className="flex items-baseline gap-2 text-[10px] text-[var(--text-3)] px-1">
-                              <span className={`font-semibold ${isOwner ? "text-[var(--jade)]" : "text-[var(--text-2)]"}`}>
-                                {msg.sender_name}
-                              </span>
-                              <span className="text-[9px] font-mono">
-                                {formatRelativeTime(msg.created_at)}
-                              </span>
-                            </div>
-
-                            {/* Message bubble */}
-                            <div
-                              className={`px-4 py-2.5 rounded-2xl text-xs md:text-sm leading-relaxed border ${
-                                isOwner
-                                  ? "bg-[var(--jade-dim)] border-[rgba(61,214,140,0.3)] text-[var(--text-1)] rounded-tr-sm"
-                                  : "bg-[var(--surface)] border-[var(--b1)] text-[var(--text-2)] rounded-tl-sm hover:border-[var(--b2)] transition-colors"
-                              }`}
-                            >
-                              <p className="font-light whitespace-pre-wrap">{msg.message}</p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      </div>
-                    );
-                  })}
-
-                  {/* Pending message (optimistic UI) */}
-                  {pendingMessage && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 0.5, y: 0 }}
-                      className="flex gap-3 py-1.5"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-[var(--jade-dim)] border border-dashed border-[var(--jade-glow)] flex items-center justify-center text-[var(--jade)] text-xs font-bold shrink-0">
-                        {pendingMessage.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex-grow max-w-[75%] space-y-1">
-                        <div className="flex items-center gap-2 text-[10px] text-[var(--text-3)] px-1">
-                          <span className="font-semibold text-[var(--text-2)]">
-                            {pendingMessage.name}
-                          </span>
-                          <span className="text-[9px] font-mono border border-dashed border-[var(--text-3)] px-1.5 rounded uppercase font-semibold scale-90">
-                            awaiting approval
-                          </span>
-                        </div>
-                        <div className="px-4 py-2.5 rounded-2xl rounded-tl-sm border border-dashed border-[var(--b2)] bg-[var(--bg-raised)]/50 text-xs md:text-sm text-[var(--text-3)] leading-relaxed animate-pulse">
-                          {pendingMessage.message}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              )}
-              <div ref={bottomRef} />
-            </div>
-            
-            {/* Input bar — sticky bottom */}
-            <div className="border-t border-[var(--b1)] px-6 py-4 bg-[var(--bg-raised)] flex-shrink-0">
-              <motion.div 
-                animate={{ x: isShake ? [-8, 8, -6, 6, -4, 4, 0] : 0 }}
-                transition={{ duration: 0.4 }}
-                className="flex flex-col md:flex-row gap-3 items-center"
-              >
-                {/* Name input */}
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
-                  maxLength={40}
-                  className="w-full md:w-36 flex-shrink-0 bg-[var(--bg-overlay)] border border-[var(--b1)] rounded-xl px-4 py-3 text-xs text-[var(--text-1)] placeholder-[var(--text-3)] outline-none focus:border-[var(--jade)] transition-colors"
-                />
-                
-                {/* Message input */}
-                <div className="flex-grow w-full relative">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                    placeholder="Say hello, share feedback..."
-                    className="w-full bg-[var(--bg-overlay)] border border-[var(--b1)] rounded-xl px-4 py-3 pr-16 text-xs text-[var(--text-1)] placeholder-[var(--text-3)] outline-none focus:border-[var(--jade)] transition-colors"
-                  />
-                  {/* Character counter — muncul saat > 400 */}
-                  {message.length > 400 && (
-                    <span className={`absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono ${message.length > 480 ? "text-[var(--maple)] font-semibold" : "text-[var(--text-3)]"}`}>
-                      {message.length} / 500
-                    </span>
-                  )}
-                </div>
-                
-                {/* Send button */}
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleSend}
-                  disabled={!name.trim() || !message.trim() || isSubmitting}
-                  className="w-full md:w-12 h-12 rounded-xl bg-[var(--jade)] hover:bg-[#5ae6b5] text-[var(--void)] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all flex-shrink-0 cursor-pointer shadow-[0_0_12px_rgba(61,214,140,0.2)]"
-                >
-                  {isSubmitting ? (
-                    <motion.div
-                      className="w-4 h-4 border-2 border-[var(--void)] border-t-transparent rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                    />
-                  ) : (
-                    <Send className="w-4 h-4 text-[var(--void)]" />
-                  )}
-                </motion.button>
-              </motion.div>
               
-              {/* Validation error */}
-              <AnimatePresence>
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="text-[10px] text-[var(--maple)] mt-2.5 font-mono flex items-center gap-1.5"
-                  >
-                    <AlertCircle className="w-3.5 h-3.5" /> {error}
-                  </motion.p>
+              {/* Messages area */}
+              <div ref={scrollRef}
+                   className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-1"
+                   style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(61,214,140,0.2) transparent' }}>
+                
+                {/* Loading skeleton */}
+                {loading && (
+                  <div className="space-y-4 pt-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="flex gap-3 animate-pulse">
+                        <div className="w-8 h-8 rounded-lg flex-shrink-0"
+                             style={{ background: 'var(--raised)' }} />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3 w-24 rounded" style={{ background: 'var(--raised)' }} />
+                          <div className="h-10 rounded-xl" style={{ background: 'var(--raised)' }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
-              </AnimatePresence>
+                
+                {/* Empty state */}
+                {!loading && messages.length === 0 && !pendingMsg && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center justify-center h-full gap-6 py-20"
+                  >
+                    <motion.div
+                      animate={{ opacity: [0.03, 0.08, 0.03] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="text-[5rem] font-serif select-none"
+                      style={{ color: 'var(--jade)' }}
+                    >
+                      言
+                    </motion.div>
+                    <div className="text-center">
+                      <p className="font-medium mb-1 text-[var(--text-secondary)]">
+                        No transmissions yet.
+                      </p>
+                      <p className="text-sm text-[var(--text-muted)]">
+                        Be the first to leave a signal.
+                      </p>
+                    </div>
+                    {/* Radar */}
+                    <div className="relative w-14 h-14">
+                      {[0, 1, 2].map((i) => (
+                        <motion.div key={i}
+                          className="absolute inset-0 rounded-full border"
+                          style={{ borderColor: 'rgba(61,214,140,0.3)' }}
+                          animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
+                          transition={{ duration: 2, delay: i * 0.6, repeat: Infinity }}
+                        />
+                      ))}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-3 h-3 rounded-full" style={{ background: 'var(--jade)' }} />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                
+                {/* Messages grouped by date */}
+                {!loading && grouped.map((group) => (
+                  <div key={group.date}>
+                    {/* Date separator */}
+                    <div className="flex items-center gap-3 py-4">
+                      <div className="flex-1 h-px" style={{ background: 'var(--b1)' }} />
+                      <span className="text-[11px] font-mono px-3 py-1 rounded-full border text-[var(--text-muted)]"
+                            style={{ borderColor: 'var(--b1)' }}>
+                        {group.date}
+                      </span>
+                      <div className="flex-1 h-px" style={{ background: 'var(--b1)' }} />
+                    </div>
+                    
+                    {/* Messages */}
+                    <AnimatePresence>
+                      {group.messages.map((msg, i) => {
+                        const color = getAccentColor(msg.sender_name)
+                        const css = CSS_COLORS[color]
+                        
+                        return (
+                          <motion.div
+                            key={msg.id}
+                            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ delay: Math.min(i * 0.03, 0.2), type: 'spring', stiffness: 200 }}
+                            className="flex gap-3 py-1.5 group"
+                          >
+                            {/* Avatar */}
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center
+                                            flex-shrink-0 text-sm font-bold mt-0.5"
+                                 style={{ background: css.bg, border: `1px solid ${css.border}`, color: css.text }}>
+                              {msg.sender_name.charAt(0).toUpperCase()}
+                            </div>
+                            
+                            {/* Content */}
+                            <div className="flex-1 max-w-[75%]">
+                              <div className="flex items-baseline gap-2 mb-1">
+                                <span className="text-sm font-semibold text-[var(--text-primary)]">
+                                  {msg.sender_name}
+                                </span>
+                                <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                                  {new Date(msg.created_at).toLocaleTimeString('id-ID', {
+                                    hour: '2-digit', minute: '2-digit'
+                                  })}
+                                </span>
+                              </div>
+                              <div className="px-4 py-2.5 rounded-tl-sm rounded-tr-2xl
+                                              rounded-bl-2xl rounded-br-2xl text-sm leading-relaxed
+                                              transition-all duration-200 group-hover:border-opacity-50"
+                                   style={{
+                                     background: 'var(--raised)',
+                                     border: `1px solid var(--b1)`,
+                                     color: 'var(--text-2)'
+                                   }}>
+                                {msg.message}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )
+                      })}
+                    </AnimatePresence>
+                  </div>
+                ))}
+                
+                {/* Pending message (optimistic) */}
+                {pendingMsg && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 0.5, y: 0 }}
+                    className="flex gap-3 py-1.5"
+                  >
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center
+                                    flex-shrink-0 text-sm font-bold mt-0.5 text-[var(--jade)]"
+                         style={{ background: 'var(--jade-dim)', border: '1px solid var(--jade-glow)' }}>
+                      {pendingMsg.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1 max-w-[75%]">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-sm font-semibold text-[var(--text-secondary)]">
+                          {pendingMsg.name}
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 rounded border text-[var(--text-muted)]"
+                              style={{ borderColor: 'var(--b1)', borderStyle: 'dashed' }}>
+                          awaiting approval
+                        </span>
+                      </div>
+                      <div className="px-4 py-2.5 rounded-tl-sm rounded-tr-2xl
+                                      rounded-bl-2xl rounded-br-2xl text-sm text-[var(--text-muted)]"
+                           style={{ background: 'var(--raised)', border: '1px dashed var(--b2)' }}>
+                        {pendingMsg.message}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                
+                <div ref={bottomRef} />
+              </div>
+              
+              {/* Input area — sticky bottom */}
+              <div className="flex-shrink-0 px-5 sm:px-6 py-4"
+                   style={{ background: 'var(--raised)', borderTop: '1px solid var(--b1)' }}>
+                
+                {/* Mobile: stack vertikal, Desktop: baris horizontal */}
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  
+                  {/* Name input */}
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your name"
+                    maxLength={50}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                    className="sm:w-36 flex-shrink-0 px-4 py-3 rounded-xl text-sm
+                               outline-none transition-all duration-200"
+                    style={{
+                      background: 'var(--overlay)',
+                      border: '1px solid var(--b1)',
+                      color: 'var(--text-1)',
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = 'var(--jade)'}
+                    onBlur={(e) => e.target.style.borderColor = 'var(--b1)'}
+                  />
+                  
+                  {/* Message input */}
+                  <div className="flex-1 relative">
+                    <input
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value.slice(0, 500))}
+                      placeholder="Say hello, share feedback..."
+                      onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                      className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
+                      style={{
+                        paddingRight: message.length > 400 ? '52px' : '16px',
+                        background: 'var(--overlay)',
+                        border: '1px solid var(--b1)',
+                        color: 'var(--text-1)',
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = 'var(--jade)'}
+                      onBlur={(e) => e.target.style.borderColor = 'var(--b1)'}
+                    />
+                    {message.length > 400 && (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono"
+                            style={{ color: message.length > 480 ? 'var(--maple)' : 'var(--text-3)' }}>
+                        {message.length}/500
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Send button */}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleSend}
+                    disabled={submitting || !name.trim() || !message.trim()}
+                    className="w-full sm:w-12 h-12 rounded-xl flex items-center justify-center
+                               gap-2 sm:gap-0 font-mono text-xs font-bold transition-colors cursor-pointer"
+                    style={{ background: 'var(--jade)', color: 'var(--void)' }}
+                  >
+                    {submitting
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <>
+                          <Send className="w-4 h-4" />
+                          <span className="sm:hidden ml-2">SEND</span>
+                        </>
+                    }
+                  </motion.button>
+                </div>
+                
+                {/* Error */}
+                <AnimatePresence>
+                  {error && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="text-xs font-mono mt-2 text-[var(--maple)]"
+                    >
+                      {error}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+              
             </div>
-            
           </div>
         </div>
       </section>
     </main>
-  );
+  )
 }

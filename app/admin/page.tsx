@@ -1,172 +1,86 @@
-import { getProjects } from "@/lib/projects";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { seedProjects, approvedGuestbookFallback } from "@/lib/data";
-import { 
-  FolderGit, 
-  MessageSquareOff, 
-  History, 
-  Zap, 
-  ArrowRight,
-  TrendingUp
-} from "lucide-react";
-import Link from "next/link";
+import { createServerClient } from '@/lib/supabase/server'
+import { FolderKanban, MessageSquare, Eye, Clock } from 'lucide-react'
 
-export default async function AdminPage() {
-  const projects = await getProjects();
-  const allProjects = projects.length ? projects : seedProjects;
-
-  // Calculate project breakdown
-  const aiCount = allProjects.filter((p) => p.category === "ai" || p.category === "data").length;
-  const webCount = allProjects.filter((p) => p.category === "web").length;
-  const mobileCount = allProjects.filter((p) => p.category === "mobile").length;
-
-  // Retrieve pending guestbook count
-  const supabase = getSupabaseAdmin();
-  let pendingCount = 0;
-  if (supabase) {
-    const { data } = await supabase.from("guestbook").select("*").eq("is_approved", false);
-    pendingCount = data?.length || 0;
-  } else {
-    // If Supabase is not configured, simulate some pending messages
-    pendingCount = 1;
+async function getStats() {
+  const supabase = createServerClient()
+  
+  const [projectsRes, guestbookRes, pendingRes] = await Promise.all([
+    supabase.from('projects').select('*', { count: 'exact', head: true }),
+    supabase.from('guestbook').select('*', { count: 'exact', head: true }).eq('is_approved', true),
+    supabase.from('guestbook').select('*', { count: 'exact', head: true }).eq('is_approved', false),
+  ])
+  
+  return {
+    projects: projectsRes.count ?? 0,
+    messages: guestbookRes.count ?? 0,
+    pending: pendingRes.count ?? 0,
   }
+}
 
-  const statCards = [
-    {
-      title: "Total Projects",
-      value: allProjects.length.toString(),
-      icon: FolderGit,
-      desc: `${aiCount} AI/Data · ${webCount} Web · ${mobileCount} Mobile`,
-      badge: "Active",
-      badgeColor: "bg-[var(--jade-glow)] text-[var(--jade)] border-[var(--jade-border)]",
-    },
-    {
-      title: "Pending Moderation",
-      value: pendingCount.toString(),
-      icon: MessageSquareOff,
-      desc: pendingCount > 0 ? "Requires review before public display" : "All messages verified",
-      badge: pendingCount > 0 ? "Action Required" : "Up to date",
-      badgeColor: pendingCount > 0 
-        ? "bg-[rgba(232,93,60,0.15)] text-[var(--maple)] border-[rgba(232,93,60,0.2)]" 
-        : "bg-[var(--jade-glow)] text-[var(--jade)] border-[var(--jade-border)]",
-    },
-    {
-      title: "Deployment Status",
-      value: "Vercel",
-      icon: History,
-      desc: `Last compiled: May 23, 2026`,
-      badge: "Healthy",
-      badgeColor: "bg-[var(--jade-glow)] text-[var(--jade)] border-[var(--jade-border)]",
-    },
-    {
-      title: "Quick Actions",
-      value: "Control",
-      icon: Zap,
-      desc: "Trigger system indexing or flush cache storage",
-      badge: "Ready",
-      badgeColor: "bg-[var(--gold-glow)] text-[var(--gold)] border-[rgba(232,184,75,0.2)]",
-    }
-  ];
-
+export default async function AdminOverview() {
+  const stats = await getStats()
+  
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h2 
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
-          className="text-4xl font-light text-[var(--text-primary)]"
-        >
-          Overview Console
-        </h2>
-        <p className="text-xs text-[var(--text-secondary)] mt-1.5 font-light">
-          Real-time summary of the portfolio data states and moderation endpoints.
+    <div className="p-8">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Overview</h1>
+        <p className="text-sm mt-1 text-[var(--text-secondary)]">
+          Welcome back. Here's what's happening on your portfolio.
         </p>
       </div>
-
-      {/* Grid of 2x2 Stat Cards */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {statCards.map((stat, idx) => {
-          const Icon = stat.icon;
-          return (
-            <div 
-              key={idx}
-              className="rounded-xl border border-[var(--border-normal)] bg-[var(--bg-surface)] p-6 flex flex-col justify-between min-h-[160px] shadow-sm relative group hover:border-[var(--jade-border)] transition-colors"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
-                    {stat.title}
-                  </span>
-                  
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span 
-                      style={{ fontFamily: '"JetBrains Mono", monospace' }}
-                      className="text-4xl font-bold text-[var(--text-primary)]"
-                    >
-                      {stat.value}
-                    </span>
-                    <span className={`text-[10px] uppercase tracking-wide px-2 py-0.5 rounded border font-semibold ${stat.badgeColor}`}>
-                      {stat.badge}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="p-3 rounded-lg bg-[var(--bg-raised)] border border-[var(--border-subtle)]">
-                  <Icon className="h-6 w-6 text-[var(--jade)]" />
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                <span>{stat.desc}</span>
-                {idx === 3 ? (
-                  <Link 
-                    href="/admin/site-config"
-                    className="text-[var(--jade)] hover:underline flex items-center gap-1 font-semibold cursor-pointer"
-                  >
-                    Configure <ArrowRight className="h-3 w-3" />
-                  </Link>
-                ) : null}
-              </div>
+      
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Total Projects', value: stats.projects, icon: FolderKanban, color: 'jade' },
+          { label: 'Approved Messages', value: stats.messages, icon: MessageSquare, color: 'indigo' },
+          { label: 'Pending Approval', value: stats.pending, icon: Clock, color: stats.pending > 0 ? 'gold' : 'text-secondary', urgent: stats.pending > 0 },
+          { label: 'Site Status', value: 'Live', icon: Eye, color: 'jade' },
+        ].map((stat, i) => (
+          <div key={i} className="rounded-xl border p-5"
+               style={{
+                 background: 'var(--surface)',
+                 borderColor: stat.urgent ? 'var(--gold-glow)' : 'var(--b1)',
+                 boxShadow: stat.urgent ? '0 0 20px rgba(245,158,11,0.05)' : 'none',
+               }}>
+            <div className="flex items-center justify-between mb-3">
+              <stat.icon className="w-4 h-4" style={{ color: stat.color === 'text-secondary' ? 'var(--text-secondary)' : `var(--${stat.color})` }} />
+              {stat.urgent && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full"
+                      style={{ background: 'rgba(245,158,11,0.1)', color: 'var(--gold)' }}>
+                  NEEDS ACTION
+                </span>
+              )}
             </div>
-          );
-        })}
+            <p className="text-2xl font-mono font-bold mb-1"
+               style={{ color: stat.color === 'text-secondary' ? 'var(--text-primary)' : `var(--${stat.color})` }}>
+              {stat.value}
+            </p>
+            <p className="text-xs font-mono text-[var(--text-secondary)]">{stat.label}</p>
+          </div>
+        ))}
       </div>
-
-      {/* Quick shortcuts block */}
-      <div className="rounded-xl border border-[var(--border-normal)] bg-[var(--bg-surface)] p-6 space-y-4">
-        <h3 
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
-          className="text-2xl font-light text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-2"
-        >
-          Administrative Shortcuts
-        </h3>
-        
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Link
-            href="/admin/projects"
-            className="flex items-center justify-between px-4 py-3 rounded bg-[var(--bg-raised)] border border-[var(--border-subtle)] hover:border-[var(--jade-border)] text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--jade)] transition-colors"
-          >
-            <span>Manage Project CRUD</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-
-          <Link
-            href="/admin/guestbook"
-            className="flex items-center justify-between px-4 py-3 rounded bg-[var(--bg-raised)] border border-[var(--border-subtle)] hover:border-[var(--jade-border)] text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--jade)] transition-colors"
-          >
-            <span>Review Guestbook ({pendingCount})</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-
-          <Link
-            href="/admin/site-config"
-            className="flex items-center justify-between px-4 py-3 rounded bg-[var(--bg-raised)] border border-[var(--border-subtle)] hover:border-[var(--jade-border)] text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--jade)] transition-colors"
-          >
-            <span>Global Profile Setup</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+      
+      {/* Quick actions */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          { label: 'Add New Project', href: '/admin/projects/new', color: 'jade' },
+          { label: 'Review Pending Messages', href: '/admin/guestbook', color: 'gold' },
+          { label: 'Edit Site Config', href: '/admin/settings', color: 'indigo' },
+        ].map((action, i) => (
+          <a key={i} href={action.href}
+             className="px-5 py-4 rounded-xl border text-sm font-medium
+                        hover:opacity-80 transition-all flex items-center justify-between cursor-pointer"
+             style={{
+               background: `var(--${action.color}-dim)`,
+               borderColor: `var(--${action.color}-glow)`,
+               color: `var(--${action.color})`,
+             }}>
+            {action.label}
+            <span>→</span>
+          </a>
+        ))}
       </div>
     </div>
-  );
+  )
 }
