@@ -347,7 +347,7 @@ html.light-theme .theme-toggle .sun-icon {
 
 .hero-grid {
   display: grid;
-  grid-template-cols: 1.15fr 0.85fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 48px;
   align-items: center;
 }
@@ -357,7 +357,7 @@ html.light-theme .theme-toggle .sun-icon {
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--border-strong);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -461,12 +461,13 @@ html.light-theme .theme-toggle .sun-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 28px;
-  border-radius: 8px;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.05em;
   transition: var(--transition-smooth);
 }
 
@@ -566,7 +567,7 @@ html.light-theme .theme-toggle .sun-icon {
 
 .about-grid {
   display: grid;
-  grid-template-cols: 0.8fr 1.2fr;
+  grid-template-columns: 0.8fr 1.2fr;
   gap: 56px;
   align-items: start;
 }
@@ -596,7 +597,7 @@ html.light-theme .theme-toggle .sun-icon {
 /* Profile Card */
 .profile-card {
   position: relative;
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid var(--border-normal);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -628,7 +629,7 @@ html.light-theme .theme-toggle .sun-icon {
 .profile-avatar {
   width: 56px;
   height: 56px;
-  border-radius: 12px;
+  border-radius: 6px;
   background: var(--indigo-dim);
   border: 1px solid var(--indigo-glow);
   display: flex;
@@ -666,7 +667,7 @@ html.light-theme .theme-toggle .sun-icon {
   font-size: 9px;
   font-weight: 700;
   padding: 5px 12px;
-  border-radius: 99px;
+  border-radius: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: inline-flex;
@@ -704,7 +705,7 @@ html.light-theme .theme-toggle .sun-icon {
 /* Stats Grid - 2x2 layout that stays clean */
 .stats-grid {
   display: grid;
-  grid-template-cols: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 14px;
   margin-bottom: 20px;
 }
@@ -713,7 +714,7 @@ html.light-theme .theme-toggle .sun-icon {
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border-normal);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 20px;
   box-shadow: var(--shadow-premium);
   transition: var(--transition-smooth);
@@ -759,7 +760,7 @@ html.light-theme .theme-toggle .sun-icon {
 .avail-box {
   background: var(--jade-dim);
   border: 1px solid var(--jade-glow);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -787,7 +788,7 @@ html.light-theme .theme-toggle .sun-icon {
   color: var(--jade);
   border: 1px solid var(--jade-glow);
   padding: 6px 12px;
-  border-radius: 99px;
+  border-radius: 6px;
   transition: var(--transition-fast);
 }
 
@@ -858,7 +859,7 @@ html.light-theme .theme-toggle .sun-icon {
   font-size: 12px;
   font-weight: 500;
   padding: 6px 14px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--border-normal);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -969,7 +970,7 @@ html.light-theme .theme-toggle .sun-icon {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 8px 18px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--border-normal);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -992,12 +993,12 @@ html.light-theme .theme-toggle .sun-icon {
 
 .projects-grid {
   display: grid;
-  grid-template-cols: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
 }
 
 .project-card {
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid var(--border-normal);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -1039,7 +1040,7 @@ html.light-theme .theme-toggle .sun-icon {
 .project-icon {
   width: 42px;
   height: 42px;
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--bg-raised);
   display: flex;
   align-items: center;
@@ -1054,7 +1055,7 @@ html.light-theme .theme-toggle .sun-icon {
   font-weight: 700;
   text-transform: uppercase;
   padding: 4px 10px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--border-normal);
 }
 
@@ -1095,6 +1096,15 @@ html.light-theme .theme-toggle .sun-icon {
   border: 1px solid var(--border-normal);
 }
 
+.project-detail-btn {
+  width: 100%;
+  margin-top: 20px;
+  font-size: 10px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
 /* Modals */
 .modal-overlay {
   position: fixed;
@@ -1121,7 +1131,7 @@ html.light-theme .theme-toggle .sun-icon {
 .modal-content {
   background: var(--bg-card);
   border: 1px solid var(--border-strong);
-  border-radius: 24px;
+  border-radius: 8px;
   max-width: 560px;
   width: 100%;
   padding: 36px;
@@ -1220,7 +1230,7 @@ html.light-theme .theme-toggle .sun-icon {
 
 .lab-grid {
   display: grid;
-  grid-template-cols: 1.15fr 0.85fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 56px;
   align-items: start;
 }
@@ -1316,7 +1326,7 @@ html.light-theme .theme-toggle .sun-icon {
 .rag-terminal {
   position: relative;
   z-index: 1;
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid var(--border-strong);
   background: #09090b;
   box-shadow: var(--shadow-premium);
@@ -1422,7 +1432,7 @@ html.light-theme .terminal-chat {
 .chat-bubble {
   max-width: 76%;
   padding: 12px 18px;
-  border-radius: 16px;
+  border-radius: 8px;
   font-size: 13.5px;
   box-shadow: var(--shadow-premium);
   line-height: 1.5;
@@ -1458,7 +1468,7 @@ html.light-theme .terminal-chat {
   font-size: 9px;
   font-weight: 600;
   padding: 6px 12px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--border-normal);
   background: var(--bg-raised);
   color: var(--text-secondary);
@@ -1485,7 +1495,7 @@ html.light-theme .terminal-chat {
   flex: 1;
   background: var(--bg-void);
   border: 1px solid var(--border-normal);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 13px;
   transition: var(--transition-fast);
@@ -1498,7 +1508,7 @@ html.light-theme .terminal-chat {
 .terminal-send {
   width: 38px;
   height: 38px;
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--accent-gradient);
   color: #ffffff;
   display: flex;
@@ -1531,7 +1541,7 @@ html.light-theme .terminal-chat {
 .ml-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-normal);
-  border-radius: 20px;
+  border-radius: 8px;
   backdrop-filter: var(--glass-blur);
   padding: 24px;
   box-shadow: var(--shadow-premium);
@@ -1568,7 +1578,7 @@ html.light-theme .terminal-chat {
   font-weight: 700;
   text-transform: uppercase;
   padding: 3px 10px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--jade-glow);
   color: var(--jade);
   background: var(--jade-dim);
@@ -1648,7 +1658,7 @@ html.light-theme .terminal-chat {
 .ml-result-box {
   margin-top: 14px;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--jade-dim);
   border: 1px solid var(--jade-glow);
   display: none;
@@ -1724,7 +1734,7 @@ html.light-theme .terminal-chat {
 
 .guestbook-layout {
   display: grid;
-  grid-template-cols: 1.25fr 0.75fr;
+  grid-template-columns: 1.25fr 0.75fr;
   gap: 56px;
   align-items: start;
 }
@@ -1734,7 +1744,7 @@ html.light-theme .terminal-chat {
   align-items: center;
   gap: 8px;
   padding: 5px 14px;
-  border-radius: 99px;
+  border-radius: 6px;
   border: 1px solid var(--border-normal);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -1756,7 +1766,7 @@ html.light-theme .terminal-chat {
 }
 
 .guestbook-box {
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid var(--border-normal);
   background: var(--bg-surface);
   backdrop-filter: var(--glass-blur);
@@ -1845,7 +1855,7 @@ html.light-theme .terminal-chat {
 
 .g-text {
   padding: 12px 16px;
-  border-radius: 16px;
+  border-radius: 8px;
   border-top-left-radius: 2px;
   background: var(--bg-raised);
   border: 1px solid var(--border-normal);
@@ -1876,7 +1886,7 @@ html.light-theme .terminal-chat {
 .g-form-container {
   background: var(--bg-surface);
   border: 1px solid var(--border-normal);
-  border-radius: 20px;
+  border-radius: 8px;
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-premium);
   padding: 32px;
@@ -1912,7 +1922,7 @@ html.light-theme .terminal-chat {
 .g-input, .g-textarea {
   background: var(--bg-void);
   border: 1px solid var(--border-normal);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 12px 14px;
   font-size: 13px;
   transition: var(--transition-fast);
@@ -1935,7 +1945,7 @@ html.light-theme .terminal-chat {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
   transition: var(--transition-smooth);
@@ -1967,7 +1977,7 @@ html.light-theme .terminal-chat {
   border-left: 4px solid var(--accent-primary);
   color: var(--text-primary);
   padding: 14px 20px;
-  border-radius: 10px;
+  border-radius: 6px;
   font-family: var(--font-mono);
   font-size: 12px;
   z-index: 9999;
@@ -2036,7 +2046,7 @@ html.light-theme .terminal-chat {
 
 @media (max-width: 992px) {
   .hero-grid {
-    grid-template-cols: 1fr;
+    grid-template-columns: 1fr;
     gap: 40px;
     text-align: center;
   }
@@ -2063,17 +2073,17 @@ html.light-theme .terminal-chat {
   }
   
   .about-grid {
-    grid-template-cols: 1fr;
+    grid-template-columns: 1fr;
     gap: 48px;
   }
   
   .lab-grid {
-    grid-template-cols: 1fr;
+    grid-template-columns: 1fr;
     gap: 48px;
   }
   
   .guestbook-layout {
-    grid-template-cols: 1fr;
+    grid-template-columns: 1fr;
     gap: 40px;
   }
 }
