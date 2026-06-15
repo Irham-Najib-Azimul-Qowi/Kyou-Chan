@@ -1,6 +1,0 @@
-"use client";
-import { motion, type Variants } from "framer-motion";
-const path: Variants = { hidden: { pathLength: 0, opacity: 0 }, visible: { pathLength: 1, opacity: 1, transition: { duration: 2.4, ease: "easeInOut" as const } } };
-export function BonsaiSVG() {
-  return <svg viewBox="0 0 420 420" className="h-full w-full" role="img" aria-label="Minimal bonsai illustration"><motion.path variants={path} initial="hidden" animate="visible" d="M210 330 C205 270 218 226 205 172 C196 132 177 103 151 78" fill="none" stroke="var(--accent-dark)" strokeWidth="10" strokeLinecap="round"/><motion.path variants={path} initial="hidden" animate="visible" d="M206 206 C164 189 128 190 92 216 M212 184 C250 150 294 136 338 150 M207 245 C250 238 284 254 314 289 M198 151 C162 139 124 132 84 153" fill="none" stroke="var(--accent)" strokeWidth="8" strokeLinecap="round"/><motion.path variants={path} initial="hidden" animate="visible" d="M92 216 C119 183 163 176 200 203 C156 221 123 229 92 216ZM338 150 C300 126 259 134 216 181 C260 180 302 176 338 150ZM314 289 C281 248 245 238 209 246 C242 281 275 299 314 289ZM84 153 C116 117 158 119 198 151 C154 162 117 166 84 153Z" fill="none" stroke="var(--accent)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/><path d="M135 336h150l-18 35H153z" fill="none" stroke="var(--gold)" strokeWidth="8" strokeLinejoin="round"/></svg>;
-}

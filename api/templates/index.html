@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Najin Kyou | Portfolio</title>
+  <meta name="description" content="Personal portfolio of Najin Kyou, a software engineer student specializing in AI Engineering, RAG document pipelines, on-device ML, and fullstack web applications.">
+  <meta name="theme-color" content="#080807">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Najin Kyou | Portfolio">
+  <meta property="og:description" content="Data science, machine learning models, and interactive software engineering projects by Najin Kyou.">
+  <meta property="og:image" content="/public/favicon.ico">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+JP:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/public/css/main.css">
+</head>
+<body>
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ==========================================================================
+       HEADER
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="#hero" class="brand" aria-label="Najin Kyou Home">
+        <span class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 2.5 L13.5 2.5 L5.5 21.5 L5 21.5 Q2.5 21.5 2.5 19 L2.5 5 Q2.5 2.5 5 2.5 Z"></path>
+            <path d="M16.5 2.5 L19 2.5 Q21.5 2.5 21.5 5 L21.5 19 Q21.5 21.5 19 21.5 L8.5 21.5 Z"></path>
+          </svg>
+        </span>
+        <span>Najin Kyou</span>
+      </a>
+
+      <!-- Navigation links -->
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="#about" class="nav-link">About Me</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#lab" class="nav-link">Experiments / Lab</a>
+        <a href="#messages" class="nav-link">Messages / Testimonials</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Theme Switch Toggle Button -->
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle Theme" title="Toggle Light/Dark Theme">
+          <!-- Sun icon (for light mode toggle) -->
+          <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <!-- Moon icon (for dark mode toggle) -->
+          <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+
+        <a href="https://github.com/irhamqowi" class="github-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+          </svg>
+        </a>
+
+        <!-- Mobile Menu Trigger -->
+        <button class="menu-toggle" type="button" aria-label="Open Mobile Menu" aria-controls="mobile-nav" onclick="document.getElementById('mobile-nav').style.display='flex'">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation overlay -->
+  <div id="mobile-nav" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:var(--bg-void); z-index:1001; flex-direction:column; align-items:center; justify-content:center; gap:24px;">
+    <button style="position:absolute; top:24px; right:24px; font-size:24px; color:var(--text-primary);" type="button" onclick="document.getElementById('mobile-nav').style.display='none'">✕</button>
+    <a href="#about" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">About Me</a>
+    <a href="#projects" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Projects</a>
+    <a href="#lab" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Experiments / Lab</a>
+    <a href="#messages" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Messages / Testimonials</a>
+  </div>
+
+  <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+  <section id="hero" class="hero-section">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge" role="status">
+            <span class="ping-dot"></span>
+            Open for freelance
+          </div>
+          
+          <div class="hero-title-container">
+            <span class="hero-kanji">名人強</span>
+            <span class="hero-name">Najin Kyou</span>
+          </div>
+
+          <div class="hero-divider"></div>
+          <h2 class="hero-subtitle">Data Scientist & AI Engineer</h2>
+          <p class="hero-bio">
+            Software Engineering student at Politeknik Negeri Madiun. I specialize in building practical artificial intelligence systems, document RAG pipelines, on-device ML models, and high-quality web-mobile fullstack applications.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">See My Work →</a>
+            <a href="#messages" class="btn btn-secondary">Let's Talk</a>
+          </div>
+
+          <!-- Skills Badge Row -->
+          <div class="hero-skills-mini">
+            <div class="mini-skill-row">
+              <span class="label">AI/Data</span>
+              <div class="mini-skill-tags">
+                <span class="mini-tag indigo">Python</span>
+                <span class="mini-tag indigo">RAG</span>
+                <span class="mini-tag indigo">TFLite</span>
+                <span class="mini-tag indigo">MediaPipe</span>
+                <span class="mini-tag indigo">LangChain</span>
+              </div>
+            </div>
+            <div class="mini-skill-row">
+              <span class="label">Web</span>
+              <div class="mini-skill-tags">
+                <span class="mini-tag jade">Next.js</span>
+                <span class="mini-tag jade">React</span>
+                <span class="mini-tag jade">Laravel</span>
+                <span class="mini-tag jade">Gin</span>
+              </div>
+            </div>
+            <div class="mini-skill-row">
+              <span class="label">Mobile</span>
+              <div class="mini-skill-tags">
+                <span class="mini-tag gold">Kotlin</span>
+                <span class="mini-tag gold">Compose</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <canvas id="neural-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ABOUT ME SECTION
+       ========================================================================== -->
+  <section id="about">
+    <div class="container">
+      <div class="section-label">
+        <div class="line"></div>
+        <span>About Me</span>
+      </div>
+
+      <div class="about-grid">
+        <!-- Left Column (Identity Card, Stats, Availability) -->
+        <div class="about-identity">
+          <div class="profile-card">
+            <div class="profile-card-kanji" aria-hidden="true">名</div>
+            <div class="profile-avatar-row">
+              <div class="profile-avatar" aria-hidden="true">N</div>
+              <div>
+                <h3 class="profile-name">Irham Najib A.Q</h3>
+                <p class="profile-sub">Najin Kyou · 名人強</p>
+              </div>
+            </div>
+            <div class="profile-badges">
+              <span class="profile-badge active-status">
+                <span></span> Open for freelance
+              </span>
+              <span class="profile-badge location">
+                📍 Madiun, Indonesia
+              </span>
+            </div>
+            <p class="profile-desc text-secondary">
+              Semester 4 Software Engineering student at Politeknik Negeri Madiun, building intelligent AI applications and data systems.
+            </p>
+          </div>
+
+          <!-- Stats Counters -->
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-val jade">4</div>
+              <div class="stat-label">Projects Built</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val indigo">2</div>
+              <div class="stat-label">Real Clients</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val gold">2023</div>
+              <div class="stat-label">Active Since</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val maple">1<span class="suffix">entry</span></div>
+              <div class="stat-label">AI Competition</div>
+            </div>
+          </div>
+
+          <!-- Availability card -->
+          <div class="avail-box">
+            <div>
+              <p class="avail-title">Available for projects</p>
+              <p class="avail-desc">Remote · Freelance · Collaboration</p>
+            </div>
+            <a href="#messages" class="avail-btn">Say Hello →</a>
+          </div>
+        </div>
+
+        <!-- Right Column (Narrative, Skills matrix, Timeline) -->
+        <div class="about-narrative">
+          <h2>Calm systems, <br><span>strong intelligence.</span></h2>
+          <p class="bio-para">
+            Irham Najib Azimul Qowi is a Software Engineering student at Politeknik Negeri Madiun, Indonesia. Under the professional moniker <mark>Najin Kyou</mark>, he explores the intersection of data workflows, pose screening algorithms, and semantic retrieval layers. He believes in clean engineering and quiet craft.
+          </p>
+
+          <!-- Skills Stack -->
+          <div class="skills-stack">
+            <div>
+              <p class="skill-group-label indigo">AI & Data Science</p>
+              <div class="skill-tags">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">LangChain</span>
+                <span class="skill-tag">Gemini</span>
+                <span class="skill-tag">Pinecone</span>
+                <span class="skill-tag">TFLite</span>
+                <span class="skill-tag">MediaPipe</span>
+                <span class="skill-tag">FastAPI</span>
+              </div>
+            </div>
+            <div>
+              <p class="skill-group-label jade">Web Fullstack</p>
+              <div class="skill-tags">
+                <span class="skill-tag">Next.js</span>
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">Laravel</span>
+                <span class="skill-tag">TypeScript</span>
+                <span class="skill-tag">MySQL</span>
+                <span class="skill-tag">Supabase</span>
+                <span class="skill-tag">TailwindCSS</span>
+              </div>
+            </div>
+            <div>
+              <p class="skill-group-label gold">Mobile Engineering</p>
+              <div class="skill-tags">
+                <span class="skill-tag">Kotlin XML</span>
+                <span class="skill-tag">Jetpack Compose</span>
+                <span class="skill-tag">Room Database</span>
+                <span class="skill-tag">WorkManager</span>
+                <span class="skill-tag">Retrofit</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Timeline -->
+          <div class="timeline" aria-label="Education Timeline">
+            <div class="timeline-item jade">
+              <div class="timeline-dot"></div>
+              <p class="timeline-period">Semester 1 (2023)</p>
+              <p class="timeline-text">Acquired core programming fundamentals, building static web applications and understanding algorithms.</p>
+            </div>
+            <div class="timeline-item indigo">
+              <div class="timeline-dot"></div>
+              <p class="timeline-period">Year 2 (2024)</p>
+              <p class="timeline-text">Developed production client websites, ticket platforms, and started diving into mobile development with Kotlin.</p>
+            </div>
+            <div class="timeline-item gold">
+              <div class="timeline-dot"></div>
+              <p class="timeline-period">Present (2026)</p>
+              <p class="timeline-text">Deeply focused on AI workflows: engineering RAG pipelines, building on-device ML vision screeners, and exploring machine learning endpoints.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       PROJECTS SECTION
+       ========================================================================== -->
+  <section id="projects">
+    <div class="container">
+      <div class="projects-header">
+        <div class="projects-title">
+          <h2>Selected Work</h2>
+          <p>A handpicked selection of artificial intelligence agents, data pipelines, and responsive web platforms.</p>
+        </div>
+
+        <!-- Filter pills -->
+        <div class="filter-pills" role="tablist" aria-label="Project Category Filter">
+          <button class="filter-pill active" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter-pill" data-filter="ai" role="tab" aria-selected="false">AI / Data</button>
+          <button class="filter-pill" data-filter="web" role="tab" aria-selected="false">Web</button>
+          <button class="filter-pill" data-filter="mobile" role="tab" aria-selected="false">Mobile</button>
+        </div>
+      </div>
+
+      <div class="projects-grid">
+        {{range .Projects}}
+        <div class="project-card {{.Category}}" data-category="{{.Category}}" data-long-desc="{{.LongDescription}}" data-demo-url="{{.DemoURL}}" data-github-url="{{.GithubURL}}" data-tech-stack="{{.TechStackJSON}}">
+          <div>
+            <div class="project-card-header">
+              <div class="project-icon" aria-hidden="true">
+                {{if eq .Category "ai"}}🧬{{else if eq .Category "data"}}📊{{else if eq .Category "web"}}🌐{{else if eq .Category "mobile"}}📱{{else}}💼{{end}}
+              </div>
+              <span class="project-category">{{.Category}}</span>
+            </div>
+            <h3 class="project-name">{{.Name}}</h3>
+            <p class="project-desc">{{.Description}}</p>
+          </div>
+
+          <div>
+            <div class="project-tags">
+              {{range .TechStack}}
+              <span class="project-tag">{{.}}</span>
+              {{end}}
+            </div>
+            <a href="#" class="btn btn-secondary project-detail-btn" style="width:100%; margin-top:20px; font-size:9px; padding:10px;" role="button">Examine Details →</a>
+          </div>
+        </div>
+        {{else}}
+        <!-- Fallback if database is empty -->
+        <p>No projects found. Check database configuration.</p>
+        {{end}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Detail Modal -->
+  <div id="project-modal" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close" type="button" aria-label="Close modal">✕</button>
+      <div class="modal-header">
+        <span id="modal-project-category" class="category">Category</span>
+        <h3 id="modal-project-name">Project Title</h3>
+      </div>
+      <div id="modal-project-long-desc" class="modal-body">
+        <p>Project long description goes here...</p>
+      </div>
+      <div class="modal-tech">
+        <span class="modal-tech-label">Technologies Used</span>
+        <div id="modal-project-tech" class="project-tags" style="margin-bottom:30px;">
+          <!-- tags injected dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a id="modal-demo-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display:none;">Launch Live Demo</a>
+        <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="display:none;">View Repository</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       EXPERIMENTS / LAB SECTION
+       ========================================================================== -->
+  <section id="lab">
+    <div class="container">
+      <div class="section-label">
+        <div class="line"></div>
+        <span>Experiments / Lab</span>
+      </div>
+
+      <div class="lab-grid">
+        <!-- Left Side: Interactive RAG Terminal -->
+        <div class="lab-terminal-area">
+          <div class="lab-header-main">
+            <h2>AI Neural Laboratory</h2>
+            <div class="lab-stats-strip">
+              <div class="lab-stat-box">
+                <span class="val jade">2</span>
+                <span class="label">Models Active</span>
+              </div>
+              <div class="lab-stat-box">
+                <span class="val indigo">1.2s</span>
+                <span class="label">Avg Response</span>
+              </div>
+              <div class="lab-stat-box">
+                <span class="val gold">~200</span>
+                <span class="label">Chunks Indexed</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lab-divider">
+            <span class="exhibit-badge">Exhibit 01</span>
+            <div class="line"></div>
+            <h3>Knowledge Base RAG Assistant</h3>
+            <div class="line"></div>
+          </div>
+
+          <div class="rag-wrapper">
+            <div class="rag-ambient" aria-hidden="true"></div>
+            <div class="rag-terminal">
+              <div class="terminal-header">
+                <div class="terminal-dots">
+                  <div class="terminal-dot close"></div>
+                  <div class="terminal-dot minimize"></div>
+                  <div class="terminal-dot expand"></div>
+                </div>
+                <div class="terminal-title">najinkyou_rag_index_v1</div>
+                <div class="terminal-status">
+                  <span class="status-indicator"></span>
+                  <span>GEMINI 1.5 PRO</span>
+                </div>
+              </div>
+
+              <!-- Terminal chat screen -->
+              <div id="rag-chat-feed" class="terminal-chat">
+                <div class="chat-bubble-row">
+                  <div class="chat-avatar">知</div>
+                  <div class="chat-bubble assistant-bubble">
+                    <p>Konnichiwa! I am Najin's portfolio RAG assistant. Ask me anything about his credentials, AI models, or developer journey.</p>
+                    <div class="suggested-qs">
+                      <button type="button" class="suggested-btn">What projects have you built?</button>
+                      <button type="button" class="suggested-btn">Tell me about StuntSense</button>
+                      <button type="button" class="suggested-btn">What's your main tech stack?</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Terminal input bar -->
+              <div class="terminal-input-bar">
+                <form id="rag-form" class="terminal-input-wrapper">
+                  <input id="rag-input" type="text" placeholder="Ask me anything about Najin Kyou..." class="terminal-input" required autocomplete="off">
+                  <button id="rag-submit" type="submit" class="terminal-send" aria-label="Send message">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Model simulators -->
+        <div class="lab-models-area">
+          <div class="lab-divider">
+            <span class="exhibit-badge">Exhibit 02</span>
+            <div class="line"></div>
+            <h3>Deployed Machine Learning Models</h3>
+            <div class="line"></div>
+          </div>
+
+          <div class="ml-exhibit-cards">
+            <!-- Active Model Card: Pose Growth Predictor -->
+            <div class="ml-card">
+              <div class="ml-card-head">
+                <div class="ml-card-title">
+                  <span class="ico">🧬</span>
+                  <h4>Pose Growth Predictor</h4>
+                </div>
+                <span class="ml-card-status">Live Simulation</span>
+              </div>
+              <p class="ml-card-desc">
+                Interactive simulation of the StuntSense early stunting classifier. Input an aspect-ratio description or growth keyphrase to run inference.
+              </p>
+              
+              <form id="ml-predictor-form" class="ml-form">
+                <div class="ml-input-group">
+                  <label for="ml-input">Toddler Posture Description / Dimensions</label>
+                  <input id="ml-input" type="text" required placeholder="E.g. standing pose, height 85cm, age 24 months" class="ml-field">
+                </div>
+
+                <!-- Simulation result box -->
+                <div id="ml-result" class="ml-result-box">
+                  <div class="ml-result-head">
+                    <span>Classification</span>
+                    <span id="ml-confidence">94.6% confidence</span>
+                  </div>
+                  <div class="ml-result-bar-bg" aria-hidden="true">
+                    <div id="ml-fill" class="ml-result-bar-fill"></div>
+                  </div>
+                  <p id="ml-prediction-text" class="ml-result-text">Pose Estimated: Correct Standing posture for toddler screening.</p>
+                </div>
+
+                <button id="ml-submit" type="submit" class="ml-submit-btn">Compute Growth Classification</button>
+              </form>
+            </div>
+
+            <!-- Inactive Model Card: Mobile Vision Classifier -->
+            <div class="ml-card" style="border-style:dashed;">
+              <div class="ml-card-head">
+                <div class="ml-card-title">
+                  <span class="ico">👁️</span>
+                  <h4>Mobile Vision Classifier</h4>
+                </div>
+                <span class="ml-card-status soon">ETA: Q3 2026</span>
+              </div>
+              <p class="ml-card-desc">
+                FastAPI-backed computer vision classifier for real-time mobile keypoint extraction. Model binaries are currently undergoing structural optimization.
+              </p>
+
+              <div class="optimization-bar">
+                <div class="opt-head">
+                  <span>Model optimization progress</span>
+                  <span style="color:var(--indigo);">48%</span>
+                </div>
+                <div class="ml-result-bar-bg" aria-hidden="true">
+                  <div class="opt-fill"></div>
+                </div>
+              </div>
+
+              <div class="soon-placeholder-btn">Coming Soon</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MESSAGES / TESTIMONIALS SECTION
+       ========================================================================== -->
+  <section id="messages">
+    <div class="container">
+      <div class="section-label">
+        <div class="line"></div>
+        <span>Messages / Testimonials</span>
+      </div>
+
+      <div class="guestbook-layout">
+        <!-- Messages box -->
+        <div class="guestbook-container">
+          <div class="guestbook-badge" role="status">
+            <span></span> Live Transmissions · {{.TotalSignals}} Signals Received
+          </div>
+          
+          <div class="guestbook-box">
+            <div class="guestbook-box-header">
+              <h3>Guestbook</h3>
+              <span>Showing last 50 messages</span>
+            </div>
+
+            <!-- Messages lists -->
+            <div id="guestbook-list" class="guestbook-messages">
+              {{range .GuestbookMessages}}
+              <div class="g-message" data-msg-id="{{.ID}}">
+                <!-- Avatar hashing color logic in JS or static initials -->
+                <div class="g-avatar c-jade">{{printf "%.1s" .SenderName}}</div>
+                <div class="g-msg-body">
+                  <div class="g-msg-info">
+                    <span class="g-sender">{{.SenderName}}</span>
+                    <span class="g-time" data-timestamp="{{.CreatedAt}}">{{.CreatedAt}}</span>
+                  </div>
+                  <div class="g-text">{{.Message}}</div>
+                </div>
+              </div>
+              {{else}}
+              <div class="g-empty-state">
+                <div class="icon">言</div>
+                <div>
+                  <p class="bold">No transmissions yet.</p>
+                  <p>Be the first to leave a signal.</p>
+                </div>
+              </div>
+              {{end}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Form for transmission -->
+        <div class="g-form-container">
+          <div class="g-form-title">Broadcast a Signal</div>
+          <form id="guestbook-form" class="g-form">
+            <div class="g-field-group">
+              <label for="g-name-input">Your Name</label>
+              <input id="g-name-input" type="text" required placeholder="E.g. Visitor" class="g-input" maxlength="50" autocomplete="name">
+            </div>
+
+            <div class="g-field-group">
+              <label for="g-message-input">Message</label>
+              <textarea id="g-message-input" required placeholder="Say hello, share feedback..." class="g-textarea" maxlength="500"></textarea>
+              <div id="g-char-counter" class="char-counter">0/500</div>
+            </div>
+
+            <!-- Anti-Spam Honeypot field (hidden from screen readers & users) -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="g-hp-input">Do not fill this field</label>
+              <input id="g-hp-input" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <button type="submit" class="g-submit">Broadcast Transmission</button>
+            <div id="g-error-msg" class="g-error-msg"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-flex">
+        <div class="footer-copy">
+          <p><span class="bold">Irham Najib A.Q</span> (Najin Kyou)</p>
+          <p>© {{.Year}} · All rights reserved.</p>
+        </div>
+        <div class="footer-credits">
+          <p>Crafted in Go + HTML Template</p>
+          <p>Inspired by <a href="https://impeccable.style/" target="_blank" rel="noopener noreferrer">impeccable.style</a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JavaScript -->
+  <script src="/public/js/main.js"></script>
+
+  <!-- Handle date rendering/formatting in guestbook messages -->
+  <script>
+    // Format timestamp strings inside guestbook to local time
+    document.querySelectorAll('[data-timestamp]').forEach(el => {
+      try {
+        const raw = el.getAttribute('data-timestamp');
+        const d = new Date(raw);
+        if(!isNaN(d.getTime())) {
+          el.textContent = d.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      } catch(e) {}
+    });
+
+    // Handle avatar accent border/background color hash dynamically on load
+    document.querySelectorAll('.g-avatar').forEach(el => {
+      const parent = el.closest('.g-message');
+      if(!parent) return;
+      const senderEl = parent.querySelector('.g-sender');
+      if(!senderEl) return;
+      const name = senderEl.textContent.trim();
+      
+      const colors = ['jade', 'indigo', 'gold'];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const color = colors[Math.abs(hash) % 3];
+      
+      // Clean other color classes and add the hashed one
+      el.className = `g-avatar c-${color}`;
+    });
+  </script>
+</body>
+</html>
