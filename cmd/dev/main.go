@@ -13,9 +13,13 @@ func main() {
 		port = "8080"
 	}
 
-	// Mount local public directory under /public/ URL path
+	// Mount local public directory paths to match Vercel root paths
 	fs := http.FileServer(http.Dir("public"))
-	http.Handle("/public/", http.StripPrefix("/public/", fs))
+	http.Handle("/css/", fs)
+	http.Handle("/js/", fs)
+	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "public/favicon.ico")
+	})
 
 	// Bind all other requests to our core Vercel Handler
 	http.HandleFunc("/", handler.Handler)
