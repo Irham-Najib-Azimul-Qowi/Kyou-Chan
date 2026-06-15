@@ -5,7 +5,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initNavigation();
-  initNeuralCanvas();
+  // initNeuralCanvas();
   initProjectsFilter();
   initProjectModals();
   initMlPredictor();
@@ -318,7 +318,7 @@ function initMlPredictor() {
 
     // Loading status
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<svg class=" SunIcon animate-spin h-3.5 w-3.5 mr-2" style="width: 14px; height: 14px; display: inline; animation: spin 1s linear infinite;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Computing...`;
+    submitBtn.innerHTML = `<svg class=" SunIcon animate-spin h-3.5 w-3.5 mr-2" style="width: 14px; height: 14px; display: inline; animation: spin 1s linear infinite;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Memproses...`;
     resultBox.style.display = "none";
     fillBar.style.width = "0";
 
@@ -328,25 +328,25 @@ function initMlPredictor() {
       let prediction = "";
       const query = input.toLowerCase();
 
-      if (query.includes("child") || query.includes("pose") || query.includes("stand") || query.includes("standing")) {
-        prediction = "Pose Estimated: Correct Standing posture for toddler screening.";
+      if (query.includes("child") || query.includes("pose") || query.includes("stand") || query.includes("standing") || query.includes("berdiri")) {
+        prediction = "Hasil Estimasi: Postur berdiri benar untuk screening balita.";
         score = 94.6;
-      } else if (query.includes("face") || query.includes("eye") || query.includes("image")) {
-        prediction = "Model prediction: Face bounding box successfully localized.";
+      } else if (query.includes("face") || query.includes("eye") || query.includes("image") || query.includes("wajah") || query.includes("mata")) {
+        prediction = "Hasil Model: Kotak pembatas wajah berhasil dideteksi.";
         score = 88.2;
       } else {
-        prediction = "Classification: Toddler growth marker detected.";
+        prediction = "Klasifikasi: Indikator pertumbuhan balita teridentifikasi.";
         score = 75.4;
       }
 
       // Populate results
       predictionText.textContent = prediction;
-      confidenceVal.textContent = `${score.toFixed(1)}% confidence`;
+      confidenceVal.textContent = `Tingkat akurasi ${score.toFixed(1)}%`;
       resultBox.style.display = "block";
 
       // Reset loading button
       submitBtn.disabled = false;
-      submitBtn.textContent = "Compute Growth Classification";
+      submitBtn.textContent = "Jalankan Analisis Prediksi";
 
       // Animate progress bar fill
       setTimeout(() => {
@@ -429,7 +429,7 @@ function initRagChat() {
 
     const bubble = document.createElement("div");
     bubble.className = "chat-bubble assistant-bubble";
-    bubble.innerHTML = `<p style="display:flex; align-items:center; gap:8px;"><span class="status-indicator"></span> Searching knowledge base...</p>`;
+    bubble.innerHTML = `<p style="display:flex; align-items:center; gap:8px;"><span class="status-indicator"></span> Mencari di basis pengetahuan...</p>`;
     loaderRow.appendChild(bubble);
     chatFeed.appendChild(loaderRow);
     chatFeed.scrollTop = chatFeed.scrollHeight;
@@ -468,7 +468,7 @@ function initRagChat() {
 
     } catch (err) {
       loaderRow.remove();
-      appendBubble("assistant", "Fail to connect to RAG pipeline. Please verify Pinecone & Gemini keys are configured in environment variables.");
+      appendBubble("assistant", "Gagal terhubung ke pipeline RAG. Silakan periksa apakah API key Pinecone & Gemini sudah dikonfigurasi di environment variables.");
     } finally {
       submitBtn.disabled = false;
     }
@@ -518,17 +518,17 @@ function initGuestbook() {
     }
 
     if (name.length < 2) {
-      showToast("Name must be at least 2 characters.", true);
+      showToast("Nama minimal harus 2 karakter.", true);
       return;
     }
     if (message.length < 5) {
-      showToast("Message must be at least 5 characters.", true);
+      showToast("Pesan minimal harus 5 karakter.", true);
       return;
     }
 
     // Submit state
     submitBtn.disabled = true;
-    submitBtn.textContent = "Posting...";
+    submitBtn.textContent = "Mengirim...";
 
     // Optimistic UI update: render message in memory first
     const cleanName = name;
@@ -549,7 +549,7 @@ function initGuestbook() {
       todayDivider = document.createElement("div");
       todayDivider.className = "date-divider";
       todayDivider.id = "divider-today";
-      todayDivider.innerHTML = `<div class="line"></div><span>Today (Optimistic)</span><div class="line"></div>`;
+      todayDivider.innerHTML = `<div class="line"></div><span>Hari Ini (Mengirim)</span><div class="line"></div>`;
       listContainer.prepend(todayDivider);
     }
     
@@ -567,7 +567,7 @@ function initGuestbook() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to post message");
+        throw new Error(data.error || "Gagal mengirim pesan");
       }
 
       // Success: replace optimistic message with real details
@@ -579,7 +579,7 @@ function initGuestbook() {
       }, false);
 
       optMsgElement.replaceWith(realMsgElement);
-      showToast("Message posted successfully!", false);
+      showToast("Pesan berhasil dikirim!", false);
 
       // Reset form
       document.getElementById("g-name-input").value = "";
@@ -590,15 +590,18 @@ function initGuestbook() {
       // Remove optimistic element & divider if empty
       optMsgElement.remove();
       const checkDivider = document.getElementById("divider-today");
-      if (checkDivider && checkDivider.nextElementSibling && !checkDivider.nextElementSibling.classList.contains("g-message")) {
-        checkDivider.remove();
+      if (checkDivider) {
+        const next = checkDivider.nextElementSibling;
+        if (!next || !next.getAttribute("data-msg-id") || !next.getAttribute("data-msg-id").startsWith("opt-")) {
+          checkDivider.remove();
+        }
       }
 
       if (errorBlock) errorBlock.textContent = err.message;
       showToast(err.message, true);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Broadcast Transmission";
+      submitBtn.textContent = "Kirim Pesan";
     }
   });
 }
@@ -628,7 +631,7 @@ function createMessageElement(msg, isOptimistic) {
     <div class="g-msg-body">
       <div class="g-msg-info">
         <span class="g-sender">${msg.sender_name}</span>
-        <span class="g-time">${isOptimistic ? "broadcasting..." : time}</span>
+        <span class="g-time">${isOptimistic ? "mengirim..." : time}</span>
       </div>
       <div class="g-text">${msg.message}</div>
     </div>
