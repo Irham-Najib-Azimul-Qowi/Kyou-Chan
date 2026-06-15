@@ -131,11 +131,11 @@ function initNeuralCanvas() {
   function animate() {
     ctx.clearRect(0, 0, width, height);
 
-    // Get current jade glow color
+    // Get current design colors
     const isLight = document.documentElement.classList.contains("light-theme");
-    const dotColor = isLight ? "rgba(5, 150, 105, 0.4)" : "rgba(61, 214, 140, 0.4)";
-    const lineColor = isLight ? "rgba(5, 150, 105, 0.08)" : "rgba(61, 214, 140, 0.08)";
-    const hoverLineColor = isLight ? "rgba(79, 70, 229, 0.15)" : "rgba(129, 140, 248, 0.15)";
+    const dotColor = isLight ? "rgba(5, 150, 105, 0.25)" : "rgba(16, 185, 129, 0.25)";
+    const lineColor = isLight ? "rgba(5, 150, 105, 0.05)" : "rgba(16, 185, 129, 0.05)";
+    const hoverLineColor = isLight ? "rgba(79, 70, 229, 0.12)" : "rgba(99, 102, 241, 0.15)";
 
     // Update & draw nodes
     nodes.forEach(node => {
