@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Najin Kyou | Portofolio</title>
   <meta name="description" content="Portofolio pribadi Najin Kyou, mahasiswa rekayasa perangkat lunak yang berfokus pada AI Engineering, pipeline RAG, on-device ML, dan aplikasi web-mobile fullstack.">
-  <meta name="theme-color" content="#080807">
+  <meta name="theme-color" content="#090A0F">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -19,10 +19,10 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="/css/main.css?v=1.0.2">
+  <link rel="stylesheet" href="/css/main.css?v=2.0.0">
 </head>
 <body>
   <div class="grain-overlay" aria-hidden="true"></div>
@@ -71,7 +71,7 @@
         </a>
 
         <!-- Mobile Menu Trigger -->
-        <button class="menu-toggle" type="button" aria-label="Open Mobile Menu" aria-controls="mobile-nav" onclick="document.getElementById('mobile-nav').style.display='flex'">
+        <button class="menu-toggle" type="button" aria-label="Open Mobile Menu" aria-controls="mobile-nav" onclick="document.getElementById('mobile-nav').classList.add('active')">
           <span></span>
           <span></span>
         </button>
@@ -80,12 +80,12 @@
   </header>
 
   <!-- Mobile Navigation overlay -->
-  <div id="mobile-nav" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:var(--bg-void); z-index:1001; flex-direction:column; align-items:center; justify-content:center; gap:24px;">
-    <button style="position:absolute; top:24px; right:24px; font-size:24px; color:var(--text-primary);" type="button" onclick="document.getElementById('mobile-nav').style.display='none'">✕</button>
-    <a href="#about" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Tentang Saya</a>
-    <a href="#projects" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Proyek</a>
-    <a href="#lab" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Eksperimen</a>
-    <a href="#messages" style="font-size:18px; text-transform:uppercase; font-weight:600;" onclick="document.getElementById('mobile-nav').style.display='none'">Buku Tamu</a>
+  <div id="mobile-nav" class="mobile-nav-overlay">
+    <button class="mobile-nav-close" type="button" onclick="document.getElementById('mobile-nav').classList.remove('active')" aria-label="Close menu">✕</button>
+    <a href="#about" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Tentang Saya</a>
+    <a href="#projects" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Proyek</a>
+    <a href="#lab" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Eksperimen</a>
+    <a href="#messages" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Buku Tamu</a>
   </div>
 
   <!-- ==========================================================================
@@ -94,7 +94,7 @@
   <section id="hero" class="hero-section">
     <div class="container">
       <div class="hero-grid">
-        <div class="hero-content">
+        <div class="hero-content reveal">
           <div class="hero-badge" role="status">
             <span class="ping-dot"></span>
             Menerima Proyek Freelance
@@ -159,14 +159,14 @@
        ========================================================================== -->
   <section id="about">
     <div class="container">
-      <div class="section-label">
+      <div class="section-label reveal">
         <div class="line"></div>
         <span>Tentang Saya</span>
       </div>
 
       <div class="about-grid">
         <!-- Left Column (Identity Card, Stats, Availability) -->
-        <div class="about-identity">
+        <div class="about-identity reveal reveal-delay-1">
           <div class="profile-card">
             <div class="profile-card-kanji" aria-hidden="true">名</div>
             <div class="profile-avatar-row">
@@ -220,7 +220,7 @@
         </div>
 
         <!-- Right Column (Narrative, Skills matrix, Timeline) -->
-        <div class="about-narrative">
+        <div class="about-narrative reveal reveal-delay-2">
           <h2>Sistem yang tenang, <br><span>kecerdasan yang kuat.</span></h2>
           <p class="bio-para">
             Irham Najib Azimul Qowi adalah mahasiswa Rekayasa Perangkat Lunak di Politeknik Negeri Madiun, Indonesia. Dengan nama profesional <mark>Najin Kyou</mark>, ia mengeksplorasi integrasi antara alur kerja data, algoritma skrining postur (pose), dan pencarian semantik (RAG). Ia percaya pada rekayasa kode yang bersih dan pengerjaan yang teliti.
@@ -292,7 +292,7 @@
        ========================================================================== -->
   <section id="projects">
     <div class="container">
-      <div class="projects-header">
+      <div class="projects-header reveal">
         <div class="projects-title">
           <h2>Karya Terpilih</h2>
           <p>Kumpulan pilihan agen kecerdasan buatan, pipeline data, dan platform web responsif.</p>
@@ -370,14 +370,14 @@
        ========================================================================== -->
   <section id="lab">
     <div class="container">
-      <div class="section-label">
+      <div class="section-label reveal">
         <div class="line"></div>
         <span>Laboratorium AI</span>
       </div>
 
       <div class="lab-grid">
         <!-- Left Side: Interactive RAG Terminal -->
-        <div class="lab-terminal-area">
+        <div class="lab-terminal-area reveal reveal-delay-1">
           <div class="lab-header-main">
             <h2>Laboratorium AI</h2>
             <div class="lab-stats-strip">
@@ -531,7 +531,7 @@
        ========================================================================== -->
   <section id="messages">
     <div class="container">
-      <div class="section-label">
+      <div class="section-label reveal">
         <div class="line"></div>
         <span>Buku Tamu</span>
       </div>
@@ -637,7 +637,7 @@
   </footer>
 
   <!-- Core JavaScript -->
-  <script src="/js/main.js?v=1.0.2"></script>
+  <script src="/js/main.js?v=2.0.0"></script>
 
   <!-- Handle date rendering/formatting in guestbook messages -->
   <script>

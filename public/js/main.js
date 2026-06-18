@@ -5,7 +5,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initNavigation();
-  // initNeuralCanvas();
+  initScrollAnimations();
+  initDragToScroll();
+  initNeuralCanvas();
   initProjectsFilter();
   initProjectModals();
   initMlPredictor();
@@ -84,6 +86,68 @@ function initNavigation() {
 }
 
 /* ==========================================================================
+   SCROLL REVEAL ANIMATIONS (IntersectionObserver)
+   ========================================================================== */
+function initScrollAnimations() {
+  const revealElements = document.querySelectorAll(".reveal");
+  if (!revealElements.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.1,
+      rootMargin: "0px 0px -40px 0px",
+    }
+  );
+
+  revealElements.forEach((el) => observer.observe(el));
+}
+
+/* ==========================================================================
+   DRAG TO SCROLL (Projects Horizontal Scroll)
+   ========================================================================== */
+function initDragToScroll() {
+  const container = document.querySelector(".projects-scroll-container");
+  if (!container) return;
+
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  container.addEventListener("mousedown", (e) => {
+    isDown = true;
+    container.classList.add("active-drag");
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+  });
+
+  container.addEventListener("mouseleave", () => {
+    isDown = false;
+    container.classList.remove("active-drag");
+  });
+
+  container.addEventListener("mouseup", () => {
+    isDown = false;
+    container.classList.remove("active-drag");
+  });
+
+  container.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 1.5; // scroll-speed factor
+    container.scrollLeft = scrollLeft - walk;
+  });
+}
+
+/* ==========================================================================
    NEURAL NETWORK CANVAS ANIMATION
    ========================================================================== */
 function initNeuralCanvas() {
@@ -133,8 +197,8 @@ function initNeuralCanvas() {
 
     // Get current design colors
     const isLight = document.documentElement.classList.contains("light-theme");
-    const dotColor = isLight ? "rgba(5, 150, 105, 0.25)" : "rgba(16, 185, 129, 0.25)";
-    const lineColor = isLight ? "rgba(5, 150, 105, 0.05)" : "rgba(16, 185, 129, 0.05)";
+    const dotColor = isLight ? "rgba(8, 145, 178, 0.3)" : "rgba(0, 240, 255, 0.25)";
+    const lineColor = isLight ? "rgba(8, 145, 178, 0.06)" : "rgba(0, 240, 255, 0.06)";
     const hoverLineColor = isLight ? "rgba(79, 70, 229, 0.12)" : "rgba(99, 102, 241, 0.15)";
 
     // Update & draw nodes
@@ -318,7 +382,7 @@ function initMlPredictor() {
 
     // Loading status
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<svg class=" SunIcon animate-spin h-3.5 w-3.5 mr-2" style="width: 14px; height: 14px; display: inline; animation: spin 1s linear infinite;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Memproses...`;
+    submitBtn.innerHTML = `<svg class=" SunIcon animate-spin h-3.5 w-3.5 mr-2" style="width: 14px; height: 14px; display: inline; animation: spin 1s linear infinite;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Computing...`;
     resultBox.style.display = "none";
     fillBar.style.width = "0";
 
@@ -329,19 +393,19 @@ function initMlPredictor() {
       const query = input.toLowerCase();
 
       if (query.includes("child") || query.includes("pose") || query.includes("stand") || query.includes("standing") || query.includes("berdiri")) {
-        prediction = "Hasil Estimasi: Postur berdiri benar untuk screening balita.";
+        prediction = "Pose Estimated: Correct Standing posture for toddler screening.";
         score = 94.6;
       } else if (query.includes("face") || query.includes("eye") || query.includes("image") || query.includes("wajah") || query.includes("mata")) {
-        prediction = "Hasil Model: Kotak pembatas wajah berhasil dideteksi.";
+        prediction = "Model prediction: Face bounding box successfully localized.";
         score = 88.2;
       } else {
-        prediction = "Klasifikasi: Indikator pertumbuhan balita teridentifikasi.";
+        prediction = "Classification: Toddler growth marker detected.";
         score = 75.4;
       }
 
       // Populate results
       predictionText.textContent = prediction;
-      confidenceVal.textContent = `Tingkat akurasi ${score.toFixed(1)}%`;
+      confidenceVal.textContent = `${score.toFixed(1)}% confidence`;
       resultBox.style.display = "block";
 
       // Reset loading button
