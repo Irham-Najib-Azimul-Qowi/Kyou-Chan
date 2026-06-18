@@ -1032,41 +1032,48 @@ html.light-theme .btn-primary {
   box-shadow: var(--shadow-premium), 0 0 12px rgba(0, 240, 255, 0.05);
 }
 
-/* Timeline */
+/* Timeline — Horizontal Layout */
 .timeline {
   position: relative;
-  padding-left: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
   margin-top: 44px;
+  padding-left: 0;
 }
 
 .timeline::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 1.5px;
-  background: linear-gradient(to bottom, var(--jade-glow), var(--indigo-glow), var(--gold-glow));
+  right: 0;
+  top: 8px; /* sits aligned with the dots */
+  height: 1.5px;
+  width: 100%;
+  background: linear-gradient(to right, var(--jade-glow) 20%, var(--indigo-glow) 50%, var(--gold-glow) 80%);
+  z-index: 1;
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 28px;
-}
-
-.timeline-item:last-child {
   margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
 }
 
 .timeline-dot {
-  position: absolute;
-  left: -33.5px;
-  top: 4px;
+  position: relative;
+  left: 0;
+  top: 0;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: var(--bg-void);
   border: 2px solid var(--border-strong);
+  margin-bottom: 16px;
+  z-index: 3;
   transition: var(--transition-smooth);
 }
 
@@ -1080,7 +1087,7 @@ html.light-theme .btn-primary {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .timeline-item.jade .timeline-period { color: var(--jade); }
@@ -1092,6 +1099,29 @@ html.light-theme .btn-primary {
   font-weight: 300;
   line-height: 1.6;
   color: var(--text-secondary);
+}
+
+/* Timeline Responsive fallback */
+@media (max-width: 768px) {
+  .timeline {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 1.5px;
+    height: auto;
+    background: linear-gradient(to bottom, var(--jade-glow), var(--indigo-glow), var(--gold-glow));
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -33.5px;
+    top: 4px;
+    margin-bottom: 0;
+  }
 }
 
 /* ==========================================================================
@@ -2072,7 +2102,7 @@ html.light-theme .soon-placeholder-btn {
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1.2fr 1fr;
   gap: 48px;
   align-items: start;
 }

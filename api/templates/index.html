@@ -612,36 +612,7 @@
       </div>
 
       <div class="guestbook-wrapper">
-        <!-- Left Side: CTA & Form -->
-        <div class="guestbook-form-area">
-          <div class="guestbook-cta">
-            <h3>Leave a Transmission</h3>
-            <p>Have an idea, project proposal, or just want to say hi? Transmit a message directly to Najib's terminal log.</p>
-          </div>
-          <form id="guestbook-form" class="g-form">
-            <div class="g-field-group">
-              <label for="g-name-input">Your Identity</label>
-              <input id="g-name-input" type="text" required placeholder="e.g., Visitor" class="g-input" maxlength="50" autocomplete="name">
-            </div>
-
-            <div class="g-field-group">
-              <label for="g-message-input">Message</label>
-              <textarea id="g-message-input" required placeholder="Write your message or feedback here..." class="g-textarea" maxlength="500"></textarea>
-              <div id="g-char-counter" class="char-counter">0/500</div>
-            </div>
-
-            <!-- Anti-Spam Honeypot field (hidden from screen readers & users) -->
-            <div class="hp-field" aria-hidden="true">
-              <label for="g-hp-input">Do not fill this section</label>
-              <input id="g-hp-input" type="text" tabindex="-1" autocomplete="off">
-            </div>
-
-            <button type="submit" class="g-submit">Transmit Message</button>
-            <div id="g-error-msg" class="g-error-msg"></div>
-          </form>
-        </div>
-
-        <!-- Right Side: Received Transmissions Feed -->
+        <!-- Left Side: Received Transmissions Feed -->
         <div class="guestbook-feed-area">
           <div class="guestbook-badge" role="status">
             <span></span> Direct Line · {{.TotalSignals}} Signals Received
@@ -676,6 +647,35 @@
             </div>
             {{end}}
           </div>
+        </div>
+
+        <!-- Right Side: CTA & Form -->
+        <div class="guestbook-form-area">
+          <div class="guestbook-cta">
+            <h3>Leave a Transmission</h3>
+            <p>Have an idea, project proposal, or just want to say hi? Transmit a message directly to Najib's terminal log.</p>
+          </div>
+          <form id="guestbook-form" class="g-form">
+            <div class="g-field-group">
+              <label for="g-name-input">Your Identity</label>
+              <input id="g-name-input" type="text" required placeholder="e.g., Visitor" class="g-input" maxlength="50" autocomplete="name">
+            </div>
+
+            <div class="g-field-group">
+              <label for="g-message-input">Message</label>
+              <textarea id="g-message-input" required placeholder="Write your message or feedback here..." class="g-textarea" maxlength="500"></textarea>
+              <div id="g-char-counter" class="char-counter">0/500</div>
+            </div>
+
+            <!-- Anti-Spam Honeypot field (hidden from screen readers & users) -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="g-hp-input">Do not fill this section</label>
+              <input id="g-hp-input" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <button type="submit" class="g-submit">Transmit Message</button>
+            <div id="g-error-msg" class="g-error-msg"></div>
+          </form>
         </div>
       </div>
     </div>
