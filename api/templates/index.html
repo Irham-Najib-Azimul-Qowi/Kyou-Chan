@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Najin Kyou | Portofolio</title>
-  <meta name="description" content="Portofolio pribadi Najin Kyou, mahasiswa rekayasa perangkat lunak yang berfokus pada AI Engineering, pipeline RAG, on-device ML, dan aplikasi web-mobile fullstack.">
+  <title>Najin Kyou | Portfolio</title>
+  <meta name="description" content="Personal portfolio of Najin Kyou, a Software Engineering student specializing in AI Engineering, RAG pipelines, on-device ML, and fullstack web/mobile applications.">
   <meta name="theme-color" content="#090A0F">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Najin Kyou | Portofolio">
-  <meta property="og:description" content="Data science, model machine learning, dan proyek rekayasa perangkat lunak interaktif oleh Najin Kyou.">
+  <meta property="og:title" content="Najin Kyou | Portfolio">
+  <meta property="og:description" content="Interactive data science, machine learning models, and software engineering projects by Najin Kyou.">
   <meta property="og:image" content="/favicon.ico">
 
   <!-- Favicon -->
@@ -20,6 +20,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Devicon CDN for Skill Logos -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/css/main.css?v=2.0.0">
@@ -44,10 +47,10 @@
 
       <!-- Navigation links -->
       <nav class="nav-links" aria-label="Primary Navigation">
-        <a href="#about" class="nav-link">Tentang Saya</a>
-        <a href="#projects" class="nav-link">Proyek</a>
-        <a href="#lab" class="nav-link">Eksperimen</a>
-        <a href="#messages" class="nav-link">Buku Tamu</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#lab" class="nav-link">AI Lab</a>
+        <a href="#messages" class="nav-link">Guestbook</a>
       </nav>
 
       <div class="header-actions">
@@ -82,10 +85,10 @@
   <!-- Mobile Navigation overlay -->
   <div id="mobile-nav" class="mobile-nav-overlay">
     <button class="mobile-nav-close" type="button" onclick="document.getElementById('mobile-nav').classList.remove('active')" aria-label="Close menu">✕</button>
-    <a href="#about" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Tentang Saya</a>
-    <a href="#projects" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Proyek</a>
-    <a href="#lab" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Eksperimen</a>
-    <a href="#messages" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Buku Tamu</a>
+    <a href="#about" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">About</a>
+    <a href="#projects" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Projects</a>
+    <a href="#lab" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">AI Lab</a>
+    <a href="#messages" class="mobile-nav-link" onclick="document.getElementById('mobile-nav').classList.remove('active')">Guestbook</a>
   </div>
 
   <!-- ==========================================================================
@@ -97,7 +100,7 @@
         <div class="hero-content reveal">
           <div class="hero-badge" role="status">
             <span class="ping-dot"></span>
-            Menerima Proyek Freelance
+            Open to Freelance Projects
           </div>
           
           <div class="hero-title-container">
@@ -108,12 +111,12 @@
           <div class="hero-divider"></div>
           <h2 class="hero-subtitle">Data Scientist & AI Engineer</h2>
           <p class="hero-bio">
-            Mahasiswa Rekayasa Perangkat Lunak di Politeknik Negeri Madiun. Saya fokus pada pembuatan sistem kecerdasan buatan praktis, pipeline dokumen RAG, model ML on-device, dan aplikasi web-mobile fullstack berkualitas tinggi.
+            Software Engineering student at Politeknik Negeri Madiun. I specialize in building practical artificial intelligence systems, document RAG pipelines, on-device ML models, and high-performance fullstack web & mobile applications.
           </p>
 
           <div class="hero-actions">
-            <a href="#projects" class="btn btn-primary">Lihat Karya Saya →</a>
-            <a href="#messages" class="btn btn-secondary">Hubungi Saya</a>
+            <a href="#projects" class="btn btn-primary">View My Work →</a>
+            <a href="#messages" class="btn btn-secondary">Contact Me</a>
           </div>
 
           <!-- Skills Badge Row -->
@@ -161,7 +164,7 @@
     <div class="container">
       <div class="section-label reveal">
         <div class="line"></div>
-        <span>Tentang Saya</span>
+        <span>About Me</span>
       </div>
 
       <div class="about-grid">
@@ -178,14 +181,14 @@
             </div>
             <div class="profile-badges">
               <span class="profile-badge active-status">
-                <span></span> Aktif Freelance
+                <span></span> Available for Freelance
               </span>
               <span class="profile-badge location">
                 📍 Madiun, Indonesia
               </span>
             </div>
             <p class="profile-desc text-secondary">
-              Mahasiswa Semester 4 Rekayasa Perangkat Lunak di Politeknik Negeri Madiun, mengembangkan aplikasi AI cerdas dan sistem data.
+              4th Semester Software Engineering student at Politeknik Negeri Madiun, developing intelligent AI applications and robust data systems.
             </p>
           </div>
 
@@ -193,37 +196,37 @@
           <div class="stats-grid">
             <div class="stat-item">
               <div class="stat-val jade">4</div>
-              <div class="stat-label">Proyek Selesai</div>
+              <div class="stat-label">Projects Completed</div>
             </div>
             <div class="stat-item">
               <div class="stat-val indigo">2</div>
-              <div class="stat-label">Klien Riil</div>
+              <div class="stat-label">Real Clients</div>
             </div>
             <div class="stat-item">
               <div class="stat-val gold">2023</div>
-              <div class="stat-label">Aktif Sejak</div>
+              <div class="stat-label">Active Since</div>
             </div>
             <div class="stat-item">
-              <div class="stat-val maple">1<span class="suffix">ikut</span></div>
-              <div class="stat-label">Kompetisi AI</div>
+              <div class="stat-val maple">1<span class="suffix">joined</span></div>
+              <div class="stat-label">AI Competition</div>
             </div>
           </div>
 
           <!-- Availability card -->
           <div class="avail-box">
             <div>
-              <p class="avail-title">Tersedia untuk proyek</p>
-              <p class="avail-desc">Remote · Freelance · Kolaborasi</p>
+              <p class="avail-title">Available for projects</p>
+              <p class="avail-desc">Remote · Freelance · Collaboration</p>
             </div>
-            <a href="#messages" class="avail-btn">Kirim Pesan →</a>
+            <a href="#messages" class="avail-btn">Send Message →</a>
           </div>
         </div>
 
         <!-- Right Column (Narrative, Skills matrix, Timeline) -->
         <div class="about-narrative reveal reveal-delay-2">
-          <h2>Sistem yang tenang, <br><span>kecerdasan yang kuat.</span></h2>
+          <h2>Quiet systems, <br><span>powerful intelligence.</span></h2>
           <p class="bio-para">
-            Irham Najib Azimul Qowi adalah mahasiswa Rekayasa Perangkat Lunak di Politeknik Negeri Madiun, Indonesia. Dengan nama profesional <mark>Najin Kyou</mark>, ia mengeksplorasi integrasi antara alur kerja data, algoritma skrining postur (pose), dan pencarian semantik (RAG). Ia percaya pada rekayasa kode yang bersih dan pengerjaan yang teliti.
+            Irham Najib Azimul Qowi is a Software Engineering student at Politeknik Negeri Madiun, Indonesia. Writing under the professional pseudonym <mark>Najin Kyou</mark>, he explores the convergence of data pipelines, pose estimation screening, and Retrieval-Augmented Generation (RAG). He believes in clean code craftsmanship and meticulous detail.
           </p>
 
           <!-- Skills Stack -->
@@ -231,57 +234,129 @@
             <div>
               <p class="skill-group-label indigo">AI & Data Science</p>
               <div class="skill-tags">
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">LangChain</span>
-                <span class="skill-tag">Gemini</span>
-                <span class="skill-tag">Pinecone</span>
-                <span class="skill-tag">TFLite</span>
-                <span class="skill-tag">MediaPipe</span>
-                <span class="skill-tag">FastAPI</span>
+                <span class="skill-tag">
+                  <i class="devicon-python-plain colored"></i>
+                  Python
+                </span>
+                <span class="skill-tag">
+                  <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6366f1; width:16px; height:16px;">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                  </svg>
+                  LangChain
+                </span>
+                <span class="skill-tag">
+                  <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="currentColor" style="color:#00F0FF; width:16px; height:16px;">
+                    <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z"/>
+                  </svg>
+                  Gemini
+                </span>
+                <span class="skill-tag">
+                  <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#6366f1; width:16px; height:16px;">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                  Pinecone
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-tensorflow-line colored"></i>
+                  TFLite
+                </span>
+                <span class="skill-tag">
+                  <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#00F0FF; width:16px; height:16px;">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path>
+                  </svg>
+                  MediaPipe
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-fastapi-plain colored"></i>
+                  FastAPI
+                </span>
               </div>
             </div>
 
             <div>
               <p class="skill-group-label jade">Web Fullstack</p>
               <div class="skill-tags">
-                <span class="skill-tag">Next.js</span>
-                <span class="skill-tag">React</span>
-                <span class="skill-tag">Laravel</span>
-                <span class="skill-tag">TypeScript</span>
-                <span class="skill-tag">MySQL</span>
-                <span class="skill-tag">Supabase</span>
-                <span class="skill-tag">TailwindCSS</span>
+                <span class="skill-tag">
+                  <i class="devicon-nextjs-plain"></i>
+                  Next.js
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-react-original colored"></i>
+                  React
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-laravel-original colored"></i>
+                  Laravel
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-typescript-plain colored"></i>
+                  TypeScript
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-mysql-original colored"></i>
+                  MySQL
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-supabase-plain colored"></i>
+                  Supabase
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-tailwindcss-original colored"></i>
+                  TailwindCSS
+                </span>
               </div>
             </div>
             <div>
               <p class="skill-group-label gold">Mobile Engineering</p>
               <div class="skill-tags">
-                <span class="skill-tag">Kotlin XML</span>
-                <span class="skill-tag">Jetpack Compose</span>
-                <span class="skill-tag">Room Database</span>
-                <span class="skill-tag">WorkManager</span>
-                <span class="skill-tag">Retrofit</span>
+                <span class="skill-tag">
+                  <i class="devicon-kotlin-plain colored"></i>
+                  Kotlin XML
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-jetpackcompose-plain colored"></i>
+                  Jetpack Compose
+                </span>
+                <span class="skill-tag">
+                  <i class="devicon-sqlite-plain colored"></i>
+                  Room Database
+                </span>
+                <span class="skill-tag">
+                  <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#f59e0b; width:16px; height:16px;">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2"></path>
+                  </svg>
+                  WorkManager
+                </span>
+                <span class="skill-tag">
+                  <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#f59e0b; width:16px; height:16px;">
+                    <path d="M16 3h5v5M4 20L20 4M8 21H3v-5"></path>
+                  </svg>
+                  Retrofit
+                </span>
               </div>
             </div>
           </div>
 
           <!-- Academic Timeline -->
-          <div class="timeline" aria-label="Riwayat Akademis">
+          <div class="timeline" aria-label="Academic Timeline">
             <div class="timeline-item jade">
               <div class="timeline-dot"></div>
               <p class="timeline-period">Semester 1 (2023)</p>
-              <p class="timeline-text">Mempelajari dasar-dasar pemrograman, membangun aplikasi web statis, dan memahami logika algoritma dasar.</p>
+              <p class="timeline-text">Learned programming fundamentals, built static web projects, and mastered core algorithmic logic.</p>
             </div>
             <div class="timeline-item indigo">
               <div class="timeline-dot"></div>
-              <p class="timeline-period">Tahun ke-2 (2024)</p>
-              <p class="timeline-text">Mengembangkan situs web produksi untuk klien, sistem ticketing, dan mulai mendalami pengembangan mobile dengan Kotlin.</p>
+              <p class="timeline-period">Year 2 (2024)</p>
+              <p class="timeline-text">Developed production-grade websites for real clients, ticketing systems, and began diving into mobile development with Kotlin.</p>
             </div>
             <div class="timeline-item gold">
               <div class="timeline-dot"></div>
-              <p class="timeline-period">Sekarang (2026)</p>
-              <p class="timeline-text">Fokus mendalam pada kecerdasan buatan: merancang sistem RAG, membangun pendeteksi visi ML on-device, dan mengoptimalkan endpoint machine learning.</p>
+              <p class="timeline-period">Present (2026)</p>
+              <p class="timeline-text">Deep focus on AI systems: designing RAG pipelines, building on-device ML computer vision models, and optimizing machine learning endpoints.</p>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -294,13 +369,13 @@
     <div class="container">
       <div class="projects-header reveal">
         <div class="projects-title">
-          <h2>Karya Terpilih</h2>
-          <p>Kumpulan pilihan agen kecerdasan buatan, pipeline data, dan platform web responsif.</p>
+          <h2>Featured Work</h2>
+          <p>A curated collection of autonomous AI agents, data pipelines, and responsive web applications.</p>
         </div>
 
         <!-- Filter pills -->
-        <div class="filter-pills" role="tablist" aria-label="Filter Kategori Proyek">
-          <button class="filter-pill active" data-filter="all" role="tab" aria-selected="true">Semua</button>
+        <div class="filter-pills" role="tablist" aria-label="Filter Project Category">
+          <button class="filter-pill active" data-filter="all" role="tab" aria-selected="true">All</button>
           <button class="filter-pill" data-filter="ai" role="tab" aria-selected="false">AI / Data</button>
           <button class="filter-pill" data-filter="web" role="tab" aria-selected="false">Web</button>
           <button class="filter-pill" data-filter="mobile" role="tab" aria-selected="false">Mobile</button>
@@ -329,12 +404,12 @@
                 <span class="project-tag">{{.}}</span>
                 {{end}}
               </div>
-              <a href="#" class="btn btn-secondary project-detail-btn" role="button">Detail Proyek →</a>
+              <a href="#" class="btn btn-secondary project-detail-btn" role="button">Project Details →</a>
             </div>
           </div>
           {{else}}
           <!-- Fallback if database is empty -->
-          <p>Proyek tidak ditemukan. Periksa konfigurasi database.</p>
+          <p>No projects found. Check database configuration.</p>
           {{end}}
         </div>
       </div>
@@ -344,23 +419,23 @@
   <!-- Project Detail Modal -->
   <div id="project-modal" class="modal-overlay" aria-hidden="true" role="dialog">
     <div class="modal-content">
-      <button id="modal-close" class="modal-close" type="button" aria-label="Tutup modal">✕</button>
+      <button id="modal-close" class="modal-close" type="button" aria-label="Close modal">✕</button>
       <div class="modal-header">
-        <span id="modal-project-category" class="category">Kategori</span>
-        <h3 id="modal-project-name">Judul Proyek</h3>
+        <span id="modal-project-category" class="category">Category</span>
+        <h3 id="modal-project-name">Project Title</h3>
       </div>
       <div id="modal-project-long-desc" class="modal-body">
-        <p>Deskripsi proyek akan muncul di sini...</p>
+        <p>Project description will appear here...</p>
       </div>
       <div class="modal-tech">
-        <span class="modal-tech-label">Teknologi yang Digunakan</span>
+        <span class="modal-tech-label">Technologies Used</span>
         <div id="modal-project-tech" class="project-tags" style="margin-bottom:30px;">
           <!-- tags injected dynamically -->
         </div>
       </div>
       <div class="modal-footer">
-        <a id="modal-demo-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display:none;">Jalankan Demo Live</a>
-        <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="display:none;">Lihat Repositori</a>
+        <a id="modal-demo-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display:none;">Run Live Demo</a>
+        <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="display:none;">View Repository</a>
       </div>
     </div>
   </div>
@@ -372,34 +447,34 @@
     <div class="container">
       <div class="section-label reveal">
         <div class="line"></div>
-        <span>Laboratorium AI</span>
+        <span>AI Lab</span>
       </div>
 
       <div class="lab-grid">
         <!-- Left Side: Interactive RAG Terminal -->
         <div class="lab-terminal-area reveal reveal-delay-1">
           <div class="lab-header-main">
-            <h2>Laboratorium AI</h2>
+            <h2>AI Lab</h2>
             <div class="lab-stats-strip">
               <div class="lab-stat-box">
                 <span class="val jade">2</span>
-                <span class="label">Model Aktif</span>
+                <span class="label">Active Models</span>
               </div>
               <div class="lab-stat-box">
                 <span class="val indigo">1.2s</span>
-                <span class="label">Rata-rata Respon</span>
+                <span class="label">Avg Response</span>
               </div>
               <div class="lab-stat-box">
                 <span class="val gold">~200</span>
-                <span class="label">Dokumen Terindeks</span>
+                <span class="label">Indexed Docs</span>
               </div>
             </div>
           </div>
 
           <div class="lab-divider">
-            <span class="exhibit-badge">Eksperimen 01</span>
+            <span class="exhibit-badge">Experiment 01</span>
             <div class="line"></div>
-            <h3>Asisten RAG (Tanya Jawab Dokumen)</h3>
+            <h3>RAG Assistant (Document Q&A)</h3>
             <div class="line"></div>
           </div>
 
@@ -424,11 +499,11 @@
                 <div class="chat-bubble-row">
                   <div class="chat-avatar">知</div>
                   <div class="chat-bubble assistant-bubble">
-                    <p>Halo! Saya asisten RAG portofolio Najin. Tanyakan apa saja mengenai keahliannya, proyek AI, atau perjalanannya sebagai developer.</p>
+                    <p>Hello! I am Najin's portfolio RAG assistant. Ask me anything about his skills, AI projects, or developer journey.</p>
                     <div class="suggested-qs">
-                      <button type="button" class="suggested-btn">Apa saja proyek yang sudah dibangun?</button>
-                      <button type="button" class="suggested-btn">Jelaskan tentang StuntSense</button>
-                      <button type="button" class="suggested-btn">Apa teknologi utama yang digunakan?</button>
+                      <button type="button" class="suggested-btn">What projects has he built?</button>
+                      <button type="button" class="suggested-btn">Tell me about StuntSense</button>
+                      <button type="button" class="suggested-btn">What is his core tech stack?</button>
                     </div>
                   </div>
                 </div>
@@ -437,8 +512,8 @@
               <!-- Terminal input bar -->
               <div class="terminal-input-bar">
                 <form id="rag-form" class="terminal-input-wrapper">
-                  <input id="rag-input" type="text" placeholder="Tanyakan apa saja tentang Najin Kyou..." class="terminal-input" required autocomplete="off">
-                  <button id="rag-submit" type="submit" class="terminal-send" aria-label="Kirim pesan">
+                  <input id="rag-input" type="text" placeholder="Ask anything about Najin Kyou..." class="terminal-input" required autocomplete="off">
+                  <button id="rag-submit" type="submit" class="terminal-send" aria-label="Send message">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <line x1="22" y1="2" x2="11" y2="13"></line>
                       <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -453,9 +528,9 @@
         <!-- Right Side: Model simulators -->
         <div class="lab-models-area">
           <div class="lab-divider">
-            <span class="exhibit-badge">Eksperimen 02</span>
+            <span class="exhibit-badge">Experiment 02</span>
             <div class="line"></div>
-            <h3>Model Machine Learning Aktif</h3>
+            <h3>Active Machine Learning Models</h3>
             <div class="line"></div>
           </div>
 
@@ -465,33 +540,33 @@
               <div class="ml-card-head">
                 <div class="ml-card-title">
                   <span class="ico">🧬</span>
-                  <h4>Prediksi Pertumbuhan Pose</h4>
+                  <h4>Pose Growth Predictor</h4>
                 </div>
-                <span class="ml-card-status">Simulasi Langsung</span>
+                <span class="ml-card-status">Live Simulator</span>
               </div>
               <p class="ml-card-desc">
-                Simulasi interaktif klasifikasi stunting dari StuntSense. Masukkan deskripsi fisik atau parameter pertumbuhan balita untuk mulai memprediksi.
+                Interactive simulation of toddler stunting classification from StuntSense. Enter physical parameters to run prediction.
               </p>
               
               <form id="ml-predictor-form" class="ml-form">
                 <div class="ml-input-group">
-                  <label for="ml-input">Deskripsi Postur Balita / Dimensi Fisik</label>
-                  <input id="ml-input" type="text" required placeholder="Contoh: berdiri tegak, tinggi 85cm, usia 24 bulan" class="ml-field">
+                  <label for="ml-input">Toddler Posture Description / Physical Dimensions</label>
+                  <input id="ml-input" type="text" required placeholder="e.g., standing straight, height 85cm, age 24 months" class="ml-field">
                 </div>
 
                 <!-- Simulation result box -->
                 <div id="ml-result" class="ml-result-box">
                   <div class="ml-result-head">
-                    <span>Klasifikasi</span>
-                    <span id="ml-confidence">Tingkat akurasi 94.6%</span>
+                    <span>Classification</span>
+                    <span id="ml-confidence">94.6% confidence level</span>
                   </div>
                   <div class="ml-result-bar-bg" aria-hidden="true">
                     <div id="ml-fill" class="ml-result-bar-fill"></div>
                   </div>
-                  <p id="ml-prediction-text" class="ml-result-text">Hasil Estimasi: Postur berdiri benar untuk screening balita.</p>
+                  <p id="ml-prediction-text" class="ml-result-text">Estimation Result: Correct standing posture for toddler screening.</p>
                 </div>
 
-                <button id="ml-submit" type="submit" class="ml-submit-btn">Jalankan Analisis Prediksi</button>
+                <button id="ml-submit" type="submit" class="ml-submit-btn">Run Prediction Analysis</button>
               </form>
             </div>
 
@@ -502,15 +577,15 @@
                   <span class="ico">👁️</span>
                   <h4>Mobile Vision Classifier</h4>
                 </div>
-                <span class="ml-card-status soon">Tiba: Kuartal 3 2026</span>
+                <span class="ml-card-status soon">ETA: Q3 2026</span>
               </div>
               <p class="ml-card-desc">
-                Klasifikasi computer vision berbasis FastAPI untuk deteksi titik koordinat tubuh secara real-time di HP. Binary model saat ini sedang dioptimalkan.
+                FastAPI-based computer vision classifier for real-time mobile keypoint detection. Binary model optimization is underway.
               </p>
 
               <div class="optimization-bar">
                 <div class="opt-head">
-                  <span>Proses optimasi model</span>
+                  <span>Model optimization progress</span>
                   <span style="color:var(--indigo);">48%</span>
                 </div>
                 <div class="ml-result-bar-bg" aria-hidden="true">
@@ -518,7 +593,7 @@
                 </div>
               </div>
 
-              <div class="soon-placeholder-btn">Segera Hadir</div>
+              <div class="soon-placeholder-btn">Coming Soon</div>
             </div>
           </div>
         </div>
@@ -533,73 +608,74 @@
     <div class="container">
       <div class="section-label reveal">
         <div class="line"></div>
-        <span>Buku Tamu</span>
+        <span>Guestbook</span>
       </div>
 
       <div class="guestbook-wrapper">
-        <!-- Messages box -->
-        <div class="guestbook-container">
-          <div class="guestbook-badge" role="status">
-            <span></span> Sambungan Langsung · {{.TotalSignals}} Pesan Diterima
+        <!-- Left Side: CTA & Form -->
+        <div class="guestbook-form-area">
+          <div class="guestbook-cta">
+            <h3>Leave a Transmission</h3>
+            <p>Have an idea, project proposal, or just want to say hi? Transmit a message directly to Najib's terminal log.</p>
           </div>
-          
-          <div class="guestbook-box">
-            <div class="guestbook-box-header">
-              <h3>Daftar Pesan Masuk</h3>
-              <span>Menampilkan 50 pesan terakhir</span>
-            </div>
-
-            <!-- Messages lists -->
-            <div id="guestbook-list" class="guestbook-messages">
-              {{range .GuestbookMessages}}
-              <div class="g-message" data-msg-id="{{.ID}}">
-                <!-- Avatar hashing color logic in JS or static initials -->
-                <div class="g-avatar c-jade">{{printf "%.1s" .SenderName}}</div>
-                <div class="g-msg-body">
-                  <div class="g-msg-info">
-                    <span class="g-sender">{{.SenderName}}</span>
-                    <span class="g-time" data-timestamp="{{.CreatedAt}}">{{.CreatedAt}}</span>
-                  </div>
-                  <div class="g-text">{{.Message}}</div>
-                </div>
-              </div>
-              {{else}}
-              <div class="g-empty-state">
-                <div class="icon">言</div>
-                <div>
-                  <p class="bold">Belum ada pesan.</p>
-                  <p>Jadilah yang pertama mengirim pesan!</p>
-                </div>
-              </div>
-              {{end}}
-            </div>
-          </div>
-        </div>
-
-        <!-- Form for transmission -->
-        <div class="g-form-container">
-          <div class="g-form-title">Kirim Pesan Baru</div>
           <form id="guestbook-form" class="g-form">
             <div class="g-field-group">
-              <label for="g-name-input">Nama Anda</label>
-              <input id="g-name-input" type="text" required placeholder="Contoh: Pengunjung" class="g-input" maxlength="50" autocomplete="name">
+              <label for="g-name-input">Your Identity</label>
+              <input id="g-name-input" type="text" required placeholder="e.g., Visitor" class="g-input" maxlength="50" autocomplete="name">
             </div>
 
             <div class="g-field-group">
-              <label for="g-message-input">Pesan</label>
-              <textarea id="g-message-input" required placeholder="Tulis pesan atau masukan Anda di sini..." class="g-textarea" maxlength="500"></textarea>
+              <label for="g-message-input">Message</label>
+              <textarea id="g-message-input" required placeholder="Write your message or feedback here..." class="g-textarea" maxlength="500"></textarea>
               <div id="g-char-counter" class="char-counter">0/500</div>
             </div>
 
             <!-- Anti-Spam Honeypot field (hidden from screen readers & users) -->
             <div class="hp-field" aria-hidden="true">
-              <label for="g-hp-input">Jangan isi bagian ini</label>
+              <label for="g-hp-input">Do not fill this section</label>
               <input id="g-hp-input" type="text" tabindex="-1" autocomplete="off">
             </div>
 
-            <button type="submit" class="g-submit">Kirim Pesan</button>
+            <button type="submit" class="g-submit">Transmit Message</button>
             <div id="g-error-msg" class="g-error-msg"></div>
           </form>
+        </div>
+
+        <!-- Right Side: Received Transmissions Feed -->
+        <div class="guestbook-feed-area">
+          <div class="guestbook-badge" role="status">
+            <span></span> Direct Line · {{.TotalSignals}} Signals Received
+          </div>
+          
+          <div class="guestbook-feed-header">
+            <h3>Received Transmissions</h3>
+            <span>Showing last 50 feeds</span>
+          </div>
+
+          <!-- Messages lists -->
+          <div id="guestbook-list" class="guestbook-messages">
+            {{range .GuestbookMessages}}
+            <div class="g-message" data-msg-id="{{.ID}}">
+              <!-- Avatar hashing color logic in JS or static initials -->
+              <div class="g-avatar c-jade">{{printf "%.1s" .SenderName}}</div>
+              <div class="g-msg-body">
+                <div class="g-msg-info">
+                  <span class="g-sender">{{.SenderName}}</span>
+                  <span class="g-time" data-timestamp="{{.CreatedAt}}">{{.CreatedAt}}</span>
+                </div>
+                <div class="g-text">{{.Message}}</div>
+              </div>
+            </div>
+            {{else}}
+            <div class="g-empty-state">
+              <div class="icon">言</div>
+              <div>
+                <p class="bold">No transmissions yet.</p>
+                <p>Be the first to transmit a message!</p>
+              </div>
+            </div>
+            {{end}}
+          </div>
         </div>
       </div>
     </div>
@@ -613,23 +689,23 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <h4 class="footer-logo">Najin Kyou</h4>
-          <p class="footer-desc">Mahasiswa Rekayasa Perangkat Lunak Politeknik Negeri Madiun yang berfokus pada kecerdasan buatan, visual data, dan fullstack web-mobile.</p>
+          <p class="footer-desc">Software Engineering student at Politeknik Negeri Madiun focusing on artificial intelligence, data visualization, and fullstack web & mobile apps.</p>
         </div>
         <div class="footer-links">
-          <h4 class="footer-title">Tautan</h4>
+          <h4 class="footer-title">Links</h4>
           <ul class="footer-links-list">
-            <li><a href="#about">Tentang Saya</a></li>
-            <li><a href="#projects">Proyek</a></li>
-            <li><a href="#lab">Eksperimen</a></li>
-            <li><a href="#messages">Buku Tamu</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#lab">AI Lab</a></li>
+            <li><a href="#messages">Guestbook</a></li>
           </ul>
         </div>
         <div class="footer-social">
-          <h4 class="footer-title">Kontak & Media</h4>
+          <h4 class="footer-title">Connect</h4>
           <ul class="footer-links-list">
             <li><a href="https://github.com/irhamqowi" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             <li><a href="mailto:irhamnajib52@gmail.com">Email</a></li>
-            <li><span class="footer-copy-text">© {{.Year}} Najin Kyou. Hak Cipta Dilindungi.</span></li>
+            <li><span class="footer-copy-text">© {{.Year}} Najin Kyou. All Rights Reserved.</span></li>
           </ul>
         </div>
       </div>
@@ -647,7 +723,7 @@
         const raw = el.getAttribute('data-timestamp');
         const d = new Date(raw);
         if(!isNaN(d.getTime())) {
-          el.textContent = d.toLocaleTimeString('id-ID', {
+          el.textContent = d.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit'
           });

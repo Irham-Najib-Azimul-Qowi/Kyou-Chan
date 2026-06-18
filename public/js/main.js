@@ -410,7 +410,7 @@ function initMlPredictor() {
 
       // Reset loading button
       submitBtn.disabled = false;
-      submitBtn.textContent = "Jalankan Analisis Prediksi";
+      submitBtn.textContent = "Run Prediction Analysis";
 
       // Animate progress bar fill
       setTimeout(() => {
@@ -493,7 +493,7 @@ function initRagChat() {
 
     const bubble = document.createElement("div");
     bubble.className = "chat-bubble assistant-bubble";
-    bubble.innerHTML = `<p style="display:flex; align-items:center; gap:8px;"><span class="status-indicator"></span> Mencari di basis pengetahuan...</p>`;
+    bubble.innerHTML = `<p style="display:flex; align-items:center; gap:8px;"><span class="status-indicator"></span> Searching knowledge base...</p>`;
     loaderRow.appendChild(bubble);
     chatFeed.appendChild(loaderRow);
     chatFeed.scrollTop = chatFeed.scrollHeight;
@@ -532,7 +532,7 @@ function initRagChat() {
 
     } catch (err) {
       loaderRow.remove();
-      appendBubble("assistant", "Gagal terhubung ke pipeline RAG. Silakan periksa apakah API key Pinecone & Gemini sudah dikonfigurasi di environment variables.");
+      appendBubble("assistant", "Failed to connect to the RAG pipeline. Please check if Pinecone & Gemini API keys are configured in environment variables.");
     } finally {
       submitBtn.disabled = false;
     }
@@ -582,23 +582,23 @@ function initGuestbook() {
     }
 
     if (name.length < 2) {
-      showToast("Nama minimal harus 2 karakter.", true);
+      showToast("Name must be at least 2 characters.", true);
       return;
     }
     if (message.length < 5) {
-      showToast("Pesan minimal harus 5 karakter.", true);
+      showToast("Message must be at least 5 characters.", true);
       return;
     }
 
     // Submit state
     submitBtn.disabled = true;
-    submitBtn.textContent = "Mengirim...";
+    submitBtn.textContent = "Transmitting...";
 
     // Optimistic UI update: render message in memory first
     const cleanName = name;
     const cleanMsg = message;
     const optimisticId = `opt-${Date.now()}`;
-    const dateStr = "Hari Ini";
+    const dateStr = "Today";
 
     const optMsgElement = createMessageElement({
       id: optimisticId,
@@ -613,7 +613,7 @@ function initGuestbook() {
       todayDivider = document.createElement("div");
       todayDivider.className = "date-divider";
       todayDivider.id = "divider-today";
-      todayDivider.innerHTML = `<div class="line"></div><span>Hari Ini (Mengirim)</span><div class="line"></div>`;
+      todayDivider.innerHTML = `<div class="line"></div><span>Today (Sending)</span><div class="line"></div>`;
       listContainer.prepend(todayDivider);
     }
     
@@ -631,7 +631,7 @@ function initGuestbook() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Gagal mengirim pesan");
+        throw new Error(data.error || "Failed to transmit message");
       }
 
       // Success: replace optimistic message with real details
@@ -643,7 +643,7 @@ function initGuestbook() {
       }, false);
 
       optMsgElement.replaceWith(realMsgElement);
-      showToast("Pesan berhasil dikirim!", false);
+      showToast("Message successfully transmitted!", false);
 
       // Reset form
       document.getElementById("g-name-input").value = "";
@@ -665,7 +665,7 @@ function initGuestbook() {
       showToast(err.message, true);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Kirim Pesan";
+      submitBtn.textContent = "Transmit Message";
     }
   });
 }
@@ -685,7 +685,7 @@ function createMessageElement(msg, isOptimistic) {
   const color = colors[Math.abs(hash) % 3];
 
   const initials = msg.sender_name.charAt(0).toUpperCase();
-  const time = new Date(msg.created_at).toLocaleTimeString("id-ID", {
+  const time = new Date(msg.created_at).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit"
   });
@@ -695,7 +695,7 @@ function createMessageElement(msg, isOptimistic) {
     <div class="g-msg-body">
       <div class="g-msg-info">
         <span class="g-sender">${msg.sender_name}</span>
-        <span class="g-time">${isOptimistic ? "mengirim..." : time}</span>
+        <span class="g-time">${isOptimistic ? "sending..." : time}</span>
       </div>
       <div class="g-text">${msg.message}</div>
     </div>
