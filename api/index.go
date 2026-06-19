@@ -1,6 +1,6 @@
 package handler
 
-// Build Trigger: Force embed refresh 2.0.0
+// Build Trigger: Force embed refresh 2.0.1
 import (
 	"bytes"
 	"embed"
