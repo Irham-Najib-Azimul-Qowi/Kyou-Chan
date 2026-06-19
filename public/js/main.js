@@ -64,7 +64,7 @@ function initNavigation() {
   // Handle active highlighting on scroll
   window.addEventListener("scroll", () => {
     let currentId = "";
-    const scrollPos = window.scrollY + 160;
+    const scrollPos = window.scrollY + 120; // Matches header offset threshold
 
     sections.forEach(section => {
       const sectionTop = section.offsetTop;
@@ -82,7 +82,35 @@ function initNavigation() {
     });
   });
 
-  // Handle smooth scroll clicks manually if needed (already handled by CSS scroll-behavior)
+  // Handle smooth scroll clicks manually to ensure perfect alignment
+  const allLinks = document.querySelectorAll(".nav-link, .mobile-nav-link, .hero-actions a, .brand, .avail-btn");
+  allLinks.forEach(link => {
+    link.addEventListener("click", e => {
+      const href = link.getAttribute("href");
+      if (href && href.startsWith("#")) {
+        e.preventDefault();
+        const targetSection = document.querySelector(href);
+        if (targetSection) {
+          const headerHeight = 72; // Height of sticky header
+          const targetPos = href === "#hero" ? 0 : targetSection.offsetTop - headerHeight + 10;
+          
+          window.scrollTo({
+            top: targetPos,
+            behavior: "smooth"
+          });
+          
+          // Update URL hash
+          history.pushState(null, null, href);
+
+          // Close mobile menu if open
+          const mobileNav = document.getElementById("mobile-nav");
+          if (mobileNav) {
+            mobileNav.classList.remove("active");
+          }
+        }
+      }
+    });
+  });
 }
 
 /* ==========================================================================
