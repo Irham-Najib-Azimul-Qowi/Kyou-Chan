@@ -2835,3 +2835,502 @@ html.light-theme .site-footer {
     box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
   }
 }
+
+/* ==========================================================================
+   AI JOB RECOMMENDER (Experiment 03) Styles
+   ========================================================================== */
+.recommender-card {
+  position: relative;
+}
+
+/* Slider Custom Styles */
+.slider-header {
+  font-family: var(--font-sans);
+}
+
+.recommender-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-normal);
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.recommender-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  transition: transform 0.1s ease;
+}
+
+.recommender-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.recommender-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  border: none;
+  transition: transform 0.1s ease;
+}
+
+.recommender-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+}
+
+/* Tabs */
+.recommender-tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.recommender-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.recommender-tab-btn.active {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.recommender-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+/* Drag & Drop */
+.drag-drop-area {
+  border: 2px dashed var(--border-strong);
+  border-radius: 8px;
+  padding: 36px 20px;
+  text-align: center;
+  background: rgba(9, 10, 15, 0.3);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+html.light-theme .drag-drop-area {
+  background: rgba(241, 245, 249, 0.3);
+}
+
+.drag-drop-area:hover,
+.drag-drop-area.drag-over {
+  border-color: var(--accent-primary);
+  background: rgba(0, 240, 255, 0.03);
+  box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.02);
+}
+
+html.light-theme .drag-drop-area:hover,
+html.light-theme .drag-drop-area.drag-over {
+  background: rgba(8, 145, 178, 0.02);
+}
+
+/* Loader Overlay */
+.recommender-loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(9, 10, 15, 0.88);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+html.light-theme .recommender-loader-overlay {
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.loader-content {
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+}
+
+.loader-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  margin: 16px 0 8px;
+  font-weight: 500;
+}
+
+.loader-progress-container {
+  width: 100%;
+  height: 4px;
+  background: var(--border-normal);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loader-progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  transition: width 0.3s ease;
+}
+
+/* Glow Ring animation */
+.glow-ring {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid var(--border-normal);
+  border-top-color: var(--accent-primary);
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+/* Error Banner */
+.recommender-error-banner {
+  background: var(--maple-dim);
+  border: 1px solid var(--maple-glow);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+  animation: slideIn 0.3s ease;
+}
+
+.recommender-error-banner p {
+  color: var(--text-primary);
+}
+
+/* Recommended Job Card */
+.recommender-job-card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-normal);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.recommender-job-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-premium), 0 0 20px rgba(0, 240, 255, 0.02);
+}
+
+.job-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.job-card-info {
+  flex: 1;
+}
+
+.job-card-title {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.job-card-company {
+  font-size: 13.5px;
+  color: var(--accent-primary);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Radial Progress */
+.radial-progress {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.radial-progress svg {
+  transform: rotate(-90deg);
+}
+
+.radial-progress .circle-bg {
+  stroke: var(--border-normal);
+}
+
+.radial-progress .circle {
+  transition: stroke-dasharray 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radial-progress .percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Job Meta tags - Styled as premium capsules */
+.job-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.job-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-normal);
+  padding: 4px 12px;
+  border-radius: 20px;
+  transition: var(--transition-fast);
+}
+
+html.light-theme .job-meta-item {
+  background: rgba(15, 23, 42, 0.02);
+}
+
+.job-meta-item:hover {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+html.light-theme .job-meta-item:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.job-meta-item .icon-svg {
+  flex-shrink: 0;
+}
+
+/* Breakdown Grid with metric dividers */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: rgba(9, 10, 15, 0.25);
+  border: 1px solid var(--border-normal);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+html.light-theme .breakdown-grid {
+  background: rgba(241, 245, 249, 0.25);
+}
+
+.breakdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-right: 1px solid var(--border-normal);
+}
+
+.breakdown-item:last-child {
+  border-right: none;
+}
+
+.breakdown-label {
+  font-size: 8.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.breakdown-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.breakdown-val.score-green { color: var(--jade); }
+.breakdown-val.score-gold { color: var(--gold); }
+.breakdown-val.score-maple { color: var(--maple); }
+
+/* Explanation Reason */
+.job-explanation {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--accent-primary);
+  padding-left: 12px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Details Grid (Split layout) */
+.job-card-details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+@media (min-width: 768px) {
+  .job-card-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .job-card-details-grid.no-roadmap {
+    grid-template-columns: 1fr;
+  }
+}
+
+.job-card-analysis-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Skills section styling */
+.skills-badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.skill-badge.matched {
+  color: var(--jade);
+  background: var(--jade-dim);
+  border-color: var(--jade-glow);
+}
+
+.skill-badge.missing {
+  color: var(--text-muted);
+  background: var(--border-normal);
+  border-color: var(--border-strong);
+}
+
+/* Roadmap Column & Learn suggestions */
+.job-card-roadmap-col {
+  width: 100%;
+}
+
+.roadmap-container {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-glow);
+  border-radius: 8px;
+  padding: 16px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.roadmap-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.roadmap-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roadmap-list li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.roadmap-list li::before {
+  content: "•";
+  color: var(--gold);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+}
+
+.roadmap-list li strong {
+  color: var(--text-primary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive grid for breakdown */
+@media (max-width: 576px) {
+  .breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 6px;
+  }
+}

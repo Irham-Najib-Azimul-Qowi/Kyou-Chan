@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMlPredictor();
   initRagChat();
   initGuestbook();
+  initJobRecommender();
 });
 
 /* ==========================================================================
@@ -748,3 +749,478 @@ function showToast(message, isError) {
     toast.classList.remove("show");
   }, 4000);
 }
+
+/* ==========================================================================
+   AI JOB RECOMMENDER SIMULATOR (Exhibit 03)
+   ========================================================================== */
+function initJobRecommender() {
+  const statusBadge = document.getElementById("recommender-api-status");
+  const tabBtnFile = document.getElementById("tab-btn-file");
+  const tabBtnText = document.getElementById("tab-btn-text");
+  const panelFile = document.getElementById("tab-panel-file");
+  const panelText = document.getElementById("tab-panel-text");
+  const slider = document.getElementById("recommender-top-k");
+  const topKDisplay = document.getElementById("top-k-display");
+
+  const dragArea = document.getElementById("recommender-drag-area");
+  const fileInput = document.getElementById("recommender-file-input");
+  const promptContent = document.getElementById("drag-drop-prompt");
+  const fileInfo = document.getElementById("selected-file-info");
+  const filenameEl = document.getElementById("selected-filename");
+  const filesizeEl = document.getElementById("selected-filesize");
+  const removeBtn = document.getElementById("remove-file-btn");
+  const submitFileBtn = document.getElementById("btn-submit-file");
+
+  const submitTextBtn = document.getElementById("btn-submit-text");
+  const textInput = document.getElementById("recommender-text-input");
+  const retryBtn = document.getElementById("recommender-retry-btn");
+
+  if (!statusBadge) return;
+
+  // 1. Check API Health on load
+  checkApiHealth();
+
+  async function checkApiHealth() {
+    try {
+      const res = await fetch("https://irhamnajibazimulqowi-ai-job-recommender-api.hf.space/health");
+      if (res.ok) {
+        const data = await res.json();
+        statusBadge.textContent = `Online: ${data.jobs_database_size.toLocaleString()} Active Jobs`;
+        statusBadge.className = "ml-card-status"; // removes 'soon' which makes it gold
+        statusBadge.style.borderColor = "var(--jade-glow)";
+        statusBadge.style.color = "var(--jade)";
+        statusBadge.style.background = "var(--jade-dim)";
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      statusBadge.textContent = "Offline / Sleeping";
+      statusBadge.className = "ml-card-status soon";
+      statusBadge.style.borderColor = "var(--gold-glow)";
+      statusBadge.style.color = "var(--gold)";
+      statusBadge.style.background = "var(--gold-dim)";
+    }
+  }
+
+  // 2. Tab Navigation
+  if (tabBtnFile && tabBtnText && panelFile && panelText) {
+    tabBtnFile.addEventListener("click", () => {
+      tabBtnFile.classList.add("active");
+      tabBtnFile.setAttribute("aria-selected", "true");
+      tabBtnText.classList.remove("active");
+      tabBtnText.setAttribute("aria-selected", "false");
+      panelFile.style.display = "block";
+      panelText.style.display = "none";
+    });
+
+    tabBtnText.addEventListener("click", () => {
+      tabBtnText.classList.add("active");
+      tabBtnText.setAttribute("aria-selected", "true");
+      tabBtnFile.classList.remove("active");
+      tabBtnFile.setAttribute("aria-selected", "false");
+      panelText.style.display = "block";
+      panelFile.style.display = "none";
+    });
+  }
+
+  // 3. Recommendation Slider
+  if (slider && topKDisplay) {
+    slider.addEventListener("input", (e) => {
+      topKDisplay.textContent = `${e.target.value} Matches`;
+    });
+  }
+
+  // 4. Drag & Drop File Handling
+  let selectedFile = null;
+
+  if (dragArea && fileInput && promptContent && fileInfo && filenameEl && filesizeEl && removeBtn && submitFileBtn) {
+    dragArea.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    dragArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dragArea.classList.add("drag-over");
+    });
+
+    ["dragleave", "dragend"].forEach(type => {
+      dragArea.addEventListener(type, () => {
+        dragArea.classList.remove("drag-over");
+      });
+    });
+
+    dragArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dragArea.classList.remove("drag-over");
+      if (e.dataTransfer.files.length > 0) {
+        handleFileSelection(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelection(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelection(file) {
+      const ext = file.name.split(".").pop().toLowerCase();
+      if (ext !== "pdf" && ext !== "docx") {
+        showToast("File format must be PDF or DOCX.", true);
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("File size exceeds 5MB limit.", true);
+        return;
+      }
+      selectedFile = file;
+      filenameEl.textContent = file.name;
+      filesizeEl.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+      
+      promptContent.style.display = "none";
+      fileInfo.style.display = "flex";
+      submitFileBtn.disabled = false;
+    }
+
+    removeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetFileSelection();
+    });
+
+    function resetFileSelection() {
+      selectedFile = null;
+      fileInput.value = "";
+      promptContent.style.display = "flex";
+      // Restore SVG and text
+      promptContent.innerHTML = `
+        <div class="upload-icon" style="margin-bottom: 12px; opacity: 0.85; color: var(--text-muted);">
+          <svg class="icon-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        </div>
+        <p class="drag-drop-text" style="font-size: 13px; margin-bottom: 6px; font-weight: 500;">
+          Drag & drop your CV file (PDF/DOCX) here
+        </p>
+        <p style="font-size: 11px; color: var(--text-muted);">
+          or click to browse from your device (Max 5MB)
+        </p>
+      `;
+      fileInfo.style.display = "none";
+      submitFileBtn.disabled = true;
+    }
+  }
+
+  // 5. Loader Overlay
+  let progressInterval = null;
+
+  function startLoading() {
+    const loader = document.getElementById("recommender-loader");
+    const loaderText = document.getElementById("recommender-loader-text");
+    const progressBar = document.getElementById("recommender-loader-progress");
+    const errorBlock = document.getElementById("recommender-error");
+    const resultsBlock = document.getElementById("recommender-results");
+
+    errorBlock.style.display = "none";
+    resultsBlock.style.display = "none";
+    loader.style.display = "flex";
+    progressBar.style.width = "0%";
+
+    const statuses = [
+      "Analyzing CV file...",
+      "Extracting skills & competencies...",
+      "Analyzing experience history...",
+      "Matching profile with 5,000 jobs...",
+      "Calculating semantic match score...",
+      "Formulating learning suggestions roadmap..."
+    ];
+    
+    let progress = 0;
+    let statusIdx = 0;
+    loaderText.textContent = statuses[0];
+
+    progressInterval = setInterval(() => {
+      progress += (100 - progress) * 0.06;
+      progressBar.style.width = `${progress}%`;
+      
+      if (Math.round(progress) % 15 === 0 && statusIdx < statuses.length - 1) {
+        statusIdx = Math.min(statusIdx + 1, statuses.length - 1);
+        loaderText.textContent = statuses[statusIdx];
+      }
+    }, 200);
+  }
+
+  function stopLoading(success) {
+    if (progressInterval) {
+      clearInterval(progressInterval);
+      progressInterval = null;
+    }
+    const loader = document.getElementById("recommender-loader");
+    const progressBar = document.getElementById("recommender-loader-progress");
+    if (success) {
+      progressBar.style.width = "100%";
+      setTimeout(() => {
+        loader.style.display = "none";
+      }, 300);
+    } else {
+      loader.style.display = "none";
+    }
+  }
+
+  // 6. Submissions
+  if (submitFileBtn) {
+    submitFileBtn.addEventListener("click", async () => {
+      if (!selectedFile) return;
+      const topK = slider.value;
+      startLoading();
+
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("top_k", topK);
+
+      try {
+        const res = await fetch("https://irhamnajibazimulqowi-ai-job-recommender-api.hf.space/recommend/file", {
+          method: "POST",
+          body: formData
+        });
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.detail || "Failed to retrieve recommendations from the file.");
+        }
+        const data = await res.json();
+        stopLoading(true);
+        renderRecommendations(data.recommendations);
+      } catch (err) {
+        stopLoading(false);
+        showError(err.message);
+      }
+    });
+  }
+
+  if (submitTextBtn) {
+    submitTextBtn.addEventListener("click", async () => {
+      const textVal = textInput.value.trim();
+      if (!textVal) {
+        showToast("Please paste your CV text or profile description.", true);
+        return;
+      }
+      const topK = slider.value;
+      startLoading();
+
+      try {
+        const res = await fetch("https://irhamnajibazimulqowi-ai-job-recommender-api.hf.space/recommend/text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: textVal, top_k: parseInt(topK) })
+        });
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.detail || "Failed to retrieve recommendations from the text.");
+        }
+        const data = await res.json();
+        stopLoading(true);
+        renderRecommendations(data.recommendations);
+      } catch (err) {
+        stopLoading(false);
+        showError(err.message);
+      }
+    });
+  }
+
+  if (retryBtn) {
+    retryBtn.addEventListener("click", () => {
+      document.getElementById("recommender-error").style.display = "none";
+    });
+  }
+
+  function showError(msg) {
+    const errorBlock = document.getElementById("recommender-error");
+    const errorText = document.getElementById("recommender-error-text");
+    errorText.textContent = msg || "Connection to the recommender server failed. Please try again later.";
+    errorBlock.style.display = "block";
+    document.getElementById("recommender-results").style.display = "none";
+  }
+
+  // 7. Results Rendering
+  function renderRecommendations(jobs) {
+    const container = document.getElementById("recommender-jobs-container");
+    const countEl = document.getElementById("recommender-results-count");
+    const resultsBlock = document.getElementById("recommender-results");
+    
+    container.innerHTML = "";
+    countEl.textContent = `${jobs.length} Matches Found`;
+    
+    if (jobs.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 32px; color: var(--text-secondary);">
+          <div style="color: var(--text-muted); margin-bottom: 8px;">
+            <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <p style="margin-top: 8px;">No suitable matches found. Try updating or adding more details to your CV.</p>
+        </div>
+      `;
+      resultsBlock.style.display = "block";
+      return;
+    }
+
+    jobs.forEach((job, idx) => {
+      const score = Math.round(job.match_score);
+      
+      let colorClass = "score-green";
+      let strokeColor = "var(--jade)";
+      if (score < 50) {
+        colorClass = "score-maple";
+        strokeColor = "var(--maple)";
+      } else if (score < 75) {
+        colorClass = "score-gold";
+        strokeColor = "var(--gold)";
+      }
+
+      const strokeDash = `${score}, 100`;
+      const salaryText = formatSalary(job.min_salary, job.max_salary);
+
+      const semanticPct = Math.round(job.breakdown.text_similarity);
+      const skillsPct = Math.round(job.breakdown.skills_match);
+      const expPct = Math.round(job.breakdown.experience_match);
+      const eduPct = Math.round(job.breakdown.education_match);
+
+      const matchedBadges = (job.explanation.matched_skills || [])
+        .map(skill => `<span class="skill-badge matched">${skill}</span>`)
+        .join("");
+      
+      const missingBadges = (job.explanation.missing_skills || [])
+        .map(skill => `<span class="skill-badge missing">${skill}</span>`)
+        .join("");
+
+      let roadmapItems = "";
+      if (job.explanation.roadmap && job.explanation.roadmap.length > 0) {
+        roadmapItems = job.explanation.roadmap
+          .map(item => `<li><strong>${item.skill}</strong>: ${item.suggestion}</li>`)
+          .join("");
+      }
+
+      const card = document.createElement("div");
+      card.className = "recommender-job-card";
+      card.style.animationDelay = `${idx * 0.1}s`;
+      
+      const detailsGridClass = roadmapItems ? "job-card-details-grid" : "job-card-details-grid no-roadmap";
+
+      card.innerHTML = `
+        <div class="job-card-header">
+          <div class="job-card-info">
+            <h4 class="job-card-title">${job.job_title}</h4>
+            <p class="job-card-company">${job.company_name}</p>
+            
+            <!-- Metadata Pills Row -->
+            <div class="job-meta-row" style="margin-top: 10px;">
+              <div class="job-meta-item" title="Location">
+                <svg class="icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--cyan);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>${job.location || "Remote / Unspecified"}</span>
+              </div>
+              <div class="job-meta-item" title="Estimated Salary">
+                <svg class="icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--jade);"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span>${salaryText}</span>
+              </div>
+              <div class="job-meta-item" title="Experience Level">
+                <svg class="icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--indigo);"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                <span>${job.experience_level || "All Levels"}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Match Score Circle -->
+          <div class="radial-progress" title="Match Score: ${score}%">
+            <svg width="52" height="52" viewBox="0 0 36 36">
+              <path class="circle-bg"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke-width="2.8" />
+              <path class="circle"
+                stroke-dasharray="${strokeDash}"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="${strokeColor}" stroke-width="2.8" stroke-linecap="round" />
+            </svg>
+            <div class="percentage ${colorClass}">${score}%</div>
+          </div>
+        </div>
+
+        ${job.explanation.reason ? `<blockquote class="job-explanation">"${job.explanation.reason}"</blockquote>` : ""}
+
+        <!-- Breakdown Grid -->
+        <div class="breakdown-grid">
+          <div class="breakdown-item">
+            <span class="breakdown-label">Semantic</span>
+            <span class="breakdown-val ${getScoreColorClass(semanticPct)}">${semanticPct}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">Skills</span>
+            <span class="breakdown-val ${getScoreColorClass(skillsPct)}">${skillsPct}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">Experience</span>
+            <span class="breakdown-val ${getScoreColorClass(expPct)}">${expPct}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">Education</span>
+            <span class="breakdown-val ${getScoreColorClass(eduPct)}">${eduPct}%</span>
+          </div>
+        </div>
+
+        <!-- Skills & Roadmap Details Split Grid -->
+        <div class="${detailsGridClass}">
+          <!-- Match Analysis Column -->
+          <div class="job-card-analysis-col" style="display: flex; flex-direction: column; gap: 12px;">
+            ${matchedBadges ? `
+              <div class="skills-badge-row">
+                <span class="breakdown-label" style="display:block; margin-bottom:6px;">Matched Skills</span>
+                <div class="skills-badge-list">${matchedBadges}</div>
+              </div>
+            ` : ""}
+            ${missingBadges ? `
+              <div class="skills-badge-row">
+                <span class="breakdown-label" style="display:block; margin-bottom:6px;">Missing Skills</span>
+                <div class="skills-badge-list">${missingBadges}</div>
+              </div>
+            ` : ""}
+          </div>
+          
+          <!-- Roadmap Column -->
+          ${roadmapItems ? `
+            <div class="job-card-roadmap-col">
+              <div class="roadmap-container">
+                <h5 class="roadmap-title" style="display: flex; align-items: center; gap: 6px;">
+                  <svg class="icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gold);"><path d="M9 18h6m-5 4h4m1-12a5 5 0 1 0-8 0c0 1.3.4 2.5 1.1 3.5L10 17h4l1.9-3.5C16.6 12.5 17 11.3 17 10z"></path></svg>
+                  Learning Roadmap
+                </h5>
+                <ul class="roadmap-list">
+                  ${roadmapItems}
+                </ul>
+              </div>
+            </div>
+          ` : ""}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    resultsBlock.style.display = "block";
+    
+    setTimeout(() => {
+      resultsBlock.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 100);
+  }
+
+  function getScoreColorClass(s) {
+    if (s >= 75) return "score-green";
+    if (s >= 50) return "score-gold";
+    return "score-maple";
+  }
+
+  function formatSalary(min, max) {
+    if (min === null || max === null) return "Negotiable";
+    const formatNum = (num) => {
+      if (num >= 1000000) return "Rp " + (num / 1000000).toFixed(1).replace(".0", "") + "M";
+      if (num >= 1000) return "Rp " + (num / 1000).toFixed(0) + "K";
+      return "Rp " + num;
+    };
+    return `${formatNum(min)} - ${formatNum(max)}`;
+  }
+}
+
+
