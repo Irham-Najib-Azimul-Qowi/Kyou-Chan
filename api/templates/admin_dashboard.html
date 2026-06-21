@@ -571,6 +571,16 @@
             <input type="password" id="config-gemini-key" value="{{.Configs.google_generative_ai_api_key}}" placeholder="AIzaSy...">
             <small style="color:var(--text-muted); font-size:11px; margin-top:2px;">Paste your Gemini API key from Google AI Studio. Leaves empty to fall back to environment default.</small>
           </div>
+          <div class="form-group">
+            <label for="config-pinecone-key">Pinecone API Key (for RAG Chatbot)</label>
+            <input type="password" id="config-pinecone-key" value="{{.Configs.pinecone_api_key}}" placeholder="pcsk_...">
+            <small style="color:var(--text-muted); font-size:11px; margin-top:2px;">Paste your Pinecone API key. Leaves empty to fall back to environment default.</small>
+          </div>
+          <div class="form-group">
+            <label for="config-pinecone-index">Pinecone Index Name</label>
+            <input type="text" id="config-pinecone-index" value="{{.Configs.pinecone_index_name}}" placeholder="najinkyou-portfolio">
+            <small style="color:var(--text-muted); font-size:11px; margin-top:2px;">Specify the Pinecone Index Name (defaults to environment or 'najinkyou-portfolio').</small>
+          </div>
           <button type="submit" class="save-btn">
             Save General Changes
           </button>
@@ -938,6 +948,8 @@
         hero_description: document.getElementById('config-hero-description').value,
         about_description: document.getElementById('config-about-description').value,
         google_generative_ai_api_key: document.getElementById('config-gemini-key').value,
+        pinecone_api_key: document.getElementById('config-pinecone-key').value,
+        pinecone_index_name: document.getElementById('config-pinecone-index').value,
       };
 
       try {

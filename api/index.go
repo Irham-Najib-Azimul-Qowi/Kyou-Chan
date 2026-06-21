@@ -1,6 +1,6 @@
 package handler
 
-// Build Trigger: Force embed refresh 2.1.0
+// Build Trigger: Force embed refresh 2.1.1
 import (
 	"bytes"
 	"crypto/hmac"
@@ -398,8 +398,14 @@ func getPineconeHost() (string, error) {
 	}
 	pineconeMu.RUnlock()
 
-	apiKey := os.Getenv("PINECONE_API_KEY")
-	idxName := os.Getenv("PINECONE_INDEX_NAME")
+	apiKey := dbGetConfig("pinecone_api_key", "")
+	if apiKey == "" {
+		apiKey = os.Getenv("PINECONE_API_KEY")
+	}
+	idxName := dbGetConfig("pinecone_index_name", "")
+	if idxName == "" {
+		idxName = os.Getenv("PINECONE_INDEX_NAME")
+	}
 	if apiKey == "" || idxName == "" {
 		return "", fmt.Errorf("pinecone credentials missing")
 	}
@@ -495,7 +501,10 @@ func queryPinecone(vector []float32) (string, error) {
 		return "", err
 	}
 
-	apiKey := os.Getenv("PINECONE_API_KEY")
+	apiKey := dbGetConfig("pinecone_api_key", "")
+	if apiKey == "" {
+		apiKey = os.Getenv("PINECONE_API_KEY")
+	}
 	url := host + "/query"
 
 	payload := map[string]interface{}{
@@ -1394,11 +1403,13 @@ func handleAdminDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	configs := map[string]string{
-		"hero_title":                  dbGetConfig("hero_title", "Irham Najib Azimul Qowi"),
-		"hero_subtitle":               dbGetConfig("hero_subtitle", "AI Engineer & Full-Stack Developer"),
-		"hero_description":            dbGetConfig("hero_description", "Building intelligent systems with Go, Python, and modern web frameworks."),
-		"about_description":           dbGetConfig("about_description", "Irham Najib Azimul Qowi is a Software Engineering student at Politeknik Negeri Madiun, Indonesia. Writing under the professional pseudonym Najin Kyou, he explores the convergence of data pipelines, pose estimation screening, and Retrieval-Augmented Generation (RAG). He believes in clean code craftsmanship and meticulous detail."),
+		"hero_title":                   dbGetConfig("hero_title", "Irham Najib Azimul Qowi"),
+		"hero_subtitle":                dbGetConfig("hero_subtitle", "AI Engineer & Full-Stack Developer"),
+		"hero_description":             dbGetConfig("hero_description", "Building intelligent systems with Go, Python, and modern web frameworks."),
+		"about_description":            dbGetConfig("about_description", "Irham Najib Azimul Qowi is a Software Engineering student at Politeknik Negeri Madiun, Indonesia. Writing under the professional pseudonym Najin Kyou, he explores the convergence of data pipelines, pose estimation screening, and Retrieval-Augmented Generation (RAG). He believes in clean code craftsmanship and meticulous detail."),
 		"google_generative_ai_api_key": dbGetConfig("google_generative_ai_api_key", ""),
+		"pinecone_api_key":             dbGetConfig("pinecone_api_key", ""),
+		"pinecone_index_name":          dbGetConfig("pinecone_index_name", ""),
 	}
 
 	data := map[string]interface{}{
@@ -1470,6 +1481,11 @@ func handleAdminConfigUpdate(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": err.Error()})
 			return
+		}
+		if k == "pinecone_api_key" || k == "pinecone_index_name" {
+			pineconeMu.Lock()
+			pineconeHost = ""
+			pineconeMu.Unlock()
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
