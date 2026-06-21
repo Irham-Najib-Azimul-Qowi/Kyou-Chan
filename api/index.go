@@ -658,7 +658,12 @@ func resolvePath(r *http.Request) string {
 // MAIN VERCEL HANDLER
 // ==========================================================================
 
+var dbInitOnce sync.Once
+
 func Handler(w http.ResponseWriter, r *http.Request) {
+	dbInitOnce.Do(func() {
+		InitDB()
+	})
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -812,9 +817,7 @@ type TimelineItem struct {
 	OrderIndex           int    `json:"order_index"`
 }
 
-func init() {
-	InitDB()
-}
+
 
 func InitDB() {
 	connStr := os.Getenv("POSTGRES_URL")
