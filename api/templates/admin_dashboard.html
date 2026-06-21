@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Kyou Chan Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a09;
+      --card-bg: #121210;
+      --card-bg-light: #1c1c19;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --text-primary: #f2f2f0;
+      --text-muted: #9e9e98;
+      --accent-primary: #00F0FF;
+      --accent-secondary: #6366f1;
+      --accent-success: #10b981;
+      --accent-danger: #ef4444;
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 260px;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      background: #0d0d0b;
+      padding: 32px 16px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      margin-bottom: 40px;
+      padding: 0 12px;
+    }
+
+    .sidebar-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-header h2 span {
+      color: var(--accent-primary);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item button:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-item.active button {
+      color: #000;
+      background: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 12px 0 12px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .logout-btn {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--accent-danger);
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+      background: var(--accent-danger);
+      color: #fff;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .panel-header {
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    .panel-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .panel-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Cards & Forms */
+    .dashboard-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--card-bg-light);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+    }
+
+    .save-btn {
+      background: var(--accent-primary);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .save-btn:hover {
+      opacity: 0.9;
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.2);
+    }
+
+    /* Table / Lists */
+    .data-table-container {
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .data-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .data-table tr:hover {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .action-btn.edit {
+      color: var(--accent-primary);
+      background: rgba(0, 240, 255, 0.05);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      margin-right: 8px;
+    }
+
+    .action-btn.edit:hover {
+      background: var(--accent-primary);
+      color: #000;
+    }
+
+    .action-btn.delete {
+      color: var(--accent-danger);
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+    }
+
+    .action-btn.delete:hover {
+      background: var(--accent-danger);
+      color: #fff;
+    }
+
+    .action-btn.reply {
+      color: var(--accent-success);
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+    }
+
+    .action-btn.reply:hover {
+      background: var(--accent-success);
+      color: #fff;
+    }
+
+    /* Modal dialog overrides */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    /* Guestbook specifically */
+    .guestbook-item {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .guestbook-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .guestbook-sender {
+      font-weight: 600;
+      color: var(--accent-primary);
+    }
+
+    .guestbook-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .guestbook-ip {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .guestbook-reply-box {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-color);
+      background: rgba(99, 102, 241, 0.03);
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .guestbook-reply-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-secondary);
+      margin-bottom: 4px;
+    }
+
+    /* Blob Upload Area */
+    .blob-upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.01);
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+
+    .blob-upload-area:hover {
+      border-color: var(--accent-primary);
+      background: rgba(0, 240, 255, 0.02);
+    }
+
+    .blob-preview {
+      max-width: 100%;
+      max-height: 120px;
+      border-radius: 6px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* Notification banner */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--accent-success);
+      color: #000;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+
+    .toast.active {
+      transform: none;
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: var(--accent-danger);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Action completed successfully</div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>Kyou<span>Chan</span> Admin</h2>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-tab="general">
+        <button type="button">
+          ⚙️ General Settings
+        </button>
+      </li>
+      <li class="nav-item" data-tab="skills">
+        <button type="button">
+          📊 Skills CRUD
+        </button>
+      </li>
+      <li class="nav-item" data-tab="timeline">
+        <button type="button">
+          ⏳ Timeline CRUD
+        </button>
+      </li>
+      <li class="nav-item" data-tab="projects">
+        <button type="button">
+          💼 Projects CRUD
+        </button>
+      </li>
+      <li class="nav-item" data-tab="messages">
+        <button type="button">
+          ✉️ Guestbook Messages
+        </button>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <form action="/admin/logout" method="POST" style="width: 100%;">
+        <button type="submit" class="logout-btn">
+          Log Out Securely
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- 1. GENERAL SETTINGS -->
+    <div id="panel-general" class="tab-panel active">
+      <div class="panel-header">
+        <h1>General Settings</h1>
+        <p>Edit dynamic descriptions and hero banner slogans displayed on the homepage.</p>
+      </div>
+
+      <div class="dashboard-card">
+        <form id="form-general">
+          <div class="form-group">
+            <label for="config-hero-title">Hero Section Title</label>
+            <input type="text" id="config-hero-title" value="{{.Configs.hero_title}}">
+          </div>
+          <div class="form-group">
+            <label for="config-hero-subtitle">Hero Section Subtitle</label>
+            <input type="text" id="config-hero-subtitle" value="{{.Configs.hero_subtitle}}">
+          </div>
+          <div class="form-group">
+            <label for="config-hero-description">Hero Section Description</label>
+            <textarea id="config-hero-description" rows="3">{{.Configs.hero_description}}</textarea>
+          </div>
+          <div class="form-group">
+            <label for="config-about-description">About Me Description</label>
+            <textarea id="config-about-description" rows="5">{{.Configs.about_description}}</textarea>
+          </div>
+          <div class="form-group">
+            <label for="config-gemini-key">Gemini AI API Key (for RAG Chatbot)</label>
+            <input type="password" id="config-gemini-key" value="{{.Configs.google_generative_ai_api_key}}" placeholder="AIzaSy...">
+            <small style="color:var(--text-muted); font-size:11px; margin-top:2px;">Paste your Gemini API key from Google AI Studio. Leaves empty to fall back to environment default.</small>
+          </div>
+          <button type="submit" class="save-btn">
+            Save General Changes
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. SKILLS CRUD -->
+    <div id="panel-skills" class="tab-panel">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1>Skills Management</h1>
+          <p>Create, update, and sort the skills displayed in the matrix.</p>
+        </div>
+        <button type="button" class="save-btn" onclick="openSkillModal(null)">
+          + Add New Skill
+        </button>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Proficiency</th>
+                <th>Order Index</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="skills-list-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. TIMELINE CRUD -->
+    <div id="panel-timeline" class="tab-panel">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1>Timeline History</h1>
+          <p>Manage your academic milestones and professional experience timelines.</p>
+        </div>
+        <button type="button" class="save-btn" onclick="openTimelineModal(null)">
+          + Add Timeline Node
+        </button>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Period (Year)</th>
+                <th>Title</th>
+                <th>Institution/Company</th>
+                <th>Type</th>
+                <th>Order</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="timeline-list-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. PROJECTS CRUD -->
+    <div id="panel-projects" class="tab-panel">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1>Project Portfolio</h1>
+          <p>Add, update, or remove portfolio projects, and configure custom details modal contents.</p>
+        </div>
+        <button type="button" class="save-btn" onclick="openProjectModal(null)">
+          + Create Project Card
+        </button>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Thumbnail</th>
+                <th>Project Name</th>
+                <th>Slug</th>
+                <th>Category</th>
+                <th>Featured</th>
+                <th>Order</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projects-list-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. MESSAGES CENTER -->
+    <div id="panel-messages" class="tab-panel">
+      <div class="panel-header">
+        <h1>Transmissions Log</h1>
+        <p>Review feedback received from viewers and send reply transmissions that display on the guestbook feed.</p>
+      </div>
+
+      <div id="messages-list-container">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==========================================
+       MODALS
+       ========================================== -->
+
+  <!-- Skill Modal -->
+  <div id="modal-skill" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-box-header">
+        <h3 id="modal-skill-title">Add Skill</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modal-skill')">✕</button>
+      </div>
+      <form id="form-skill">
+        <input type="hidden" id="skill-id">
+        <div class="form-group">
+          <label for="skill-name">Skill Name</label>
+          <input type="text" id="skill-name" required placeholder="e.g. Go, TensorFlow, Next.js">
+        </div>
+        <div class="form-group">
+          <label for="skill-category">Category</label>
+          <select id="skill-category" required>
+            <option value="AI & Data Science">AI & Data Science</option>
+            <option value="Web Fullstack">Web Fullstack</option>
+            <option value="Mobile Engineering">Mobile Engineering</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="skill-proficiency">Proficiency Percentage (%)</label>
+          <input type="number" id="skill-proficiency" required min="10" max="100" value="80">
+        </div>
+        <div class="form-group">
+          <label for="skill-order">Order Index</label>
+          <input type="number" id="skill-order" required min="0" value="0">
+        </div>
+        <button type="submit" class="save-btn" style="width:100%;">Save Skill Node</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Timeline Modal -->
+  <div id="modal-timeline" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-box-header">
+        <h3 id="modal-timeline-title">Add Milestone</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modal-timeline')">✕</button>
+      </div>
+      <form id="form-timeline">
+        <input type="hidden" id="timeline-id">
+        <div class="form-group">
+          <label for="timeline-year">Period (Year)</label>
+          <input type="text" id="timeline-year" required placeholder="e.g. Semester 1 (2023), 2024 - Present">
+        </div>
+        <div class="form-group">
+          <label for="timeline-title">Title</label>
+          <input type="text" id="timeline-title" required placeholder="e.g. Computer Science Student, AI Architect">
+        </div>
+        <div class="form-group">
+          <label for="timeline-company">Company / Institution</label>
+          <input type="text" id="timeline-company" required placeholder="e.g. Politeknik Negeri Madiun">
+        </div>
+        <div class="form-group">
+          <label for="timeline-type">Type</label>
+          <select id="timeline-type" required>
+            <option value="education">Education</option>
+            <option value="experience">Experience</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="timeline-order">Order Index</label>
+          <input type="number" id="timeline-order" required min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label for="timeline-description">Description Text</label>
+          <textarea id="timeline-description" required rows="4" placeholder="Brief summary of activities..."></textarea>
+        </div>
+        <button type="submit" class="save-btn" style="width:100%;">Save Timeline Node</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Project Modal -->
+  <div id="modal-project" class="modal-overlay">
+    <div class="modal-box" style="max-width:700px;">
+      <div class="modal-box-header">
+        <h3 id="modal-project-title">Add Project Card</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modal-project')">✕</button>
+      </div>
+      <form id="form-project">
+        <input type="hidden" id="project-id">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="project-name">Project Name</label>
+            <input type="text" id="project-name" required placeholder="e.g. StuntSense">
+          </div>
+          <div class="form-group">
+            <label for="project-slug">URL Slug</label>
+            <input type="text" id="project-slug" required placeholder="e.g. stuntsense">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="project-category">Category</label>
+            <select id="project-category" required>
+              <option value="ai">AI / Data</option>
+              <option value="web">Web</option>
+              <option value="mobile">Mobile</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="project-order">Order Index</label>
+            <input type="number" id="project-order" required min="0" value="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Thumbnail Image (Vercel Blob Storage)</label>
+          <div class="blob-upload-area" id="blob-drag-area">
+            <input type="file" id="blob-file-input" accept="image/*" style="display:none;">
+            <p id="blob-upload-text">Drag & drop project cover here, or click to browse</p>
+            <img id="blob-preview-img" class="blob-preview" src="" alt="Thumbnail preview">
+          </div>
+          <input type="text" id="project-thumbnail" placeholder="Auto-generated URL or custom HTTPS path">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="project-demo">Live Demo URL (Optional)</label>
+            <input type="text" id="project-demo" placeholder="https://example.com/demo">
+          </div>
+          <div class="form-group">
+            <label for="project-github">GitHub Repository URL (Optional)</label>
+            <input type="text" id="project-github" placeholder="https://github.com/najin/repo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="project-tech">Tech Stack (comma-separated)</label>
+          <input type="text" id="project-tech" required placeholder="Go, Next.js, TFLite, CSS">
+        </div>
+
+        <div class="form-group">
+          <label for="project-desc">Short Description (Cards feed)</label>
+          <input type="text" id="project-desc" required placeholder="1-2 sentences overview.">
+        </div>
+
+        <div class="form-group">
+          <label for="project-long">Long Detail Description (Modal info)</label>
+          <textarea id="project-long" required rows="5" placeholder="Deep details about features, implementation process, and technologies..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label style="flex-direction:row; gap:8px; cursor:pointer; text-transform:none;">
+            <input type="checkbox" id="project-featured" style="width:18px; height:18px;">
+            Feature this project at the top
+          </label>
+        </div>
+
+        <button type="submit" class="save-btn" style="width:100%;">Save Portfolio Project</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Guestbook Reply Modal -->
+  <div id="modal-reply" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-box-header">
+        <h3>Reply to Transmission</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modal-reply')">✕</button>
+      </div>
+      <form id="form-reply">
+        <input type="hidden" id="reply-msg-id">
+        <div class="form-group">
+          <label>Original Message</label>
+          <div id="reply-msg-preview" style="padding:12px; background:rgba(255,255,255,0.03); border-radius:6px; font-size:14px; border:1px solid var(--border-color);"></div>
+        </div>
+        <div class="form-group">
+          <label for="reply-text">Admin Reply Content</label>
+          <textarea id="reply-text" required rows="4" placeholder="Type your public response..."></textarea>
+        </div>
+        <button type="submit" class="save-btn" style="width:100%;">Transmit Reply</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT
+       ========================================== -->
+  <script>
+    // State lists loaded via Go context or REST calls
+    let skills = [];
+    let timeline = [];
+    let projects = [];
+    let messages = [];
+
+    // Tab Switching Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const tabName = item.getAttribute('data-tab');
+        
+        navItems.forEach(n => n.classList.remove('active'));
+        tabPanels.forEach(p => p.classList.remove('active'));
+        
+        item.classList.add('active');
+        document.getElementById(`panel-${tabName}`).classList.add('active');
+        
+        // Refresh specific data
+        if (tabName === 'skills') fetchSkills();
+        if (tabName === 'timeline') fetchTimeline();
+        if (tabName === 'projects') fetchProjects();
+        if (tabName === 'messages') fetchMessages();
+      });
+    });
+
+    // Helper: Toast Notifications
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      if (isError) {
+        toast.classList.add('error');
+      } else {
+        toast.classList.remove('error');
+      }
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3500);
+    }
+
+    // Modal Helpers
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // GENERAL CONFIG FORM
+    const formGeneral = document.getElementById('form-general');
+    formGeneral.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        hero_title: document.getElementById('config-hero-title').value,
+        hero_subtitle: document.getElementById('config-hero-subtitle').value,
+        hero_description: document.getElementById('config-hero-description').value,
+        about_description: document.getElementById('config-about-description').value,
+        google_generative_ai_api_key: document.getElementById('config-gemini-key').value,
+      };
+
+      try {
+        const res = await fetch('/admin/config/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('General configuration updated successfully!');
+        } else {
+          showToast(data.error || 'Failed to update config', true);
+        }
+      } catch (err) {
+        showToast('Network error during configuration update', true);
+      }
+    });
+
+    // ==========================================
+    // SKILLS API
+    // ==========================================
+    async function fetchSkills() {
+      try {
+        const res = await fetch('/admin/skill/list');
+        const data = await res.json();
+        skills = data.skills || [];
+        renderSkillsTable();
+      } catch (err) {
+        showToast('Failed to fetch skills list', true);
+      }
+    }
+
+    function renderSkillsTable() {
+      const tbody = document.getElementById('skills-list-tbody');
+      tbody.innerHTML = '';
+      if (skills.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No skills defined yet.</td></tr>';
+        return;
+      }
+      skills.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:600;">${s.name}</td>
+          <td><span style="padding:4px 8px; border-radius:4px; font-size:12px; background:rgba(255,255,255,0.05);">${s.category}</span></td>
+          <td>${s.proficiency_percent}%</td>
+          <td>${s.order_index}</td>
+          <td>
+            <button class="action-btn edit" onclick='openSkillModal(${JSON.stringify(s)})'>Edit</button>
+            <button class="action-btn delete" onclick="deleteSkill(${s.id})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openSkillModal(s) {
+      const modal = document.getElementById('modal-skill');
+      const title = document.getElementById('modal-skill-title');
+      const form = document.getElementById('form-skill');
+      form.reset();
+
+      if (s) {
+        title.innerText = 'Edit Skill Node';
+        document.getElementById('skill-id').value = s.id;
+        document.getElementById('skill-name').value = s.name;
+        document.getElementById('skill-category').value = s.category;
+        document.getElementById('skill-proficiency').value = s.proficiency_percent;
+        document.getElementById('skill-order').value = s.order_index;
+      } else {
+        title.innerText = 'Add New Skill';
+        document.getElementById('skill-id').value = '';
+      }
+      modal.classList.add('active');
+    }
+
+    document.getElementById('form-skill').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('skill-id').value;
+      const payload = {
+        name: document.getElementById('skill-name').value,
+        category: document.getElementById('skill-category').value,
+        proficiency_percent: parseInt(document.getElementById('skill-proficiency').value),
+        order_index: parseInt(document.getElementById('skill-order').value)
+      };
+
+      const url = id ? '/admin/skill/update' : '/admin/skill/add';
+      if (id) payload.id = parseInt(id);
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeModal('modal-skill');
+          showToast(id ? 'Skill node updated!' : 'Skill node created!');
+          fetchSkills();
+        } else {
+          showToast(data.error || 'Failed to save skill', true);
+        }
+      } catch (err) {
+        showToast('Error saving skill node', true);
+      }
+    });
+
+    async function deleteSkill(id) {
+      if (!confirm('Are you sure you want to delete this skill node?')) return;
+      try {
+        const res = await fetch('/admin/skill/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Skill node deleted!');
+          fetchSkills();
+        } else {
+          showToast(data.error || 'Delete failed', true);
+        }
+      } catch (err) {
+        showToast('Error deleting skill node', true);
+      }
+    }
+
+    // ==========================================
+    // TIMELINE API
+    // ==========================================
+    async function fetchTimeline() {
+      try {
+        const res = await fetch('/admin/timeline/list');
+        const data = await res.json();
+        timeline = data.timeline || [];
+        renderTimelineTable();
+      } catch (err) {
+        showToast('Failed to fetch timeline list', true);
+      }
+    }
+
+    function renderTimelineTable() {
+      const tbody = document.getElementById('timeline-list-tbody');
+      tbody.innerHTML = '';
+      if (timeline.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No milestones defined yet.</td></tr>';
+        return;
+      }
+      timeline.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-family:var(--font-mono);">${t.year}</td>
+          <td style="font-weight:600;">${t.title}</td>
+          <td>${t.company_or_institution}</td>
+          <td><span style="font-size:12px; padding:2px 6px; border-radius:4px; background:${t.type==='experience'?'rgba(99,102,241,0.15)':'rgba(16,185,129,0.15)'}; color:${t.type==='experience'?'var(--accent-secondary)':'var(--accent-success)'};">${t.type}</span></td>
+          <td>${t.order_index}</td>
+          <td>
+            <button class="action-btn edit" onclick='openTimelineModal(${JSON.stringify(t)})'>Edit</button>
+            <button class="action-btn delete" onclick="deleteTimeline(${t.id})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openTimelineModal(t) {
+      const modal = document.getElementById('modal-timeline');
+      const title = document.getElementById('modal-timeline-title');
+      const form = document.getElementById('form-timeline');
+      form.reset();
+
+      if (t) {
+        title.innerText = 'Edit Milestone';
+        document.getElementById('timeline-id').value = t.id;
+        document.getElementById('timeline-year').value = t.year;
+        document.getElementById('timeline-title').value = t.title;
+        document.getElementById('timeline-company').value = t.company_or_institution;
+        document.getElementById('timeline-type').value = t.type;
+        document.getElementById('timeline-order').value = t.order_index;
+        document.getElementById('timeline-description').value = t.description;
+      } else {
+        title.innerText = 'Add Milestone';
+        document.getElementById('timeline-id').value = '';
+      }
+      modal.classList.add('active');
+    }
+
+    document.getElementById('form-timeline').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('timeline-id').value;
+      const payload = {
+        year: document.getElementById('timeline-year').value,
+        title: document.getElementById('timeline-title').value,
+        company_or_institution: document.getElementById('timeline-company').value,
+        type: document.getElementById('timeline-type').value,
+        order_index: parseInt(document.getElementById('timeline-order').value),
+        description: document.getElementById('timeline-description').value
+      };
+
+      const url = id ? '/admin/timeline/update' : '/admin/timeline/add';
+      if (id) payload.id = parseInt(id);
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeModal('modal-timeline');
+          showToast(id ? 'Timeline node updated!' : 'Timeline node added!');
+          fetchTimeline();
+        } else {
+          showToast(data.error || 'Failed to save milestone', true);
+        }
+      } catch (err) {
+        showToast('Error saving timeline milestone', true);
+      }
+    });
+
+    async function deleteTimeline(id) {
+      if (!confirm('Are you sure you want to delete this timeline milestone?')) return;
+      try {
+        const res = await fetch('/admin/timeline/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Milestone deleted!');
+          fetchTimeline();
+        } else {
+          showToast(data.error || 'Delete failed', true);
+        }
+      } catch (err) {
+        showToast('Error deleting milestone', true);
+      }
+    }
+
+    // ==========================================
+    // PROJECTS API & IMAGE BLOB UPLOADS
+    // ==========================================
+    async function fetchProjects() {
+      try {
+        const res = await fetch('/admin/project/list');
+        const data = await res.json();
+        projects = data.projects || [];
+        renderProjectsTable();
+      } catch (err) {
+        showToast('Failed to fetch projects list', true);
+      }
+    }
+
+    function renderProjectsTable() {
+      const tbody = document.getElementById('projects-list-tbody');
+      tbody.innerHTML = '';
+      if (projects.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No projects configured yet.</td></tr>';
+        return;
+      }
+      projects.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img src="${p.thumbnail_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80&q=80'}" style="width:60px; height:40px; object-fit:cover; border-radius:4px; border:1px solid var(--border-color);" alt="${p.name}"></td>
+          <td style="font-weight:600;">${p.name}</td>
+          <td style="font-family:var(--font-mono); font-size:12px;">${p.slug}</td>
+          <td><span style="font-size:11px; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.05); font-weight:700;">${p.category.toUpperCase()}</span></td>
+          <td>${p.is_featured ? '⭐ Yes' : 'No'}</td>
+          <td>${p.order_index}</td>
+          <td>
+            <button class="action-btn edit" onclick='openProjectModal(${JSON.stringify(p)})'>Edit</button>
+            <button class="action-btn delete" onclick="deleteProject(${p.id})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openProjectModal(p) {
+      const modal = document.getElementById('modal-project');
+      const title = document.getElementById('modal-project-title');
+      const form = document.getElementById('form-project');
+      form.reset();
+
+      // Reset image upload preview
+      document.getElementById('blob-preview-img').style.display = 'none';
+      document.getElementById('blob-upload-text').style.display = 'block';
+
+      if (p) {
+        title.innerText = 'Edit Portfolio Project';
+        document.getElementById('project-id').value = p.id;
+        document.getElementById('project-name').value = p.name;
+        document.getElementById('project-slug').value = p.slug;
+        document.getElementById('project-category').value = p.category;
+        document.getElementById('project-order').value = p.order_index;
+        document.getElementById('project-thumbnail').value = p.thumbnail_url;
+        document.getElementById('project-demo').value = p.demo_url;
+        document.getElementById('project-github').value = p.github_url;
+        document.getElementById('project-tech').value = p.tech_stack ? p.tech_stack.join(', ') : '';
+        document.getElementById('project-desc').value = p.description;
+        document.getElementById('project-long').value = p.long_description;
+        document.getElementById('project-featured').checked = p.is_featured;
+
+        if (p.thumbnail_url) {
+          const img = document.getElementById('blob-preview-img');
+          img.src = p.thumbnail_url;
+          img.style.display = 'block';
+          document.getElementById('blob-upload-text').style.display = 'none';
+        }
+      } else {
+        title.innerText = 'Create Project Card';
+        document.getElementById('project-id').value = '';
+      }
+      modal.classList.add('active');
+    }
+
+    // Drag-Drop & Browse File for Project Thumbnail Uploading to Vercel Blob
+    const dragArea = document.getElementById('blob-drag-area');
+    const fileInput = document.getElementById('blob-file-input');
+
+    dragArea.addEventListener('click', () => fileInput.click());
+
+    dragArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dragArea.style.borderColor = 'var(--accent-primary)';
+    });
+
+    dragArea.addEventListener('dragleave', () => {
+      dragArea.style.borderColor = 'var(--border-color)';
+    });
+
+    dragArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dragArea.style.borderColor = 'var(--border-color)';
+      if (e.dataTransfer.files.length > 0) {
+        uploadBlobFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        uploadBlobFile(fileInput.files[0]);
+      }
+    });
+
+    async function uploadBlobFile(file) {
+      const textNode = document.getElementById('blob-upload-text');
+      const imgNode = document.getElementById('blob-preview-img');
+      
+      textNode.innerText = 'Uploading to Vercel Blob...';
+      
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/admin/upload-blob', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        
+        if (data.url) {
+          document.getElementById('project-thumbnail').value = data.url;
+          imgNode.src = data.url;
+          imgNode.style.display = 'block';
+          textNode.style.display = 'none';
+          showToast('Image uploaded to Vercel Blob successfully!');
+        } else {
+          textNode.innerText = 'Upload failed. Click to retry.';
+          showToast(data.error || 'Upload failed', true);
+        }
+      } catch (err) {
+        textNode.innerText = 'Upload error. Click to retry.';
+        showToast('Network error during file upload', true);
+      }
+    }
+
+    document.getElementById('form-project').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('project-id').value;
+      const techVal = document.getElementById('project-tech').value;
+      const techStack = techVal.split(',').map(item => item.trim()).filter(item => item !== '');
+
+      const payload = {
+        name: document.getElementById('project-name').value,
+        slug: document.getElementById('project-slug').value,
+        category: document.getElementById('project-category').value,
+        order_index: parseInt(document.getElementById('project-order').value),
+        thumbnail_url: document.getElementById('project-thumbnail').value,
+        demo_url: document.getElementById('project-demo').value,
+        github_url: document.getElementById('project-github').value,
+        tech_stack: techStack,
+        description: document.getElementById('project-desc').value,
+        long_description: document.getElementById('project-long').value,
+        is_featured: document.getElementById('project-featured').checked
+      };
+
+      const url = id ? '/admin/project/update' : '/admin/project/add';
+      if (id) payload.id = parseInt(id);
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeModal('modal-project');
+          showToast(id ? 'Project card updated!' : 'Project card created!');
+          fetchProjects();
+        } else {
+          showToast(data.error || 'Failed to save project', true);
+        }
+      } catch (err) {
+        showToast('Error saving project portfolio card', true);
+      }
+    });
+
+    async function deleteProject(id) {
+      if (!confirm('Are you sure you want to delete this project card?')) return;
+      try {
+        const res = await fetch('/admin/project/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Project deleted successfully!');
+          fetchProjects();
+        } else {
+          showToast(data.error || 'Delete failed', true);
+        }
+      } catch (err) {
+        showToast('Error deleting project card', true);
+      }
+    }
+
+    // ==========================================
+    // MESSAGES / GUESTBOOK API
+    // ==========================================
+    async function fetchMessages() {
+      try {
+        const res = await fetch('/admin/message/list');
+        const data = await res.json();
+        messages = data.messages || [];
+        renderMessagesList();
+      } catch (err) {
+        showToast('Failed to fetch transmissions list', true);
+      }
+    }
+
+    function renderMessagesList() {
+      const container = document.getElementById('messages-list-container');
+      container.innerHTML = '';
+      if (messages.length === 0) {
+        container.innerHTML = '<div class="dashboard-card" style="text-align:center; color:var(--text-muted);">No messages received yet.</div>';
+        return;
+      }
+      messages.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'guestbook-item';
+        div.innerHTML = `
+          <div class="guestbook-item-header">
+            <div>
+              <span class="guestbook-sender">${m.sender_name}</span>
+              <span class="guestbook-ip">(${m.ip_address || 'unknown IP'})</span>
+            </div>
+            <span class="guestbook-time">${m.created_at}</span>
+          </div>
+          <div style="font-size:14px; margin-bottom:12px; white-space:pre-wrap;">${m.message}</div>
+          
+          ${m.admin_reply ? `
+            <div class="guestbook-reply-box">
+              <div class="guestbook-reply-label">Reply transmitted on ${m.replied_at}</div>
+              <div style="font-size:13.5px; color:var(--text-primary);">${m.admin_reply}</div>
+            </div>
+          ` : ''}
+
+          <div style="margin-top:16px; display:flex; gap:8px;">
+            <button class="action-btn reply" onclick='openReplyModal(${JSON.stringify(m)})'>${m.admin_reply ? 'Edit Reply' : 'Send Reply'}</button>
+            <button class="action-btn delete" onclick="deleteMessage(${m.id})">Delete Message</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function openReplyModal(m) {
+      const modal = document.getElementById('modal-reply');
+      document.getElementById('reply-msg-id').value = m.id;
+      document.getElementById('reply-msg-preview').innerText = `"${m.message}"`;
+      document.getElementById('reply-text').value = m.admin_reply || '';
+      modal.classList.add('active');
+    }
+
+    document.getElementById('form-reply').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('reply-msg-id').value;
+      const payload = {
+        id: parseInt(id),
+        reply: document.getElementById('reply-text').value
+      };
+
+      try {
+        const res = await fetch('/admin/message/reply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeModal('modal-reply');
+          showToast('Reply transmission broadcasted!');
+          fetchMessages();
+        } else {
+          showToast(data.error || 'Failed to reply', true);
+        }
+      } catch (err) {
+        showToast('Error replying to message', true);
+      }
+    });
+
+    async function deleteMessage(id) {
+      if (!confirm('Are you sure you want to delete this transmission permanently?')) return;
+      try {
+        const res = await fetch('/admin/message/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Message deleted successfully!');
+          fetchMessages();
+        } else {
+          showToast(data.error || 'Delete failed', true);
+        }
+      } catch (err) {
+        showToast('Error deleting transmission', true);
+      }
+    }
+  </script>
+
+</body>
+</html>

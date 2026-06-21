@@ -1,6 +1,6 @@
 package handler
 
-// Build Trigger: Force embed refresh 2.0.4
+// Build Trigger: Force embed refresh 2.0.6
 import (
 	"bytes"
 	"embed"
@@ -11,12 +11,13 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 )
 
-//go:embed templates/index.html
+//go:embed templates/*
 var templateFS embed.FS
 
 // ==========================================================================
@@ -53,8 +54,11 @@ type GuestbookMessage struct {
 }
 
 type TemplateData struct {
+	Configs           map[string]string
+	SkillsByCategory  map[string][]Skill
+	Timeline          []TimelineItem
 	Projects          []Project
-	GuestbookMessages []GuestbookMessage
+	GuestbookMessages []ExtendedGuestbookMessage
 	TotalSignals      int
 	Year              int
 }
@@ -127,6 +131,34 @@ var fallbackMessages = []GuestbookMessage{
 		Message:    "Najin cepat memahami kebutuhan dan membangun solusi yang praktis.",
 		CreatedAt:  time.Now().Add(-12 * time.Hour).Format(time.RFC3339),
 	},
+}
+
+var fallbackSkills = []Skill{
+	{Name: "Python", Category: "AI & Data Science", ProficiencyPercent: 90, OrderIndex: 1},
+	{Name: "LangChain", Category: "AI & Data Science", ProficiencyPercent: 85, OrderIndex: 2},
+	{Name: "Gemini", Category: "AI & Data Science", ProficiencyPercent: 85, OrderIndex: 3},
+	{Name: "Pinecone", Category: "AI & Data Science", ProficiencyPercent: 80, OrderIndex: 4},
+	{Name: "TFLite", Category: "AI & Data Science", ProficiencyPercent: 75, OrderIndex: 5},
+	{Name: "MediaPipe", Category: "AI & Data Science", ProficiencyPercent: 75, OrderIndex: 6},
+	{Name: "FastAPI", Category: "AI & Data Science", ProficiencyPercent: 80, OrderIndex: 7},
+	{Name: "Next.js", Category: "Web Fullstack", ProficiencyPercent: 85, OrderIndex: 8},
+	{Name: "React", Category: "Web Fullstack", ProficiencyPercent: 85, OrderIndex: 9},
+	{Name: "Laravel", Category: "Web Fullstack", ProficiencyPercent: 80, OrderIndex: 10},
+	{Name: "TypeScript", Category: "Web Fullstack", ProficiencyPercent: 80, OrderIndex: 11},
+	{Name: "MySQL", Category: "Web Fullstack", ProficiencyPercent: 80, OrderIndex: 12},
+	{Name: "Supabase", Category: "Web Fullstack", ProficiencyPercent: 80, OrderIndex: 13},
+	{Name: "TailwindCSS", Category: "Web Fullstack", ProficiencyPercent: 85, OrderIndex: 14},
+	{Name: "Kotlin XML", Category: "Mobile Engineering", ProficiencyPercent: 80, OrderIndex: 15},
+	{Name: "Jetpack Compose", Category: "Mobile Engineering", ProficiencyPercent: 80, OrderIndex: 16},
+	{Name: "Room Database", Category: "Mobile Engineering", ProficiencyPercent: 80, OrderIndex: 17},
+	{Name: "WorkManager", Category: "Mobile Engineering", ProficiencyPercent: 75, OrderIndex: 18},
+	{Name: "Retrofit", Category: "Mobile Engineering", ProficiencyPercent: 80, OrderIndex: 19},
+}
+
+var fallbackTimeline = []TimelineItem{
+	{Year: "Semester 1 (2023)", Title: "Core Logic", CompanyOrInstitution: "Academics", Description: "Learned programming fundamentals, built static web projects, and mastered core algorithmic logic.", Type: "education", OrderIndex: 1},
+	{Year: "Year 2 (2024)", Title: "Web & Mobile Developer", CompanyOrInstitution: "Client Work", Description: "Developed production-grade websites for real clients, ticketing systems, and began diving into mobile development with Kotlin.", Type: "experience", OrderIndex: 2},
+	{Year: "Present (2026)", Title: "AI Engineer focus", CompanyOrInstitution: "Labs & Research", Description: "Deep focus on AI systems: designing RAG pipelines, building on-device ML computer vision models, and optimizing machine learning endpoints.", Type: "experience", OrderIndex: 3},
 }
 
 // ==========================================================================
@@ -397,7 +429,10 @@ func getPineconeHost() (string, error) {
 }
 
 func embedQuery(query string) ([]float32, error) {
-	apiKey := os.Getenv("GOOGLE_GENERATIVE_AI_API_KEY")
+	apiKey := dbGetConfig("google_generative_ai_api_key", "")
+	if apiKey == "" {
+		apiKey = os.Getenv("GOOGLE_GENERATIVE_AI_API_KEY")
+	}
 	if apiKey == "" {
 		return nil, fmt.Errorf("gemini key missing")
 	}
@@ -505,7 +540,10 @@ func queryPinecone(vector []float32) (string, error) {
 }
 
 func generateAnswer(query, context string) (string, error) {
-	apiKey := os.Getenv("GOOGLE_GENERATIVE_AI_API_KEY")
+	apiKey := dbGetConfig("google_generative_ai_api_key", "")
+	if apiKey == "" {
+		apiKey = os.Getenv("GOOGLE_GENERATIVE_AI_API_KEY")
+	}
 	if apiKey == "" {
 		return "", fmt.Errorf("gemini API key missing")
 	}
@@ -599,6 +637,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	ip = strings.Split(ip, ",")[0]
 
+	// Intercept administrative routes
+	if strings.HasPrefix(r.URL.Path, "/admin") {
+		if r.URL.Path == "/admin" {
+			if r.Method == http.MethodPost {
+				handleAdminLogin(w, r)
+				return
+			}
+			if isAdminAuthenticated(r) {
+				handleAdminDashboard(w, r)
+				return
+			}
+			renderAdminLogin(w, "")
+			return
+		}
+
+		if r.URL.Path == "/admin/logout" && r.Method == http.MethodPost {
+			handleAdminLogout(w, r)
+			return
+		}
+
+		// Require auth for any other admin REST APIs
+		if !isAdminAuthenticated(r) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized session"})
+			return
+		}
+
+		switch r.URL.Path {
+		case "/admin/config/update":
+			handleAdminConfigUpdate(w, r)
+		case "/admin/skill/list":
+			handleAdminSkillList(w, r)
+		case "/admin/skill/add":
+			handleAdminSkillAdd(w, r)
+		case "/admin/skill/update":
+			handleAdminSkillUpdate(w, r)
+		case "/admin/skill/delete":
+			handleAdminSkillDelete(w, r)
+		case "/admin/timeline/list":
+			handleAdminTimelineList(w, r)
+		case "/admin/timeline/add":
+			handleAdminTimelineAdd(w, r)
+		case "/admin/timeline/update":
+			handleAdminTimelineUpdate(w, r)
+		case "/admin/timeline/delete":
+			handleAdminTimelineDelete(w, r)
+		case "/admin/project/list":
+			handleAdminProjectList(w, r)
+		case "/admin/project/add":
+			handleAdminProjectAdd(w, r)
+		case "/admin/project/update":
+			handleAdminProjectUpdate(w, r)
+		case "/admin/project/delete":
+			handleAdminProjectDelete(w, r)
+		case "/admin/message/list":
+			handleAdminMessageList(w, r)
+		case "/admin/message/reply":
+			handleAdminMessageReply(w, r)
+		case "/admin/message/delete":
+			handleAdminMessageDelete(w, r)
+		case "/admin/upload-blob":
+			handleAdminUploadBlob(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+		return
+	}
+
 	// Handle API endpoints
 	switch r.URL.Path {
 	case "/api/guestbook":
@@ -642,9 +749,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/guestbook
 func handleGetGuestbook(w http.ResponseWriter, r *http.Request) {
-	messages, err := fetchGuestbook()
+	var messages []ExtendedGuestbookMessage
+	var err error
+	if dbEnabled {
+		messages, err = dbGetGuestbookMessages(50)
+	} else {
+		var list []GuestbookMessage
+		list, err = fetchGuestbook()
+		if err == nil {
+			messages = make([]ExtendedGuestbookMessage, len(list))
+			for i, sm := range list {
+				messages[i] = ExtendedGuestbookMessage{
+					ID:         sm.ID,
+					SenderName: sm.SenderName,
+					Message:    sm.Message,
+					CreatedAt:  sm.CreatedAt,
+					IPAddress:  sm.IPAddress,
+				}
+			}
+		}
+	}
+
 	if err != nil {
-		messages = fallbackMessages
+		messages = getExtendedFallbackMessages()
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -708,7 +835,18 @@ func handlePostGuestbook(w http.ResponseWriter, r *http.Request, ip string) {
 		IPAddress:  ip,
 	}
 
-	id, err := insertGuestbook(msg)
+	var idStr string
+	var err error
+	if dbEnabled {
+		var idInt int
+		idInt, err = dbAddGuestbookMessage(msg)
+		if err == nil {
+			idStr = strconv.Itoa(idInt)
+		}
+	} else {
+		idStr, err = insertGuestbook(msg)
+	}
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -722,7 +860,7 @@ func handlePostGuestbook(w http.ResponseWriter, r *http.Request, ip string) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
-		"id":      id,
+		"id":      idStr,
 	})
 }
 
@@ -814,26 +952,100 @@ func handleMlInfer(w http.ResponseWriter, r *http.Request) {
 
 // GET /
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	// 1. Fetch projects (or use seed fallbacks)
-	projects, err := fetchProjects()
-	if err != nil || len(projects) == 0 {
-		projects = seedProjects
+	// 1. Fetch Configs
+	configs := map[string]string{
+		"hero_title":        dbGetConfig("hero_title", "Irham Najib Azimul Qowi"),
+		"hero_subtitle":     dbGetConfig("hero_subtitle", "AI Engineer & Full-Stack Developer"),
+		"hero_description":  dbGetConfig("hero_description", "Building intelligent systems with Go, Python, and modern web frameworks."),
+		"about_description": dbGetConfig("about_description", "Irham Najib Azimul Qowi is a Software Engineering student at Politeknik Negeri Madiun, Indonesia. Writing under the professional pseudonym Najin Kyou, he explores the convergence of data pipelines, pose estimation screening, and Retrieval-Augmented Generation (RAG). He believes in clean code craftsmanship and meticulous detail."),
 	}
 
-	// 2. Fetch guestbook messages (or use fallbacks)
-	messages, err := fetchGuestbook()
-	if err != nil {
-		messages = fallbackMessages
+	// 2. Fetch Skills
+	var skillsList []Skill
+	if dbEnabled {
+		var err error
+		skillsList, err = dbGetSkills()
+		if err != nil {
+			skillsList = fallbackSkills
+		}
+	} else {
+		skillsList = fallbackSkills
+	}
+	skillsByCategory := make(map[string][]Skill)
+	for _, s := range skillsList {
+		skillsByCategory[s.Category] = append(skillsByCategory[s.Category], s)
 	}
 
-	// 3. Renders HTML
-	tmpl, err := template.ParseFS(templateFS, "templates/index.html")
+	// 3. Fetch Timeline
+	var timeline []TimelineItem
+	if dbEnabled {
+		var err error
+		timeline, err = dbGetTimeline()
+		if err != nil {
+			timeline = fallbackTimeline
+		}
+	} else {
+		timeline = fallbackTimeline
+	}
+
+	// 4. Fetch projects (or use seed fallbacks)
+	var projects []Project
+	if dbEnabled {
+		var err error
+		projects, err = dbGetProjects()
+		if err != nil || len(projects) == 0 {
+			projects, _ = fetchProjects()
+			if len(projects) == 0 {
+				projects = seedProjects
+			}
+		}
+	} else {
+		var err error
+		projects, err = fetchProjects()
+		if err != nil || len(projects) == 0 {
+			projects = seedProjects
+		}
+	}
+
+	// 5. Fetch guestbook messages (or use fallbacks)
+	var messages []ExtendedGuestbookMessage
+	if dbEnabled {
+		var err error
+		messages, err = dbGetGuestbookMessages(50)
+		if err != nil {
+			messages = getExtendedFallbackMessages()
+		}
+	} else {
+		supabaseMsgs, err := fetchGuestbook()
+		if err != nil {
+			messages = getExtendedFallbackMessages()
+		} else {
+			messages = make([]ExtendedGuestbookMessage, len(supabaseMsgs))
+			for i, sm := range supabaseMsgs {
+				messages[i] = ExtendedGuestbookMessage{
+					ID:         sm.ID,
+					SenderName: sm.SenderName,
+					Message:    sm.Message,
+					CreatedAt:  sm.CreatedAt,
+					IPAddress:  sm.IPAddress,
+				}
+			}
+		}
+	}
+
+	// 6. Renders HTML
+	tmpl, err := template.New("index.html").Funcs(template.FuncMap{
+		"mod": func(a, b int) int { return a % b },
+	}).ParseFS(templateFS, "templates/index.html")
 	if err != nil {
 		http.Error(w, "Error loading template: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	data := TemplateData{
+		Configs:           configs,
+		SkillsByCategory:  skillsByCategory,
+		Timeline:          timeline,
 		Projects:          projects,
 		GuestbookMessages: messages,
 		TotalSignals:      len(messages),
@@ -843,5 +1055,22 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := tmpl.Execute(w, data); err != nil {
 		http.Error(w, "Error rendering: "+err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func getExtendedFallbackMessages() []ExtendedGuestbookMessage {
+	return []ExtendedGuestbookMessage{
+		{
+			ID:         "fallback-1",
+			SenderName: "Visitor",
+			Message:    "Website portfolio-nya tenang, rapi, dan vibes Jepangnya berasa.",
+			CreatedAt:  time.Now().Add(-24 * time.Hour).Format("2006-01-02 15:04:05"),
+		},
+		{
+			ID:         "fallback-2",
+			SenderName: "Client",
+			Message:    "Najin cepat memahami kebutuhan dan membangun solusi yang praktis.",
+			CreatedAt:  time.Now().Add(-12 * time.Hour).Format("2006-01-02 15:04:05"),
+		},
 	}
 }

@@ -484,12 +484,42 @@ document.head.appendChild(styleSheet);
    RAG ASSISTANT EXPERIMENTS (Exhibit 01)
    ========================================================================== */
 function initRagChat() {
-  const form = document.getElementById("rag-form");
-  const input = document.getElementById("rag-input");
-  const chatFeed = document.getElementById("rag-chat-feed");
-  const submitBtn = document.getElementById("rag-submit");
+  const trigger = document.getElementById("chat-trigger");
+  const popup = document.getElementById("chat-popup");
+  const closeBtn = document.getElementById("chat-close");
+  const form = document.getElementById("chat-popup-form");
+  const input = document.getElementById("chat-popup-input");
+  const chatFeed = document.getElementById("chat-popup-feed");
+  const submitBtn = document.getElementById("chat-popup-submit");
+  const badge = document.querySelector(".chat-badge");
 
-  if (!form || !input || !chatFeed || !submitBtn) return;
+  if (!trigger || !popup || !form || !input || !chatFeed || !submitBtn) return;
+
+  // Toggle Popup
+  trigger.addEventListener("click", () => {
+    const isActive = popup.classList.toggle("active");
+    trigger.classList.toggle("active", isActive);
+    if (isActive) {
+      if (badge) badge.style.display = "none";
+      setTimeout(() => input.focus(), 100);
+    }
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      popup.classList.remove("active");
+      trigger.classList.remove("active");
+    });
+  }
+
+  // Close when clicking outside on mobile or desktop
+  document.addEventListener("click", (e) => {
+    if (!popup.contains(e.target) && !trigger.contains(e.target) && popup.classList.contains("active")) {
+      popup.classList.remove("active");
+      trigger.classList.remove("active");
+    }
+  });
 
   function appendBubble(role, content) {
     const row = document.createElement("div");
@@ -513,10 +543,11 @@ function initRagChat() {
   }
 
   // Handle Suggested Questions
-  document.querySelectorAll(".suggested-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
+  chatFeed.addEventListener("click", (e) => {
+    const btn = e.target.closest(".chat-suggested-btn");
+    if (btn) {
       sendMessage(btn.textContent.trim());
-    });
+    }
   });
 
   form.addEventListener("submit", (e) => {
@@ -580,7 +611,7 @@ function initRagChat() {
       }, 10);
 
     } catch (err) {
-      loaderRow.remove();
+      if (loaderRow.parentNode) loaderRow.remove();
       appendBubble("assistant", "Failed to connect to the RAG pipeline. Please check if Pinecone & Gemini API keys are configured in environment variables.");
     } finally {
       submitBtn.disabled = false;
@@ -739,6 +770,17 @@ function createMessageElement(msg, isOptimistic) {
     minute: "2-digit"
   });
 
+  const replyHtml = msg.admin_reply ? `
+    <div class="g-admin-reply">
+      <div class="g-reply-header">
+        <span class="g-reply-avatar">名</span>
+        <span class="g-reply-sender">Najin Kyou</span>
+        <span class="g-reply-badge">Owner</span>
+      </div>
+      <div class="g-reply-text">${msg.admin_reply}</div>
+    </div>
+  ` : '';
+
   item.innerHTML = `
     <div class="g-avatar c-${color}">${initials}</div>
     <div class="g-msg-body">
@@ -747,6 +789,7 @@ function createMessageElement(msg, isOptimistic) {
         <span class="g-time">${isOptimistic ? "sending..." : time}</span>
       </div>
       <div class="g-text">${msg.message}</div>
+      ${replyHtml}
     </div>
   `;
   return item;

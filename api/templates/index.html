@@ -105,13 +105,13 @@
           
           <div class="hero-title-container">
             <span class="hero-kanji">名人強</span>
-            <span class="hero-name">Najin Kyou</span>
+            <span class="hero-name">{{index .Configs "hero_title"}}</span>
           </div>
 
           <div class="hero-divider"></div>
-          <h2 class="hero-subtitle">Data Scientist & AI Engineer</h2>
+          <h2 class="hero-subtitle">{{index .Configs "hero_subtitle"}}</h2>
           <p class="hero-bio">
-            Software Engineering student at Politeknik Negeri Madiun. I specialize in building practical artificial intelligence systems, document RAG pipelines, on-device ML models, and high-performance fullstack web & mobile applications.
+            {{index .Configs "hero_description"}}
           </p>
 
           <div class="hero-actions">
@@ -198,7 +198,7 @@
         <div class="about-narrative reveal reveal-delay-2">
           <h2>Quiet systems, <br><span>powerful intelligence.</span></h2>
           <p class="bio-para">
-            Irham Najib Azimul Qowi is a Software Engineering student at Politeknik Negeri Madiun, Indonesia. Writing under the professional pseudonym <mark>Najin Kyou</mark>, he explores the convergence of data pipelines, pose estimation screening, and Retrieval-Augmented Generation (RAG). He believes in clean code craftsmanship and meticulous detail.
+            {{index .Configs "about_description"}}
           </p>
 
           <!-- Skills Stack -->
@@ -206,107 +206,75 @@
             <div>
               <p class="skill-group-label indigo">AI & Data Science</p>
               <div class="skill-tags">
+                {{range index .SkillsByCategory "AI & Data Science"}}
                 <span class="skill-tag">
-                  <i class="devicon-python-plain colored"></i>
-                  Python
-                </span>
-                <span class="skill-tag">
+                  {{if eq .Name "Python"}}<i class="devicon-python-plain colored"></i>
+                  {{else if eq .Name "LangChain"}}
                   <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6366f1; width:16px; height:16px;">
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                     <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                   </svg>
-                  LangChain
-                </span>
-                <span class="skill-tag">
+                  {{else if eq .Name "Gemini"}}
                   <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="currentColor" style="color:#00F0FF; width:16px; height:16px;">
                     <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z"/>
                   </svg>
-                  Gemini
-                </span>
-                <span class="skill-tag">
+                  {{else if eq .Name "Pinecone"}}
                   <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#6366f1; width:16px; height:16px;">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                   </svg>
-                  Pinecone
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-tensorflow-line colored"></i>
-                  TFLite
-                </span>
-                <span class="skill-tag">
+                  {{else if eq .Name "TFLite"}}<i class="devicon-tensorflow-line colored"></i>
+                  {{else if eq .Name "MediaPipe"}}
                   <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#00F0FF; width:16px; height:16px;">
                     <rect x="3" y="3" width="18" height="18" rx="2"></rect>
                     <path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path>
                   </svg>
-                  MediaPipe
+                  {{else if eq .Name "FastAPI"}}<i class="devicon-fastapi-plain colored"></i>
+                  {{end}}
+                  {{.Name}}
                 </span>
-                <span class="skill-tag">
-                  <i class="devicon-fastapi-plain colored"></i>
-                  FastAPI
-                </span>
+                {{end}}
               </div>
             </div>
 
             <div>
               <p class="skill-group-label jade">Web Fullstack</p>
               <div class="skill-tags">
+                {{range index .SkillsByCategory "Web Fullstack"}}
                 <span class="skill-tag">
-                  <i class="devicon-nextjs-plain"></i>
-                  Next.js
+                  {{if eq .Name "Next.js"}}<i class="devicon-nextjs-plain"></i>
+                  {{else if eq .Name "React"}}<i class="devicon-react-original colored"></i>
+                  {{else if eq .Name "Laravel"}}<i class="devicon-laravel-original colored"></i>
+                  {{else if eq .Name "TypeScript"}}<i class="devicon-typescript-plain colored"></i>
+                  {{else if eq .Name "MySQL"}}<i class="devicon-mysql-original colored"></i>
+                  {{else if eq .Name "Supabase"}}<i class="devicon-supabase-plain colored"></i>
+                  {{else if eq .Name "TailwindCSS"}}<i class="devicon-tailwindcss-original colored"></i>
+                  {{end}}
+                  {{.Name}}
                 </span>
-                <span class="skill-tag">
-                  <i class="devicon-react-original colored"></i>
-                  React
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-laravel-original colored"></i>
-                  Laravel
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-typescript-plain colored"></i>
-                  TypeScript
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-mysql-original colored"></i>
-                  MySQL
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-supabase-plain colored"></i>
-                  Supabase
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-tailwindcss-original colored"></i>
-                  TailwindCSS
-                </span>
+                {{end}}
               </div>
             </div>
+
             <div>
               <p class="skill-group-label gold">Mobile Engineering</p>
               <div class="skill-tags">
+                {{range index .SkillsByCategory "Mobile Engineering"}}
                 <span class="skill-tag">
-                  <i class="devicon-kotlin-plain colored"></i>
-                  Kotlin XML
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-jetpackcompose-plain colored"></i>
-                  Jetpack Compose
-                </span>
-                <span class="skill-tag">
-                  <i class="devicon-sqlite-plain colored"></i>
-                  Room Database
-                </span>
-                <span class="skill-tag">
+                  {{if eq .Name "Kotlin XML"}}<i class="devicon-kotlin-plain colored"></i>
+                  {{else if eq .Name "Jetpack Compose"}}<i class="devicon-jetpackcompose-plain colored"></i>
+                  {{else if eq .Name "Room Database"}}<i class="devicon-sqlite-plain colored"></i>
+                  {{else if eq .Name "WorkManager"}}
                   <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#f59e0b; width:16px; height:16px;">
                     <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2"></path>
                   </svg>
-                  WorkManager
-                </span>
-                <span class="skill-tag">
+                  {{else if eq .Name "Retrofit"}}
                   <svg class="skill-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#f59e0b; width:16px; height:16px;">
                     <path d="M16 3h5v5M4 20L20 4M8 21H3v-5"></path>
                   </svg>
-                  Retrofit
+                  {{end}}
+                  {{.Name}}
                 </span>
+                {{end}}
               </div>
             </div>
           </div>
@@ -316,21 +284,13 @@
 
       <!-- Academic Timeline (Full Width) -->
       <div class="timeline reveal reveal-delay-3" aria-label="Academic Timeline">
-        <div class="timeline-item jade">
+        {{range $index, $item := .Timeline}}
+        <div class="timeline-item {{if eq (mod $index 3) 0}}jade{{else if eq (mod $index 3) 1}}indigo{{else}}gold{{end}}">
           <div class="timeline-dot"></div>
-          <p class="timeline-period">Semester 1 (2023)</p>
-          <p class="timeline-text">Learned programming fundamentals, built static web projects, and mastered core algorithmic logic.</p>
+          <p class="timeline-period">{{.Year}}</p>
+          <p class="timeline-text"><strong>{{.Title}}</strong> ({{.CompanyOrInstitution}})<br>{{.Description}}</p>
         </div>
-        <div class="timeline-item indigo">
-          <div class="timeline-dot"></div>
-          <p class="timeline-period">Year 2 (2024)</p>
-          <p class="timeline-text">Developed production-grade websites for real clients, ticketing systems, and began diving into mobile development with Kotlin.</p>
-        </div>
-        <div class="timeline-item gold">
-          <div class="timeline-dot"></div>
-          <p class="timeline-period">Present (2026)</p>
-          <p class="timeline-text">Deep focus on AI systems: designing RAG pipelines, building on-device ML computer vision models, and optimizing machine learning endpoints.</p>
-        </div>
+        {{end}}
       </div>
     </div>
   </section>
@@ -424,157 +384,28 @@
       </div>
 
       <div class="lab-grid">
-        <!-- Left Side: Interactive RAG Terminal -->
-        <div class="lab-terminal-area reveal reveal-delay-1">
-          <div class="lab-header-main">
-            <h2>AI Lab</h2>
-            <div class="lab-stats-strip">
-              <div class="lab-stat-box">
-                <span class="val jade">2</span>
-                <span class="label">Active Models</span>
-              </div>
-              <div class="lab-stat-box">
-                <span class="val indigo">1.2s</span>
-                <span class="label">Avg Response</span>
-              </div>
-              <div class="lab-stat-box">
-                <span class="val gold">~200</span>
-                <span class="label">Indexed Docs</span>
-              </div>
+        <div class="lab-header-main">
+          <h2>AI Lab</h2>
+          <div class="lab-stats-strip">
+            <div class="lab-stat-box">
+              <span class="val jade">2</span>
+              <span class="label">Active Models</span>
+            </div>
+            <div class="lab-stat-box">
+              <span class="val indigo">1.2s</span>
+              <span class="label">Avg Response</span>
+            </div>
+            <div class="lab-stat-box">
+              <span class="val gold">~200</span>
+              <span class="label">Indexed Docs</span>
             </div>
           </div>
+        </div>
 
+        <!-- Exhibit 01: AI Job Recommender -->
+        <div class="lab-recommender-area reveal reveal-delay-1" style="width: 100%;">
           <div class="lab-divider">
             <span class="exhibit-badge">Experiment 01</span>
-            <div class="line"></div>
-            <h3>RAG Assistant (Document Q&A)</h3>
-            <div class="line"></div>
-          </div>
-
-          <div class="rag-wrapper">
-            <div class="rag-ambient" aria-hidden="true"></div>
-            <div class="rag-terminal">
-              <div class="terminal-header">
-                <div class="terminal-dots">
-                  <div class="terminal-dot close"></div>
-                  <div class="terminal-dot minimize"></div>
-                  <div class="terminal-dot expand"></div>
-                </div>
-                <div class="terminal-title">najinkyou_rag_index_v1</div>
-                <div class="terminal-status">
-                  <span class="status-indicator"></span>
-                  <span>GEMINI 1.5 PRO</span>
-                </div>
-              </div>
-
-              <!-- Terminal chat screen -->
-              <div id="rag-chat-feed" class="terminal-chat">
-                <div class="chat-bubble-row">
-                  <div class="chat-avatar">知</div>
-                  <div class="chat-bubble assistant-bubble">
-                    <p>Hello! I am Najin's portfolio RAG assistant. Ask me anything about his skills, AI projects, or developer journey.</p>
-                    <div class="suggested-qs">
-                      <button type="button" class="suggested-btn">What projects has he built?</button>
-                      <button type="button" class="suggested-btn">Tell me about StuntSense</button>
-                      <button type="button" class="suggested-btn">What is his core tech stack?</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Terminal input bar -->
-              <div class="terminal-input-bar">
-                <form id="rag-form" class="terminal-input-wrapper">
-                  <input id="rag-input" type="text" placeholder="Ask anything about Najin Kyou..." class="terminal-input" required autocomplete="off">
-                  <button id="rag-submit" type="submit" class="terminal-send" aria-label="Send message">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="22" y1="2" x2="11" y2="13"></line>
-                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Side: Model simulators -->
-        <div class="lab-models-area">
-          <div class="lab-divider">
-            <span class="exhibit-badge">Experiment 02</span>
-            <div class="line"></div>
-            <h3>Active Machine Learning Models</h3>
-            <div class="line"></div>
-          </div>
-
-          <div class="ml-exhibit-cards">
-            <!-- Active Model Card: Pose Growth Predictor -->
-            <div class="ml-card">
-              <div class="ml-card-head">
-                <div class="ml-card-title">
-                  <span class="ico">🧬</span>
-                  <h4>Pose Growth Predictor</h4>
-                </div>
-                <span class="ml-card-status">Live Simulator</span>
-              </div>
-              <p class="ml-card-desc">
-                Interactive simulation of toddler stunting classification from StuntSense. Enter physical parameters to run prediction.
-              </p>
-              
-              <form id="ml-predictor-form" class="ml-form">
-                <div class="ml-input-group">
-                  <label for="ml-input">Toddler Posture Description / Physical Dimensions</label>
-                  <input id="ml-input" type="text" required placeholder="e.g., standing straight, height 85cm, age 24 months" class="ml-field">
-                </div>
-
-                <!-- Simulation result box -->
-                <div id="ml-result" class="ml-result-box">
-                  <div class="ml-result-head">
-                    <span>Classification</span>
-                    <span id="ml-confidence">94.6% confidence level</span>
-                  </div>
-                  <div class="ml-result-bar-bg" aria-hidden="true">
-                    <div id="ml-fill" class="ml-result-bar-fill"></div>
-                  </div>
-                  <p id="ml-prediction-text" class="ml-result-text">Estimation Result: Correct standing posture for toddler screening.</p>
-                </div>
-
-                <button id="ml-submit" type="submit" class="ml-submit-btn">Run Prediction Analysis</button>
-              </form>
-            </div>
-
-            <!-- Inactive Model Card: Mobile Vision Classifier -->
-            <div class="ml-card" style="border-style:dashed;">
-              <div class="ml-card-head">
-                <div class="ml-card-title">
-                  <span class="ico">👁️</span>
-                  <h4>Mobile Vision Classifier</h4>
-                </div>
-                <span class="ml-card-status soon">ETA: Q3 2026</span>
-              </div>
-              <p class="ml-card-desc">
-                FastAPI-based computer vision classifier for real-time mobile keypoint detection. Binary model optimization is underway.
-              </p>
-
-              <div class="optimization-bar">
-                <div class="opt-head">
-                  <span>Model optimization progress</span>
-                  <span style="color:var(--indigo);">48%</span>
-                </div>
-                <div class="ml-result-bar-bg" aria-hidden="true">
-                  <div class="opt-fill"></div>
-                </div>
-              </div>
-
-              <div class="soon-placeholder-btn">Coming Soon</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Exhibit 03: AI Job Recommender -->
-        <div class="lab-recommender-area reveal reveal-delay-2" style="width: 100%;">
-          <div class="lab-divider">
-            <span class="exhibit-badge">Experiment 03</span>
             <div class="line"></div>
             <h3>AI Job Recommender</h3>
             <div class="line"></div>
@@ -613,7 +444,7 @@
                   Upload CV File
                 </button>
                 <button type="button" id="tab-btn-text" class="recommender-tab-btn" role="tab" aria-selected="false" aria-controls="tab-panel-text" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <svg class="icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg>
+                  <svg class="icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg>
                   Paste CV Text
                 </button>
               </div>
@@ -698,6 +529,79 @@
             </div>
           </div>
         </div>
+
+        <!-- Exhibit 02: Active Machine Learning Models -->
+        <div class="lab-models-area reveal reveal-delay-2" style="width: 100%;">
+          <div class="lab-divider">
+            <span class="exhibit-badge">Experiment 02</span>
+            <div class="line"></div>
+            <h3>Active Machine Learning Models</h3>
+            <div class="line"></div>
+          </div>
+
+          <div class="ml-exhibit-cards">
+            <!-- Active Model Card: Pose Growth Predictor -->
+            <div class="ml-card">
+              <div class="ml-card-head">
+                <div class="ml-card-title">
+                  <span class="ico">🧬</span>
+                  <h4>Pose Growth Predictor</h4>
+                </div>
+                <span class="ml-card-status">Live Simulator</span>
+              </div>
+              <p class="ml-card-desc">
+                Interactive simulation of toddler stunting classification from StuntSense. Enter physical parameters to run prediction.
+              </p>
+              
+              <form id="ml-predictor-form" class="ml-form">
+                <div class="ml-input-group">
+                  <label for="ml-input">Toddler Posture Description / Physical Dimensions</label>
+                  <input id="ml-input" type="text" required placeholder="e.g., standing straight, height 85cm, age 24 months" class="ml-field">
+                </div>
+
+                <!-- Simulation result box -->
+                <div id="ml-result" class="ml-result-box">
+                  <div class="ml-result-head">
+                    <span>Result</span>
+                    <span id="ml-confidence">94.6% confidence level</span>
+                  </div>
+                  <div class="ml-result-bar-bg" aria-hidden="true">
+                    <div id="ml-fill" class="ml-result-bar-fill"></div>
+                  </div>
+                  <p id="ml-prediction-text" class="ml-result-text">Estimation Result: Correct standing posture for toddler screening.</p>
+                </div>
+
+                <button id="ml-submit" type="submit" class="ml-submit-btn">Run Prediction Analysis</button>
+              </form>
+            </div>
+
+            <!-- Inactive Model Card: Mobile Vision Classifier -->
+            <div class="ml-card" style="border-style:dashed;">
+              <div class="ml-card-head">
+                <div class="ml-card-title">
+                  <span class="ico">👁️</span>
+                  <h4>Mobile Vision Classifier</h4>
+                </div>
+                <span class="ml-card-status soon">ETA: Q3 2026</span>
+              </div>
+              <p class="ml-card-desc">
+                FastAPI-based computer vision classifier for real-time mobile keypoint detection. Binary model optimization is underway.
+              </p>
+
+              <div class="optimization-bar">
+                <div class="opt-head">
+                  <span>Model optimization progress</span>
+                  <span style="color:var(--indigo);">48%</span>
+                </div>
+                <div class="ml-result-bar-bg" aria-hidden="true">
+                  <div class="opt-fill"></div>
+                </div>
+              </div>
+
+              <div class="soon-placeholder-btn">Coming Soon</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -736,6 +640,16 @@
                   <span class="g-time" data-timestamp="{{.CreatedAt}}">{{.CreatedAt}}</span>
                 </div>
                 <div class="g-text">{{.Message}}</div>
+                {{if .AdminReply}}
+                <div class="g-admin-reply">
+                  <div class="g-reply-header">
+                    <span class="g-reply-avatar">名</span>
+                    <span class="g-reply-sender">Najin Kyou</span>
+                    <span class="g-reply-badge">Owner</span>
+                  </div>
+                  <div class="g-reply-text">{{.AdminReply}}</div>
+                </div>
+                {{end}}
               </div>
             </div>
             {{else}}
@@ -812,6 +726,69 @@
       </div>
     </div>
   </footer>
+
+  <!-- Floating RAG Chat Widget -->
+  <div class="floating-chat-widget">
+    <!-- Chat Trigger Floating Button -->
+    <button id="chat-trigger" class="chat-trigger-btn" aria-label="Open chat assistant" title="Ask Assistant">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span class="chat-badge"></span>
+    </button>
+
+    <!-- Chat Popup Window -->
+    <div id="chat-popup" class="chat-popup-window">
+      <!-- Terminal-like Header -->
+      <div class="chat-popup-header">
+        <div class="chat-header-info">
+          <div class="chat-header-avatar">知</div>
+          <div class="chat-header-details">
+            <span class="chat-header-title">RAG Chat Assistant</span>
+            <span class="chat-header-status">
+              <span class="status-dot"></span> Online (Gemini Pro)
+            </span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button id="chat-close" aria-label="Close chat" title="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Feed -->
+      <div id="chat-popup-feed" class="chat-popup-feed">
+        <div class="chat-bubble-row">
+          <div class="chat-avatar c-jade">知</div>
+          <div class="chat-bubble assistant-bubble">
+            <p>Hello! I am Najin's portfolio RAG assistant. Ask me anything about his skills, AI projects, or developer journey.</p>
+            <div class="chat-suggested-qs">
+              <button type="button" class="chat-suggested-btn">What projects has he built?</button>
+              <button type="button" class="chat-suggested-btn">Tell me about StuntSense</button>
+              <button type="button" class="chat-suggested-btn">What is his core tech stack?</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="chat-popup-input-bar">
+        <form id="chat-popup-form" class="chat-input-form">
+          <input id="chat-popup-input" type="text" placeholder="Ask about Najin Kyou..." class="chat-input-field" required autocomplete="off">
+          <button id="chat-popup-submit" type="submit" class="chat-send-btn" aria-label="Send message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Core JavaScript -->
   <script src="/js/main.js?v=2.0.0"></script>

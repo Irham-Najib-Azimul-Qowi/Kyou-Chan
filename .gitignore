@@ -26,3 +26,4 @@ node_modules/
 # OS Specific files
 .DS_Store
 Thumbs.db
+.env*
