@@ -444,14 +444,15 @@ func embedQuery(query string) ([]float32, error) {
 		return nil, fmt.Errorf("gemini key missing")
 	}
 
-	url := "https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=" + apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=" + apiKey
 	payload := map[string]interface{}{
-		"model": "models/text-embedding-004",
+		"model": "models/gemini-embedding-001",
 		"content": map[string]interface{}{
 			"parts": []map[string]interface{}{
 				{"text": query},
 			},
 		},
+		"outputDimensionality": 768,
 	}
 
 	bodyBytes, err := json.Marshal(payload)
