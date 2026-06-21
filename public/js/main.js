@@ -226,9 +226,8 @@ function initNeuralCanvas() {
 
     // Get current design colors
     const isLight = document.documentElement.classList.contains("light-theme");
-    const dotColor = isLight ? "rgba(8, 145, 178, 0.45)" : "rgba(0, 240, 255, 0.45)";
-    const lineColor = isLight ? "rgba(8, 145, 178, 0.12)" : "rgba(0, 240, 255, 0.12)";
-    const hoverLineColor = isLight ? "rgba(79, 70, 229, 0.4)" : "rgba(0, 240, 255, 0.45)";
+    const dotColor = isLight ? "rgba(14, 116, 144, 0.75)" : "rgba(0, 240, 255, 0.45)";
+    const lineColor = isLight ? "rgba(14, 116, 144, 0.28)" : "rgba(0, 240, 255, 0.12)";
 
     // Update & draw nodes
     nodes.forEach(node => {
@@ -274,12 +273,21 @@ function initNeuralCanvas() {
         }
       }
 
-      // Connect to mouse
+      // Connect to mouse with linear gradient (more visible near the cursor)
       if (mouse.x !== null && mouse.y !== null) {
         const mouseDist = Math.hypot(a.x - mouse.x, a.y - mouse.y);
         if (mouseDist < connectionDist + 30) {
-          ctx.strokeStyle = hoverLineColor;
-          ctx.lineWidth = (1.5 - mouseDist / (connectionDist + 30)) * 2;
+          const grad = ctx.createLinearGradient(a.x, a.y, mouse.x, mouse.y);
+          if (isLight) {
+            grad.addColorStop(0, "rgba(14, 116, 144, 0.2)");
+            grad.addColorStop(1, "rgba(67, 56, 202, 0.9)");
+          } else {
+            grad.addColorStop(0, "rgba(0, 240, 255, 0.15)");
+            grad.addColorStop(1, "rgba(0, 240, 255, 0.9)");
+          }
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = (1.5 - mouseDist / (connectionDist + 30)) * 2.5;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(mouse.x, mouse.y);
