@@ -194,9 +194,9 @@ function initNeuralCanvas() {
     height = canvas.height = canvas.parentElement.clientHeight;
   });
 
-  const numNodes = 36;
+  const numNodes = 48;
   const nodes = [];
-  const connectionDist = 100;
+  const connectionDist = 120;
 
   // Mouse coords
   const mouse = { x: null, y: null };
@@ -217,7 +217,7 @@ function initNeuralCanvas() {
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
-      radius: Math.random() * 2 + 1
+      radius: Math.random() * 2.5 + 1.5
     });
   }
 
@@ -226,12 +226,24 @@ function initNeuralCanvas() {
 
     // Get current design colors
     const isLight = document.documentElement.classList.contains("light-theme");
-    const dotColor = isLight ? "rgba(8, 145, 178, 0.3)" : "rgba(0, 240, 255, 0.25)";
-    const lineColor = isLight ? "rgba(8, 145, 178, 0.06)" : "rgba(0, 240, 255, 0.06)";
-    const hoverLineColor = isLight ? "rgba(79, 70, 229, 0.12)" : "rgba(99, 102, 241, 0.15)";
+    const dotColor = isLight ? "rgba(8, 145, 178, 0.45)" : "rgba(0, 240, 255, 0.45)";
+    const lineColor = isLight ? "rgba(8, 145, 178, 0.12)" : "rgba(0, 240, 255, 0.12)";
+    const hoverLineColor = isLight ? "rgba(79, 70, 229, 0.4)" : "rgba(0, 240, 255, 0.45)";
 
     // Update & draw nodes
     nodes.forEach(node => {
+      // Magnetic pull to mouse
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = mouse.x - node.x;
+        const dy = mouse.y - node.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 150) {
+          const force = (150 - dist) / 150;
+          node.x += (dx / dist) * force * 0.5;
+          node.y += (dy / dist) * force * 0.5;
+        }
+      }
+
       node.x += node.vx;
       node.y += node.vy;
 
@@ -254,7 +266,7 @@ function initNeuralCanvas() {
 
         if (dist < connectionDist) {
           ctx.strokeStyle = lineColor;
-          ctx.lineWidth = 1 - dist / connectionDist;
+          ctx.lineWidth = (1 - dist / connectionDist) * 1.2;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -265,9 +277,9 @@ function initNeuralCanvas() {
       // Connect to mouse
       if (mouse.x !== null && mouse.y !== null) {
         const mouseDist = Math.hypot(a.x - mouse.x, a.y - mouse.y);
-        if (mouseDist < connectionDist + 20) {
+        if (mouseDist < connectionDist + 30) {
           ctx.strokeStyle = hoverLineColor;
-          ctx.lineWidth = (1.2 - mouseDist / (connectionDist + 20)) * 1.5;
+          ctx.lineWidth = (1.5 - mouseDist / (connectionDist + 30)) * 2;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(mouse.x, mouse.y);
