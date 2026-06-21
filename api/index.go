@@ -1,6 +1,6 @@
 package handler
 
-// Build Trigger: Force embed refresh 2.0.7
+// Build Trigger: Force embed refresh 2.0.8
 import (
 	"bytes"
 	"embed"
@@ -622,6 +622,31 @@ func sanitizeMessage(s string) string {
 	return strings.TrimSpace(s)
 }
 
+func resolvePath(r *http.Request) string {
+	// Vercel serverless function rewrites pass original path in x-invoke-path or x-matched-path
+	for _, h := range []string{"X-Invoke-Path", "X-Matched-Path", "X-Original-Url"} {
+		if p := r.Header.Get(h); p != "" {
+			// Strip query parameters
+			if idx := strings.Index(p, "?"); idx != -1 {
+				p = p[:idx]
+			}
+			// If it's just the rewritten function name, skip it
+			if p != "" && p != "/api/index" && p != "/api/index.go" {
+				// Normalize trailing slash for admin
+				if p == "/admin/" {
+					return "/admin"
+				}
+				return p
+			}
+		}
+	}
+	p := r.URL.Path
+	if p == "/admin/" {
+		return "/admin"
+	}
+	return p
+}
+
 // ==========================================================================
 // MAIN VERCEL HANDLER
 // ==========================================================================
@@ -629,6 +654,8 @@ func sanitizeMessage(s string) string {
 func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	reqPath := resolvePath(r)
 
 	// Get IP Address
 	ip := r.Header.Get("X-Forwarded-For")
@@ -638,8 +665,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	ip = strings.Split(ip, ",")[0]
 
 	// Intercept administrative routes
-	if strings.HasPrefix(r.URL.Path, "/admin") {
-		if r.URL.Path == "/admin" {
+	if strings.HasPrefix(reqPath, "/admin") {
+		if reqPath == "/admin" {
 			if r.Method == http.MethodPost {
 				handleAdminLogin(w, r)
 				return
@@ -652,7 +679,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if r.URL.Path == "/admin/logout" && r.Method == http.MethodPost {
+		if reqPath == "/admin/logout" && r.Method == http.MethodPost {
 			handleAdminLogout(w, r)
 			return
 		}
@@ -665,7 +692,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		switch r.URL.Path {
+		switch reqPath {
 		case "/admin/config/update":
 			handleAdminConfigUpdate(w, r)
 		case "/admin/skill/list":
@@ -707,7 +734,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Handle API endpoints
-	switch r.URL.Path {
+	switch reqPath {
 	case "/api/guestbook":
 		if r.Method == http.MethodGet {
 			handleGetGuestbook(w, r)
